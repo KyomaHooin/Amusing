@@ -84,7 +84,7 @@ func main()
 			$http.SetRequestHeader("X-Location", StringRegExpReplace($gzlist[$i], "^(" & $location & "-\d+T\d+)(.*)","$1"))
 			$http.Send($gz_data)
 			if @error or $http.Status <> 200 then
-					logger("File " & $gzlist[$i] & "HTTP transfer failed.")
+					logger("File " & $gzlist[$i] & " HTTP transfer failed.")
 					continueloop; skip archiving..
 			endif
 			;ARCHIVE
@@ -139,7 +139,7 @@ func sql()
 						;YYYYmmddHHiiss -> ISO: YYYYMMDDThhmmss
 						$timestamp = StringRegExpReplace($data_row[0],"^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$", "$1$2$3T$4$5$6")
 						;write data
-						FileWriteLine($csv, $sensor[$i] & ';' & $timestamp & ';' & $data_row[1] & ';' & StringRegExpReplace($sensor[$i],"^(.*);(.*)$","$2")); 192 -> Alive
+						FileWriteLine($csv, StringRegExpReplace($sensor[$i],"^(.*);(.*)$","$1") & ';' & $timestamp & ';' & $data_row[1] & ';' & StringRegExpReplace($sensor[$i],"^(.*);(.*)$","$2")); 192 -> Alive
 					endif
 				wend
 				FileClose($csv)
@@ -165,7 +165,7 @@ func archive()
 endfunc
 
 func get_http_error()
-	logger("HTTP request error.")
+	logger("HTTP request timeout.")
 EndFunc
 
 func logger($text)
