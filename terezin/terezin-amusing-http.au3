@@ -139,7 +139,7 @@ func sql()
 						;YYYYmmddHHiiss -> ISO: YYYYMMDDThhmmss
 						$timestamp = StringRegExpReplace($data_row[0],"^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$", "$1$2$3T$4$5$6")
 						;write data
-						FileWriteLine($csv, StringRegExpReplace($sensor[$i],"^(.*);(.*)$","$1") & ';' & $timestamp & ';' & $data_row[1] & ';' & StringRegExpReplace($sensor[$i],"^(.*);(.*)$","$2")); 192 -> Alive
+						FileWriteLine($csv, StringRegExpReplace($sensor[$i],"^(.*);(.*)$","$1") & ';' & ';' & StringRegExpReplace($sensor[$i],"^(.*);(.*)$","$2") & $data_row[1] & $timestamp); 192 -> Alive
 					endif
 				wend
 				FileClose($csv)
