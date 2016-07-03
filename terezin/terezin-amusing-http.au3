@@ -17,7 +17,7 @@
 ;VAR
 
 $location = 'terezin'
-$sensors = @scriptdir & '\sensor.txt'
+$sensors = @scriptdir & '\' & $location & '-sensor.txt'
 $runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 
 $sql_host = '[removed]'
@@ -98,7 +98,7 @@ func sql()
 	local $sensor
 	_FileReadToArray($sensors, $sensor, 0); zero based array
 	if @error Then
-		logger("Missing file sensor.txt.")
+		logger("Missing file: " & $sensors)
 		return
 	endif
 	_SQL_RegisterErrorHandler(); register ADODB COM handler
@@ -113,7 +113,7 @@ func sql()
 		return
 	endif
 	for $i=0 to ubound($sensor) - 1
-		local $id_query = "SELECT TrendLogId FROM Designation WHERE Path LIKE '" & $sensor[$i] & "'"; Find device ID by name (Terezin1_B_HGrp0007_TR_PrVal).
+		local $id_query = "SELECT TrendLogId FROM Designation WHERE Path LIKE '" & StringRegExpReplace($sensor[$i],"^(.*);(.*)$","$1") & "'"; Find device ID by name (Terezin1_B_HGrp0007_TR_PrVal).
 		$id  = _SQL_Execute($adodb, $id_query)
 		if $id = $SQL_ERROR then
 			logger("SQL3: " & _SQL_GetErrMsg())
@@ -139,7 +139,7 @@ func sql()
 						;YYYYmmddHHiiss -> ISO: YYYYMMDDThhmmss
 						$timestamp = StringRegExpReplace($data_row[0],"^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$", "$1$2$3T$4$5$6")
 						;write data
-						FileWriteLine($csv, $sensor[$i] & ';' & $timestamp & ';' & $data_row[1]); 192 -> Alive
+						FileWriteLine($csv, $sensor[$i] & ';' & $timestamp & ';' & $data_row[1] & ';' & StringRegExpReplace($sensor[$i],"^(.*);(.*)$","$2")); 192 -> Alive
 					endif
 				wend
 				FileClose($csv)
