@@ -1,7 +1,7 @@
 ;
 ; Terezin: InSigHT TeNDencies TSQL -> CSV -> GZ -> HTTP
 ;
-; schtasks /create /tn "Terezin Amusing HTTP" /tr "c:\terezin-amusing\terezin-amusing-http.exe" /sc HOURLY
+; schtasks /create /tn "Terezin Amusing HTTP" /tr "c:\terezin-amusing-http\terezin-amusing-http.exe" /sc HOURLY
 ;
 
 #AutoIt3Wrapper_Icon=terezin.ico
@@ -38,9 +38,9 @@ DirCreate(@scriptdir & '\http')
 $logfile = FileOpen(@scriptdir & '\' & $location & '-amusing-http.log', 1); 1 = append
 if @error then exit; silent exit..
 logger(@CRLF & "Program start: " & $runtime)
-;sql(); Parse data from TSQL
+sql(); Parse data from TSQL
 main(); Pack and transport data over HTTP
-;archive(); Archive logrotate
+archive(); Archive logrotate
 logger("Program end.")
 FileClose($logfile)
 
@@ -139,7 +139,7 @@ func sql()
 						;YYYYmmddHHiiss -> ISO: YYYYMMDDThhmmss
 						$timestamp = StringRegExpReplace($data_row[0],"^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$", "$1$2$3T$4$5$6")
 						;write data
-						FileWriteLine($csv, StringRegExpReplace($sensor[$i],"^(.*);(.*)$","$1") & ';' & ';' & StringRegExpReplace($sensor[$i],"^(.*);(.*)$","$2") & $data_row[1] & $timestamp); 192 -> Alive
+						FileWriteLine($csv, $sensor[$i] & ';' & $data_row[1] & ';' & $timestamp); 192 -> Alive
 					endif
 				wend
 				FileClose($csv)
