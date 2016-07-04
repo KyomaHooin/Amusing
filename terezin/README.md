@@ -12,11 +12,11 @@ terezin-amusing-http.au3 - Main program, HTTP transport.
                  Zip.au3 - ZIP de/compression library by "torels_".
                 _SQL.au3 - ADODB library by Chris Lambert.
              terezin.ico - Program icon.
-              sensor.txt - Sensor plain list.
+      terezin-sensor.txt - Sensor plain list.
 </pre>
 
 CONTACT
 
 Author: richard_bruna@nm.cz<br>
-Source: https://github.com/KyomaHooin/terezin
+Source: https://github.com/KyomaHooin/Amusing/terezin
 
