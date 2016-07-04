@@ -1,0 +1,119 @@
+VZTA011	RV, T	přívod	odtah
+A2.115	T		
+A2.116	T		
+A2.117	T		
+A2.209	T		
+A2.211	T		
+A2.212	T		
+A2.213	T		
+VZTA02	RV, T	přívod	odtah
+A2.120	T		
+A2.121	T		
+VZTA03	RV, T	přívod	odtah
+A2.106	T		
+A2.112	T		
+A2.205	T		
+A2.207	T		
+A2.214	T		
+A2.215	T		
+A2.313	T		
+VZTA05	RV, T	přívod	odtah
+A2.108	T		
+A2.206	T		
+VZTA06	RV, T	přívod	odtah
+A2.305	T		
+A2.306	T		
+A2.311	T		
+A2.312	T		
+VZTB01	RV, T	přívod	odtah
+B2.109	RV, T		
+B2.110	RV, T		
+B2.116	RV, T		
+B2.118	RV, T		
+B2.208	RV, T		
+B2.209	RV, T		
+B2.117	RV, T		
+VZTB02	RV, T	přívod	odtah
+B2.106	RV, T		
+B2.108.1	RV, T		
+B2.108.2	RV, T		
+B2.108.3	RV, T		
+B2.119	RV, T		
+B2.120	RV, T		
+B2.123.1	RV, T		
+B2.123.2	RV, T		
+B2.205.1	RV, T		
+B2.205.2	RV, T		
+B2.206.1	RV, T		
+B2.206.2	RV, T		
+B2.207.1	RV, T		
+B2.207.2	RV, T		
+B2.216	RV,T		
+VZTB02B	RV, T	přívod	odtah
+B2.210	RV, T		
+B2.211	RV, T		
+B2.212.1	RV, T		
+B2.212.2	RV, T		
+B2.213	RV, T		
+B2.214	RV, T		
+B2.215	RV,T		
+VZTB04	RV, T	přívod	odtah
+B2.305.1	RV, T		
+B2.305.2	RV, T		
+B2.305.3	RV, T		
+B2.305.4	RV, T		
+B2.306	RV, T		
+B2.309.1	RV, T		
+B2.309.2	RV,T		
+B2.309.3	RV, T		
+B2.309.4	RV, T		
+B2.310.1	RV, T		
+B2.310.2	RV, T		
+VZTD02	RV, T	přívod	odtah
+D2.106	RV, T		
+D2.107	RV, T		
+D2.108	RV, T		
+D2.111	RV, T		
+VZTD01	RV, T	přívod	odtah
+D2.113	RV, T		
+D2.114	RV, T		
+D2.115	RV, T		
+D2.116	RV, T		
+D2.120	RV, T		
+D2.205	RV, T		
+D2.206	RV, T		
+D2.207	RV, T		
+D2.208	RV, T		
+D2.305	RV, T		
+D2.306	RV, T		
+D2.307	RV, T		
+D2.309	RV, T		
+D2.310	RV, T		
+D2.311	RV, T		
+D2.312	RV, T		
+VZTC01	RV, T	přívod	odtah
+C2.113	RV, T		
+C2.115	RV, T		
+C2.116	RV, T		
+C2.117	RV, T		
+C2.122	RV, T		
+C2.123	RV, T		
+VZTC07	RV, T		
+C2.214	RV, T		
+C2.217	RV, T		
+C2.220	RV, T		
+C2.313	RV, T		
+VZTC08	RV, T	přívod	odtah
+C2.210	RV, T		
+C2.211	RV, T		
+C2.212	RV, T		
+C2.213	RV, T		
+C2.215	RV, T		
+C2.216	RV, T		
+VZTC09	RV, T	přívod	odtah
+C2.311	RV, T		
+C2.312	RV, T		
+C2.314	RV, T		
+C2.315	RV, T		
+C2.316	RV, T		
+exteriér	RV		

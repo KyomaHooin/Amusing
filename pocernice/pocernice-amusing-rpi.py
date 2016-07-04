@@ -11,9 +11,9 @@ import os
 
 location='pocernice'
 header={'Content-Type':'application/octet-stream','X-Location':'pocernice-27062016T174405'}
-data="""sensor1;data1;123456
-sensor2;data2;123456
-sensor3;data3;123456
+data="""sensor1;1;data1;123456
+sensor2;1;data2;123456
+sensor3;1;data3;123456
 """
 
 try:
