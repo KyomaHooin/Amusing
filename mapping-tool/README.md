@@ -14,4 +14,4 @@ amusing-mapping.au3 - Main program.
 CONTACT
 
 Author: richard_bruna@nm.cz<br>
-Source: https://github.com/KyomaHooin/Amusing/mapping-tool
+Source: https://github.com/KyomaHooin/Amusing
