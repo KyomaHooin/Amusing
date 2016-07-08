@@ -12,7 +12,7 @@
 #include<Date.au3>
 #include<File.au3>
 #include<ZLIB.au3>
-#include<DBF.au3>
+#include<Xbase.au3>
 
 ;VAR
 
@@ -20,7 +20,9 @@ $location = 'prachatice'
 $sensors = @scriptdir & '\' & $location & '-sensor.txt'
 $runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 
-global $controller[2]=['06030003','06030008']; Comet controller ID array
+global $controller[2]=['06030006','06030008']; Comet controller ID array
+$comet_exporter = 'comet.exe'
+$comet_exporter_location = 'c:/comet/' & $comet_exporter
 
 ;--------------------------------------------------
 
@@ -35,6 +37,7 @@ DirCreate(@scriptdir & '\http')
 $logfile = FileOpen(@scriptdir & '\' & $location & '-amusing.log', 1); 1 = append
 if @error then exit; silent exit..
 logger(@CRLF & "Program start: " & $runtime)
+exporter(); Check parent program.
 dbf(); Parse data from TSQL
 ;main(); Pack and transport data over HTTP
 ;archive(); Archive logrotate
@@ -92,7 +95,7 @@ func main()
 endfunc
 
 func dbf()
-	local $sensor
+	local $sensor, $dbf
 	_FileReadToArray($sensors, $sensor, 0); zero based array
 	if @error Then
 		logger("Missing file: " & $sensors)
@@ -101,21 +104,34 @@ func dbf()
 	for $i=0 to UBound($controller) -1
 		$dbflist = _FileListToArray(@ScriptDir & '\' & $controller[$i], "*.dbf")
 		if ubound($dbflist) < 2 then
-			logger("DBF file not found..")
+			logger("No DBF file found..")
+			return
 		else
 			for $j=1 to UBound($dbflist) - 1
-;				logger('Parsing: ' & $dbflist[$j])
-;				MsgBox(-1,"dbf",'Parsing: ' & @ScriptDir & '\' & $controller[$i] & '\' & $dbflist[$j])
-;				$dbf = _DBF_DBFToArray(@ScriptDir & '\' & $controller[$i] & '\' & $dbflist[$j])
-				$dbf = _DBF_Open(@ScriptDir & '\' & $controller[$i] & '\' & $dbflist[$j])
-				if $dbf = 0 then MsgBox(-1,"err", "error openning...")
-				$record = _DBF_ReadTuple($dbf, 0)
-				_ArrayDisplay($record)
-				_DBF_Close($dbf)
+				_Xbase_ReadToArray(@ScriptDir & '\' & $controller[$i] & '\' & $dbflist[$j], $dbf)
+				if @error Then
+					logger("Failed to parse DBF: " & $dbflist[$j])
+					continueloop; skip the broken one..
+				endif
+				$csv = FileOpen(@ScriptDir & '\' & $location & '-' & $runtime & '.csv', 1);  1 - append
+				if @error Then
+					logger("Failed to create CSV file.")
+					return
+				endif
+				;......................
+				FileClose($csv)
 			next
 		endif
 	Next
 EndFunc
+
+func exporter()
+;	if not processexists($comet_exporter) then
+;		logger("Export service not running, restarting..")
+;		runwait($comet_exporter_location & $comet, @SWHIDE,..)
+;		if @rror then logger("Failed to restart export service..")
+;	endif
+endfunc
 
 func archive()
 	$archlist = _FileListToArray(@scriptdir & '\archive', "*.gz")
