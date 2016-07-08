@@ -1,5 +1,5 @@
 ;
-; Prachatice: Seimens DBF -> CSV -> GZ -> HTTP
+; Prachatice: Comet DBF -> CSV -> GZ -> HTTP
 ;
 ; schtasks /create /tn "Prachatice Amusing HTTP" /tr "c:\prachatice-amusing\prachatice-amusing.exe" /sc HOURLY
 ;
@@ -20,7 +20,7 @@ $location = 'prachatice'
 $sensors = @scriptdir & '\' & $location & '-sensor.txt'
 $runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 
-global $controller[2]=['06030003','06030008']; Siemens controller ID array
+global $controller[2]=['06030003','06030008']; Comet controller ID array
 
 ;--------------------------------------------------
 
