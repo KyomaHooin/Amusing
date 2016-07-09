@@ -17,11 +17,10 @@
 ;VAR
 
 $location = 'prachatice'
-$sensors = @scriptdir & '\' & $location & '-sensor.txt'
 $runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 
-$comet_exporter = 'comet.exe'
-$comet_exporter_location = 'c:/comet/' & $comet_exporter
+$comet = 'notepad.exe'
+$comet_location = 'c:/windows/'
 
 ;--------------------------------------------------
 
@@ -36,8 +35,8 @@ DirCreate(@scriptdir & '\http')
 $logfile = FileOpen(@scriptdir & '\' & $location & '-amusing.log', 1); 1 = append
 if @error then exit; silent exit..
 logger(@CRLF & "Program start: " & $runtime)
-;exporter(); Check parent program.
-dbf(); Parse data from TSQL
+comet(); Check parent program.
+;dbf(); Parse data from DBF
 ;main(); Pack and transport data over HTTP
 ;archive(); Archive logrotate
 logger("Program end.")
@@ -79,7 +78,7 @@ func main()
 			$gz_file = FileOpen(@ScriptDir & '\http\' & $gzlist[$i], 16)
 			$gz_data = FileRead($gz_file)
 			FileClose($gz_file)
-			$http.open("POST","http://amusing.nm.cz/sensors/rawpost.php", False); No async HTTP..
+			$http.open("POST","[removed]", False); No async HTTP..
 			$http.SetRequestHeader("X-Location", StringRegExpReplace($gzlist[$i], "^(" & $location & "-\d+T\d+)(.*)","$1"))
 			$http.Send($gz_data)
 			if @error or $http.Status <> 200 then
@@ -94,7 +93,7 @@ func main()
 endfunc
 
 func dbf()
-	local $sensor, $dbf; array..
+	local $sensor, $dbf; array def.
 	$sensorlist = _FileListToArray(@scriptdir, "*.txt")
 	if ubound($sensorlist) < 2 then
 		logger("No sensor mapping found.")
@@ -118,7 +117,10 @@ func dbf()
 					logger("Failed to parse DBF " & $dbflist[$j])
 					continueloop; skip the broken one..
 				endif
-;				_ArrayDisplay($dbf)
+				if (UBound($dbf, 2) - 3)/2 <> UBound($sensor) Then; DBF/sensor column test
+					logger("DBF/sensor column do not match.")
+					continueloop; skip the incorrect one..
+				endif
 				$csv = FileOpen(@ScriptDir & '\' & $location & '-' & $runtime & '.csv', 1);  1 - append
 				if @error Then
 					logger("Failed to create CSV file.")
@@ -139,12 +141,12 @@ func dbf()
 	endif
 EndFunc
 
-func exporter()
-;	if not processexists($comet_exporter) then
-;		logger("Export service not running, restarting..")
-;		runwait($comet_exporter_location & $comet, @SWHIDE,..)
-;		if @rror then logger("Failed to restart export service..")
-;	endif
+func comet()
+	if not processexists($comet) then
+		logger("Export service not running, restarting..")
+		Run($comet_location & $comet)
+		if @error then logger("Failed to restart export service..")
+	endif
 endfunc
 
 func archive()
