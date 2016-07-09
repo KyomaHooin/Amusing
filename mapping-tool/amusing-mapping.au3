@@ -57,7 +57,7 @@ While 1
 				endif
 				if @error or $http.Status <> 200 then
 					GUICtrlSetData($gui_error, "Odeslani dat selhalo.")
-				else
+				else; better 'case' next time..
 					if $http.ResponseText == 'dup' then
 						GUICtrlSetData($gui_error, "Duplicitni zaznam.")
 					ElseIf $http.ResponseText == 'err' then
