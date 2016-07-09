@@ -20,7 +20,6 @@ $location = 'prachatice'
 $sensors = @scriptdir & '\' & $location & '-sensor.txt'
 $runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 
-global $controller[2]=['06030006','06030008']; Comet controller ID array
 $comet_exporter = 'comet.exe'
 $comet_exporter_location = 'c:/comet/' & $comet_exporter
 
@@ -37,7 +36,7 @@ DirCreate(@scriptdir & '\http')
 $logfile = FileOpen(@scriptdir & '\' & $location & '-amusing.log', 1); 1 = append
 if @error then exit; silent exit..
 logger(@CRLF & "Program start: " & $runtime)
-exporter(); Check parent program.
+;exporter(); Check parent program.
 dbf(); Parse data from TSQL
 ;main(); Pack and transport data over HTTP
 ;archive(); Archive logrotate
@@ -95,34 +94,49 @@ func main()
 endfunc
 
 func dbf()
-	local $sensor, $dbf
-	_FileReadToArray($sensors, $sensor, 0); zero based array
-	if @error Then
-		logger("Missing file: " & $sensors)
+	local $sensor, $dbf; array..
+	$sensorlist = _FileListToArray(@scriptdir, "*.txt")
+	if ubound($sensorlist) < 2 then
+		logger("No sensor mapping found.")
 		return
-	endif
-	for $i=0 to UBound($controller) -1
-		$dbflist = _FileListToArray(@ScriptDir & '\' & $controller[$i], "*.dbf")
-		if ubound($dbflist) < 2 then
-			logger("No DBF file found..")
-			return
-		else
+	else
+		for $i=1 to UBound($sensorlist) - 1
+			_FileReadToArray(@ScriptDir & '\' & $sensorlist[$i], $sensor, 0); zero based array
+			if UBound($sensor) = 0 Then
+					logger("Empty sensor file " & $sensorlist[$i])
+					return
+			endif
+			$controller = StringRegExpReplace($sensorlist[$i],"(\d+)-sensor.txt","$1")
+			$dbflist = _FileListToArray(@ScriptDir & '\' & $controller, "*.dbf")
+			if ubound($dbflist) < 2 then
+				logger("No DBF found for controller " & $controller)
+				return
+			EndIf
 			for $j=1 to UBound($dbflist) - 1
-				_Xbase_ReadToArray(@ScriptDir & '\' & $controller[$i] & '\' & $dbflist[$j], $dbf)
+				_Xbase_ReadToArray(@ScriptDir & '\' & $controller & '\' & $dbflist[$j], $dbf)
 				if @error Then
-					logger("Failed to parse DBF: " & $dbflist[$j])
+					logger("Failed to parse DBF " & $dbflist[$j])
 					continueloop; skip the broken one..
 				endif
+;				_ArrayDisplay($dbf)
 				$csv = FileOpen(@ScriptDir & '\' & $location & '-' & $runtime & '.csv', 1);  1 - append
 				if @error Then
 					logger("Failed to create CSV file.")
 					return
 				endif
-				;......................
+				for $k=0 to UBound($sensor) - 1
+					for $m=0 to UBound($dbf, 1) - 1; rows..
+						;dd-mm-YYYY -> YYYYmmdd HH:ii:ss -> HHmmss
+						$timestamp = StringRegExpReplace($dbf[$m][0],"^(\d{2})-(\d{2})-(\d{4})$", "$3$2$1") & 'T' & StringRegExpReplace($dbf[$m][1],"^(\d{2}):(\d{2}):(\d{2})$", "$1$2$3")
+						;write data
+						FileWriteLine($csv, $sensor[$k] & ';' & 'temperature' & ';' & $dbf[$m][$k+2] & ';' & $timestamp ); offset 3 col
+						FileWriteLine($csv, $sensor[$k] & ';' & 'humidity' & ';' & $dbf[$m][$k+3] & ';' & $timestamp ); offset 4 col
+					next
+				next
 				FileClose($csv)
 			next
-		endif
-	Next
+		Next
+	endif
 EndFunc
 
 func exporter()
