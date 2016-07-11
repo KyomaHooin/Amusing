@@ -55,8 +55,8 @@ func main()
 		for $i=1 to ubound($csvlist) - 1
 			_ZLIB_GZFileCompress(@ScriptDir & '\' & $csvlist[$i], @ScriptDir & '\http\' & $csvlist[$i] & '.gz')
 			if not @error = 1 then
-				logger("Failed to GZIP file.")
-				return
+				logger("Failed to GZIP file " & $csvlist[$i])
+				continueloop; skip the broken one
 			else
 				FileDelete(@ScriptDir & '\' & $csvlist[$i]); CSV clenup
 			endIf
