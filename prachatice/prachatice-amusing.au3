@@ -1,5 +1,5 @@
 ;
-; Prachatice: Comet DBF -> CSV -> GZ -> HTTP
+; Prachatice: Comet System DBF -> CSV -> GZ -> HTTP
 ;
 ; schtasks /create /tn "Prachatice Amusing HTTP" /tr "c:\prachatice-amusing\prachatice-amusing.exe" /sc HOURLY
 ;
@@ -19,8 +19,8 @@
 $location = 'prachatice'
 $runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 
-$comet = 'notepad.exe'
-$comet_location = 'c:/windows/'
+$comet = 'Ms234p.exe'
+$comet_location = 'c:\APPS\MSPlus-4.0.4.3\'
 
 ;--------------------------------------------------
 
@@ -31,14 +31,15 @@ if ubound(ProcessList(@ScriptName), $UBOUND_ROWS) > 2 then exit; check if runnin
 ;DIRS
 DirCreate(@scriptdir & '\archive')
 DirCreate(@scriptdir & '\http')
+DirCreate(@scriptdir & '\dbf')
 ;MAIN
 $logfile = FileOpen(@scriptdir & '\' & $location & '-amusing.log', 1); 1 = append
 if @error then exit; silent exit..
 logger(@CRLF & "Program start: " & $runtime)
 comet(); Check parent program.
-;dbf(); Parse data from DBF
-;main(); Pack and transport data over HTTP
-;archive(); Archive logrotate
+dbf(); Parse data from DBF
+main(); Pack and transport data over HTTP
+archive(); Archive logrotate
 logger("Program end.")
 FileClose($logfile)
 
@@ -106,17 +107,18 @@ func dbf()
 					return
 			endif
 			$controller = StringRegExpReplace($sensorlist[$i],"(\d+)-sensor.txt","$1")
-			$dbflist = _FileListToArray(@ScriptDir & '\' & $controller, "*.dbf")
+			$dbflist = _FileListToArray(@ScriptDir & '\dbf\' & $controller, "*.dbf")
 			if ubound($dbflist) < 2 then
 				logger("No DBF found for controller " & $controller)
 				return
 			EndIf
 			for $j=1 to UBound($dbflist) - 1
-				_Xbase_ReadToArray(@ScriptDir & '\' & $controller & '\' & $dbflist[$j], $dbf)
+				_Xbase_ReadToArray(@ScriptDir & '\dbf\' & $controller & '\' & $dbflist[$j], $dbf)
 				if @error Then
 					logger("Failed to parse DBF " & $dbflist[$j])
 					continueloop; skip the broken one..
 				endif
+				;_ArrayDisplay($dbf)
 				if (UBound($dbf, 2) - 3)/2 <> UBound($sensor) Then; DBF/sensor column test
 					logger("DBF/sensor column do not match.")
 					continueloop; skip the incorrect one..
@@ -131,13 +133,14 @@ func dbf()
 						;dd-mm-YYYY -> YYYYmmdd HH:ii:ss -> HHmmss
 						$timestamp = StringRegExpReplace($dbf[$m][0],"^(\d{2})-(\d{2})-(\d{4})$", "$3$2$1") & 'T' & StringRegExpReplace($dbf[$m][1],"^(\d{2}):(\d{2}):(\d{2})$", "$1$2$3")
 						;write data
-						;FileWriteLine($csv, $sensor[$k] & ';' & 'temperature' & ';' & $dbf[$m][$k+2] & ';' & $timestamp ); offset 3 col
-						FileWriteLine($csv, $sensor[$k] & ';' & '1' & ';' & $dbf[$m][$k+2] & ';' & $timestamp ); offset 3 col
-						;FileWriteLine($csv, $sensor[$k] & ';' & 'humidity' & ';' & $dbf[$m][$k+3] & ';' & $timestamp ); offset 4 col
-						FileWriteLine($csv, $sensor[$k] & ';' & '2' & ';' & $dbf[$m][$k+3] & ';' & $timestamp ); offset 4 col
+						FileWriteLine($csv, $sensor[$k] & ';' & 'temperature' & ';' & $dbf[$m][$k+3] & ';' & $timestamp ); offset 3 col
+						FileWriteLine($csv, $sensor[$k] & ';' & 'humidity' & ';' & $dbf[$m][$k+4] & ';' & $timestamp ); offset 4 col
 					next
 				next
 				FileClose($csv)
+				;clean up
+				FileDelete(@ScriptDir & '\dbf\' & $controller & '\' & $dbflist[$j])
+				FileDelete(@ScriptDir & '\dbf\' & $controller & '\' & StringRegExpReplace($dbflist[$j], "dbf", "msx")); MSX drop..
 			next
 		Next
 	endif
