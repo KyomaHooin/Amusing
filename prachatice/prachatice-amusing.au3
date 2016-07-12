@@ -133,8 +133,8 @@ func dbf()
 						;dd-mm-YYYY -> YYYYmmdd HH:ii:ss -> HHmmss
 						$timestamp = StringRegExpReplace($dbf[$m][0],"^(\d{2})-(\d{2})-(\d{4})$", "$3$2$1") & 'T' & StringRegExpReplace($dbf[$m][1],"^(\d{2}):(\d{2}):(\d{2})$", "$1$2$3")
 						;write data
-						FileWriteLine($csv, $sensor[$k] & ';' & 'temperature' & ';' & $dbf[$m][$k+3] & ';' & $timestamp ); offset 3 col
-						FileWriteLine($csv, $sensor[$k] & ';' & 'humidity' & ';' & $dbf[$m][$k+4] & ';' & $timestamp ); offset 4 col
+						FileWriteLine($csv, $sensor[$k] & ';' & 'temperature' & ';' & $dbf[$m][$k*2+3] & ';' & $timestamp ); offset 3 col
+						FileWriteLine($csv, $sensor[$k] & ';' & 'humidity' & ';' & $dbf[$m][$k*2+4] & ';' & $timestamp ); offset 4 col
 					next
 				next
 				FileClose($csv)
