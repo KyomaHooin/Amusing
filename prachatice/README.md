@@ -7,7 +7,8 @@ FILE
 
 <pre>
 prachatice-amusing.au3 - Main program.
- prachatice-sensor.txt - Sensor plain list.
+   06030003-sensor.txt - Controller sensor list.
+   06040008-sensor.txt - Controller sensor list.
         prachatice.ico - Program icon.
              Xbase.au3 - FoxBase+/dBase III DBF library by A.R.T. Jonkers.
               ZLIB.au3 - ZLIB de/compression library by "Ward".
