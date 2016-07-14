@@ -52,7 +52,6 @@ func main()
 	$csvlist = _FileListToArray(@ScriptDir, "*.csv")
 	if ubound($csvlist) < 2 then
 		logger("No CSV file.")
-		return
 	else
 		for $i=1 to ubound($csvlist) - 1
 			_ZLIB_GZFileCompress(@ScriptDir & '\' & $csvlist[$i], @ScriptDir & '\http\' & $csvlist[$i] & '.gz')
