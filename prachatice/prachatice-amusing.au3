@@ -51,7 +51,6 @@ func main()
 	$csvlist = _FileListToArray(@ScriptDir, "*.csv")
 	if ubound($csvlist) < 2 then
 		logger("No CSV file.")
-		return
 	else
 		for $i=1 to ubound($csvlist) - 1
 			_ZLIB_GZFileCompress(@ScriptDir & '\' & $csvlist[$i], @ScriptDir & '\http\' & $csvlist[$i] & '.gz')
@@ -79,7 +78,7 @@ func main()
 			$gz_file = FileOpen(@ScriptDir & '\http\' & $gzlist[$i], 16)
 			$gz_data = FileRead($gz_file)
 			FileClose($gz_file)
-			$http.open("POST","[removed]", False); No async HTTP..
+			$http.open("POST","http://amusing.nm.cz/sensors/rawpost.php", False); No async HTTP..
 			$http.SetRequestHeader("X-Location", StringRegExpReplace($gzlist[$i], "^(" & $location & "-\d+T\d+)(.*)","$1"))
 			$http.Send($gz_data)
 			if @error or $http.Status <> 200 then
@@ -104,13 +103,13 @@ func dbf()
 			_FileReadToArray(@ScriptDir & '\' & $sensorlist[$i], $sensor, 0); zero based array
 			if UBound($sensor) = 0 Then
 					logger("Empty sensor file " & $sensorlist[$i])
-					return
+					continueloop; skip empty sensor file..
 			endif
 			$controller = StringRegExpReplace($sensorlist[$i],"(\d+)-sensor.txt","$1")
 			$dbflist = _FileListToArray(@ScriptDir & '\dbf\' & $controller, "*.dbf")
 			if ubound($dbflist) < 2 then
 				logger("No DBF found for controller " & $controller)
-				return
+				continueloop; skip empty controller..
 			EndIf
 			for $j=1 to UBound($dbflist) - 1
 				_Xbase_ReadToArray(@ScriptDir & '\dbf\' & $controller & '\' & $dbflist[$j], $dbf)
