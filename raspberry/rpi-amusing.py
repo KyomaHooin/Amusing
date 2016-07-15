@@ -62,7 +62,7 @@ try:
 					HEADER={'Content-type':'application/octet-stream',
 						'X-Location':LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S")}
 					c=httplib.HTTPConnection('amusing.nm.cz', '80', timeout=10)
-					c.request('POST', 'http://amusing.nm.cz/sensors/rawpost.php', GZIP, HEADER)
+					c.request('POST', '[removed]', GZIP, HEADER)
 					r=c.getresponse()
 					if (r.status == 200):
 						try:	# ARCHIVE
@@ -81,8 +81,17 @@ try:
 			PAYLOAD=''
 		# reset transport token..
 		if time.strftime("%M") == '51': CALL=True
+		# Cleanup archive
+		for old in os.listdir(RAMDISK + 'archive'):
+			old_full=RAMDISK + 'archive/' + old
+			if os.path.getmtime(old_full) < (time.time() - 1814400):# 3 week old
+				try:
+					os.remove(old_full)
+				except OSError:
+					LOG.write('Failed to remove archive ' + old + '.\n')
+					pass
 except Exception as e:
-	print e.args[0]
+	print 'Something bad ' + e.args[0]
 	exit(2)
 exit(0)
 
