@@ -27,6 +27,7 @@ import re
 LOCATION='archa'
 PAYLOAD=''
 RAMDISK='/root/amusing/ramdisk/'
+CALL=True
 
 try:
 	try:	# DIR
@@ -37,7 +38,7 @@ try:
 		LOG = open(RAMDISK + 'rpi-amusing.log','a',0)# non-buffering
 		LOG.write('Program start: ' + time.strftime("%d.%m.%Y %H:%M") + '\n')
 	except IOError:
-		print 'Fail to create log file.'
+		print 'Failed to create log file.'
 		exit(1)
 	while 1:# SERIAL
 		try:
@@ -59,36 +60,45 @@ try:
 		except serial.SerialException:
 			LOG.write('Serial error.')
 			pass
-#		if time.strftime("%M") == '20': #hourly..
-#			try:	# GZIP
-#				GZIP_FILE=RAMDISK + 'http/' + LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S") + '.csv.gz'
-#				gzip.open(GZIP_FILE, 'ab').write(PAYLOAD)
-#				GZ=open(GZIP_FILE, 'rb')
-#				print('Payload ready..')
-#			except IOError:
-#				LOG.write('Fail to gzip payload.')
-#				pass
-#		#for pack in os.listdir(RAMDISK + http):
-#			try:	# HTTP
-#				HEADER={'Content-type':'application/octet-stream',
-#					'X-Location':LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S")}
-#				c=httplib.HTTPConnection('amusing.nm.cz', '80', timeout=10)
-#				c.request('POST', 'http://amusing.nm.cz/sensors/rawpost.php', GZ, HEADER)
-#				r=c.getresponse()
-#				if (r.status == 200):
-#					print "Ok!"
-#				c.close()
-#			except socket.error:
-#				LOG.write('Socket error HTTP transport failed.')
-#				GZ.close()
-#				pass
-#			try:	# CLEANUP
-#				GZ.close()
-#				os.rename('http/' + GZIP_FILE,'archive/' + GZIP_FILE)
-#				PAYLOAD=''
-#			except OSError:
-#				print('Allready sent..')# pass ..
-#				#LOG.write('Fail to archive payload.')
+		if time.strftime("%M") == '20' and CALL: #hourly..
+			CALL=False
+			try:# GZIP + PAYLOAD
+				GZIP_FILE=RAMDISK + 'http/' + LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S") + '.csv.gz'
+				gzip.open(GZIP_FILE, 'ab').write(PAYLOAD)
+				gzip.close(GZIP_FILE)
+				print('payload ready..')
+			except IOError:
+				LOG.write('Failed to gzip payload.')
+				pass
+			for PACK in os.listdir(RAMDISK + 'http'):
+				try:
+					GZIP=open(RAMDISK + 'http/' + PACK, 'rb')
+				except IOError:
+					LOG.write('Fail to read ' + PACK + '.')
+					pass
+				print 'sending ' + PACK + ' ..' 
+				try:	# HTTP
+					HEADER={'Content-type':'application/octet-stream',
+						'X-Location':LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S")}
+					c=httplib.HTTPConnection('amusing.nm.cz', '80', timeout=10)
+					c.request('POST', 'http://amusing.nm.cz/sensors/rawpost.php', GZIP, HEADER)
+					r=c.getresponse()
+					if (r.status == 200):
+						print "Ok!"
+					c.close()
+					GZIP.close()
+					try:	# ARCHIVE
+						os.rename('http/' + PACK,'archive/' + PACK)
+					except OSError:
+						LOG.write('Nothing to archive.')
+						pass
+				except socket.error:
+					LOG.write('Failed to transport ' + PACK + '.')
+					pass
+			# reset buffered payload string..
+			PAYLOAD=''
+		# reset transport token..
+		if time.strftime("%M") == '21': CALL=True
 except Exception as e:
 	print e.args[0]
 	exit(99)
