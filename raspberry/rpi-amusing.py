@@ -40,8 +40,8 @@ try:
 	except IOError:
 		print 'Failed to create log file.'
 		exit(1)
-	while 1:# SERIAL
-		try:
+	while 1:
+		try:	# SERIAL
 			s = serial.Serial('/dev/ttyUSB0',9600,timeout=5)# 8,N,1; 5s scan..
 			data = s.readline()
 			if data != '':
@@ -57,7 +57,7 @@ try:
 			pass
 		if time.strftime("%M") == '50' and CALL: #hourly..
 			CALL=False
-			try:# GZIP + PAYLOAD
+			try:	# GZIP + PAYLOAD
 				GZIP_FILE=RAMDISK + 'http/' + LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S") + '.csv.gz'
 				gzip.open(GZIP_FILE, 'ab').write(PAYLOAD)
 			except IOError:
@@ -74,15 +74,19 @@ try:
 						'X-Location':LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S")}
 					c=httplib.HTTPConnection('amusing.nm.cz', '80', timeout=10)
 					c.request('POST', 'http://amusing.nm.cz/sensors/rawpost.php', GZIP, HEADER)
+					r=c.getresponse()
+					if (r.status == 200):
+						try:	# ARCHIVE
+							os.rename(RAMDISK + 'http/' + PACK, RAMDISK + 'archive/' + PACK)
+						except OSError:
+							LOG.write('Nothing to archive.\n')
+							pass
+					else:
+						LOG.write('Bad request. ' + PACK + '\n')
 					c.close()
 					GZIP.close()
-					try:	# ARCHIVE
-						os.rename(RAMDISK + 'http/' + PACK, RAMDISK + 'archive/' + PACK)
-					except OSError:
-						LOG.write('Nothing to archive.\n')
-						pass
 				except socket.error:
-					LOG.write('Failed to transport ' + PACK + '.\n')
+					LOG.write('Connection error. ' + PACK + '\n')
 					pass
 			# reset buffered payload string..
 			PAYLOAD=''
