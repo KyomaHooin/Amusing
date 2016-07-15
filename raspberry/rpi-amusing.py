@@ -2,11 +2,6 @@
 #
 # Transport GZIP serial data over HTTP.
 #
-# RAMDISK:
-#
-# tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
-# mount -t tmpfs -o size=32m tmpfs /root/amusing/ramdisk
-#
 # DATA[5min]:
 #
 #               'Got msg #311 : *ZF#T273H370L000B467'
