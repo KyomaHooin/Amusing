@@ -46,7 +46,7 @@ try:
 			data = s.readline()
 			if data != '':
 				print data, 
-				pattern = re.compile('^.* \*.(.)#T(\d\d)(\d)H(\d\d)(\d)(.*)$')
+				pattern = re.compile('^.* \*.(.)#T(\d\d)(\d)H(\d\d)(\d).*$')
 				if re.match(pattern, data):# rubbish..
 					print re.sub(pattern,'\\1;temperature;\\2.\\3;'
 						+ time.strftime("%Y%m%dT%H%M%S"), data),
@@ -58,23 +58,22 @@ try:
 						+ time.strftime("%Y%m%dT%H%M%S"), data))
 			s.close()
 		except serial.SerialException:
-			LOG.write('Serial error.')
+			LOG.write('Serial error.\n')
 			pass
-		if time.strftime("%M") == '20' and CALL: #hourly..
+		if time.strftime("%M") == '50' and CALL: #hourly..
 			CALL=False
 			try:# GZIP + PAYLOAD
 				GZIP_FILE=RAMDISK + 'http/' + LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S") + '.csv.gz'
 				gzip.open(GZIP_FILE, 'ab').write(PAYLOAD)
-				gzip.close(GZIP_FILE)
 				print('payload ready..')
 			except IOError:
-				LOG.write('Failed to gzip payload.')
+				LOG.write('Failed to gzip payload.\n')
 				pass
 			for PACK in os.listdir(RAMDISK + 'http'):
 				try:
 					GZIP=open(RAMDISK + 'http/' + PACK, 'rb')
 				except IOError:
-					LOG.write('Fail to read ' + PACK + '.')
+					LOG.write('Fail to read ' + PACK + '.\n')
 					pass
 				print 'sending ' + PACK + ' ..' 
 				try:	# HTTP
@@ -88,19 +87,21 @@ try:
 					c.close()
 					GZIP.close()
 					try:	# ARCHIVE
-						os.rename('http/' + PACK,'archive/' + PACK)
+						os.rename(RAMDISK + 'http/' + PACK, RAMDISK + 'archive/' + PACK)
 					except OSError:
-						LOG.write('Nothing to archive.')
+						LOG.write('Nothing to archive.\n')
 						pass
 				except socket.error:
-					LOG.write('Failed to transport ' + PACK + '.')
+					LOG.write('Failed to transport ' + PACK + '.\n')
 					pass
 			# reset buffered payload string..
 			PAYLOAD=''
 		# reset transport token..
-		if time.strftime("%M") == '21': CALL=True
+		if time.strftime("%M") == '51': CALL=True
 except Exception as e:
+	LOG.write(e.args[0] + '\n')
+	LOG.close()
 	print e.args[0]
-	exit(99)
-LOG.write('Program end.\n')
-LOG.close()
+	exit(2)
+exit(0)
+
