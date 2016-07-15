@@ -11,13 +11,7 @@
 #                                ._____________ Local ID
 #
 
-import httplib
-import serial
-import socket
-import time
-import gzip
-import os
-import re
+import httplib,serial,socket,time,gzip,os,re
 
 LOCATION='archa'
 PAYLOAD=''
