@@ -43,7 +43,6 @@ try:
 			s.close()
 		except serial.SerialException:
 			LOG.write('Serial error.\n')
-			pass
 		if time.strftime("%M") == '50' and CALL: #hourly..
 			CALL=False
 			try:	# GZIP + PAYLOAD
@@ -51,13 +50,11 @@ try:
 				gzip.open(GZIP_FILE, 'ab').write(PAYLOAD)
 			except IOError:
 				LOG.write('Failed to gzip payload.\n')
-				pass
 			for PACK in os.listdir(RAMDISK + 'http'):
 				try:
 					GZIP=open(RAMDISK + 'http/' + PACK, 'rb')
 				except IOError:
 					LOG.write('Fail to read ' + PACK + '.\n')
-					pass
 				try:	# HTTP
 					HEADER={'Content-type':'application/octet-stream',
 						'X-Location':LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S")}
@@ -69,14 +66,12 @@ try:
 							os.rename(RAMDISK + 'http/' + PACK, RAMDISK + 'archive/' + PACK)
 						except OSError:
 							LOG.write('Nothing to archive.\n')
-							pass
 					else:
 						LOG.write('Bad request. ' + PACK + '\n')
 					c.close()
 					GZIP.close()
 				except socket.error:
 					LOG.write('Connection error. ' + PACK + '\n')
-					pass
 			# reset buffered payload string..
 			PAYLOAD=''
 		# reset transport token..
@@ -89,7 +84,6 @@ try:
 					os.remove(old_full)
 				except OSError:
 					LOG.write('Failed to remove archive ' + old + '.\n')
-					pass
 except Exception as e:
 	print 'Something bad ' + e.args[0]
 	exit(2)
