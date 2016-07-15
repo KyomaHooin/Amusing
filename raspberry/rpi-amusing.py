@@ -4,12 +4,13 @@
 #
 # RAMDISK:
 #
+# tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 # mount -t tmpfs -o size=32m tmpfs /root/amusing/ramdisk
 #
-# DATA:
+# DATA[10min]:
 #
 #               'Got msg #311 : *ZF#T273H370L000B467'
-#                                .  .   .   .__ Serial numberor longint timestamp??
+#                                .  .   .   .__ Serial/timestamp[?]
 #                                .  .   .______ Humidity
 #                                .  .__________ Temperature
 #                                ._____________ Local ID
@@ -23,78 +24,63 @@ import gzip
 import os
 import re
 
+PAYLOAD=''
 LOCATION='archa'
 RAMDISK='/root/amusing/ramdisk/'
 SENSOR_FILE='/root/amusing/rpi-sensor.txt'
 
 try:
-	try:
-		# DIR
+	try:	# DIR
 		os.mkdir(RAMDISK + 'archive')
 		os.mkdir(RAMDISK + 'http')
 	except OSError: pass
-	
-	try:
-		# LOG
+	try:	# LOG
 		LOG = open(RAMDISK + 'rpi-amusing.log','a',0)# 0 -> non-buffering
 		LOG.write('Program start: ' + time.strftime("%d.%m.%Y %H:%M") + '\n')
-		#GZIP
-		#CSV=LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S") + '.csv.gz'
-	       	#GZ=gzip.open(RAMDISK + 'http/' + CSV, 'ab')
-		GZ=gzip.open(RAMDISK + 'http/' + LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S") + '.csv.gz', 'ab')
 	except IOError:
-		print 'Failed to create stream.'
+		print 'Fail to create log file.'
 		exit(1)
-
-#	MAIN
-	while 1:
-#		#SERIAL
+	while 1:# SERIAL
+		#try:
 		s = serial.Serial('/dev/ttyUSB0',9600,timeout=1)# 8,N,1 [default]
 		data = s.readline()
 		if data != '':
-			print data, time.strftime("%H%M")
-			if re.match('^Got',data):# filter rubbish..
-				#print re.sub('^.* \*([A-Z]{2})#T(\d\d)(\d)H(\d\d)(\d)(.*)$',
-				#	'\\6\;foo', data),
-				print re.sub('^.* \*([A-Z]{2})#T(\d\d)(\d)H(\d\d)(\d)(.*)$',
-					'\\6' + ';temperature;\\2.\\3;' + time.strftime("%Y%m%dT%H%M%S"), data),
-				print re.sub('^.* \*([A-Z]{2})#T(\d\d)(\d)H(\d\d)(\d)(.*)$',
-					'\\6;humidity;\\4.\\5;' + time.strftime("%Y%m%dT%H%M%S"), data),
-				#GZ.write(re.sub('^.* \*([A-Z]{2})#T(\d\d)(\d)H(\d\d)(\d)(.*)$',),
-				#	'\\6;temperature;\\2.\\3;' + time.strftime("%Y%m%dT%H%M%S"), data))
-				#GZ.write(re.sub('^.* \*([A-Z]{2})#T(\d\d)(\d)H(\d\d)(\d)(.*)$',),
-				#	'\\6;humidity;\\4.\\5;' + time.strftime("%Y%m%dT%H%M%S"), data))
+			print data,# time.strftime("%H%M")
+			pattern = re.compile('^.* \*.(.)#T(\d\d)(\d)H(\d\d)(\d)(.*)$')
+			if re.match(pattern, data):# filter rubbish..
+				print re.sub(pattern,'\\1;temperature;\\2.\\3;' + time.strftime("%Y%m%dT%H%M%S"), data),
+				print re.sub(pattern,'\\1;humidity;\\4.\\5;' + time.strftime("%Y%m%dT%H%M%S"), data),
+				PAYLOAD+=(re.sub(pattern,'\\1;temperature;\\2.\\3;'
+					+ time.strftime("%Y%m%dT%H%M%S") + '\n', data)
+					+ re.sub(pattern,'\\1;humidity;\\4.\\5;'
+					+ time.strftime("%Y%m%dT%H%M%S") + '\n', data))
 		s.close()
-
-		print 'Nothing..'
-
-#       	gzip.open(RAMDISK + 'http/' + f, 'wb').write(data)
-#		gz=open(RAMDISK + 'http/' + f,'rb')
-
-#		if time.strftime("%M") == '45': #every  hour send the pack..
-#			try:
+		#except:
+		if time.strftime("%M") == '45': #every hour send the pack..
+			try:	# GZIP
+				GZIP_FILE=RAMDISK + 'http/' + LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S") + '.csv.gz'
+				gzip.open(GZIP_FILE, 'ab').write(PAYLOAD)
+				GZ=open(GZIP_FILE, 'rb')
+			except IOError:
+				LOG.write('Fail to gzip payload.')
+				LOG.close()
+#			try:	# HTTP
 #				HEADER={'Content-type':'application/octet-stream',
-#					'X-Location':LOCATION + time.strftime("%Y%m%dT%H%M%S")}
+#					'X-Location':LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S")}
 #				c=httplib.HTTPConnection('amusing.nm.cz', '80', timeout=10)
-#				c.request('POST', 'http://amusing.nm.cz/sensors/rawpost.php', gz, header)
+#				c.request('POST', 'http://amusing.nm.cz/sensors/rawpost.php', GZ, HEADER)
 #				r=c.getresponse()
 #				if (r.status == 200):
 #					print "ok"
-#				gz.close()
 #				c.close()
 #			except socket.error:
 #				LOG.write('Socket error HTTP transport failed.')
-		#ARCHIVE
-		#os.rename('http/' + f,'archive/' + f)
-
-		#HTTP[socket.error]
-
-#		c.request('POST', '[removed]', gz, header)
-#		r=c.getresponse()
-#		if (r.status == 200):
-#			print "ok"
-#		gz.close()
-#		c.close()
+#			try:	# CLEANUP
+			GZ.close()
+#				os.rename('http/' + GZIP_FILE,'archive/' + GZIP_FILE)
+			PAYLOAD=''
+#			except IOError:
+#				LOG.write('Fail to archive payload.')
 except Exception as e:
 	print e.args[0]
 	exit(99)
