@@ -45,13 +45,8 @@ try:
 			s = serial.Serial('/dev/ttyUSB0',9600,timeout=5)# 8,N,1; 5s scan..
 			data = s.readline()
 			if data != '':
-				print data, 
 				pattern = re.compile('^.* \*.(.)#T(\d\d)(\d)H(\d\d)(\d).*$')
 				if re.match(pattern, data):# rubbish..
-					print re.sub(pattern,'\\1;temperature;\\2.\\3;'
-						+ time.strftime("%Y%m%dT%H%M%S"), data),
-					print re.sub(pattern,'\\1;humidity;\\4.\\5;'
-						+ time.strftime("%Y%m%dT%H%M%S"), data),
 					PAYLOAD+=(re.sub(pattern,'\\1;temperature;\\2.\\3;'
 						+ time.strftime("%Y%m%dT%H%M%S"), data)
 						+ re.sub(pattern,'\\1;humidity;\\4.\\5;'
@@ -65,7 +60,6 @@ try:
 			try:# GZIP + PAYLOAD
 				GZIP_FILE=RAMDISK + 'http/' + LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S") + '.csv.gz'
 				gzip.open(GZIP_FILE, 'ab').write(PAYLOAD)
-				print('payload ready..')
 			except IOError:
 				LOG.write('Failed to gzip payload.\n')
 				pass
@@ -75,15 +69,11 @@ try:
 				except IOError:
 					LOG.write('Fail to read ' + PACK + '.\n')
 					pass
-				print 'sending ' + PACK + ' ..' 
 				try:	# HTTP
 					HEADER={'Content-type':'application/octet-stream',
 						'X-Location':LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S")}
 					c=httplib.HTTPConnection('amusing.nm.cz', '80', timeout=10)
 					c.request('POST', 'http://amusing.nm.cz/sensors/rawpost.php', GZIP, HEADER)
-					r=c.getresponse()
-					if (r.status == 200):
-						print "Ok!"
 					c.close()
 					GZIP.close()
 					try:	# ARCHIVE
@@ -99,8 +89,6 @@ try:
 		# reset transport token..
 		if time.strftime("%M") == '51': CALL=True
 except Exception as e:
-	LOG.write(e.args[0] + '\n')
-	LOG.close()
 	print e.args[0]
 	exit(2)
 exit(0)
