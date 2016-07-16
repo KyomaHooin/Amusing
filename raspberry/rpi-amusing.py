@@ -57,8 +57,7 @@ try:
 					LOG.write('Fail to read ' + PACK + '.\n')
 				try:	# HTTP
 					HEADER={'Content-type':'application/octet-stream',
-						'X-Location':LOCATION + '-'
-						+ re.sub('^' + LOCATION + '-(.*)\.csv\.gz$','\\1', PACK)}
+						'X-Location':re.sub('^(' + LOCATION + '-.*)\.csv\.gz$','\\1', PACK)}
 					c=httplib.HTTPConnection('amusing.nm.cz', '80', timeout=10)
 					c.request('POST', '[removed]', GZIP, HEADER)
 					r=c.getresponse()
