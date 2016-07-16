@@ -57,7 +57,8 @@ try:
 					LOG.write('Fail to read ' + PACK + '.\n')
 				try:	# HTTP
 					HEADER={'Content-type':'application/octet-stream',
-						'X-Location':LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S")}
+						'X-Location':LOCATION + '-'
+						+ re.sub('^' + LOCATION + '-(.*)\.csv\.gz$','\\1', PACK)}
 					c=httplib.HTTPConnection('amusing.nm.cz', '80', timeout=10)
 					c.request('POST', '[removed]', GZIP, HEADER)
 					r=c.getresponse()
@@ -76,7 +77,7 @@ try:
 			PAYLOAD=''
 		# reset transport token..
 		if time.strftime("%M") == '51': CALL=True
-		# Cleanup archive
+		# cleanup archive
 		for old in os.listdir(RAMDISK + 'archive'):
 			old_full=RAMDISK + 'archive/' + old
 			if os.path.getmtime(old_full) < (time.time() - 1814400):# 3 week old
