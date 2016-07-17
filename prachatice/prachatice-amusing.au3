@@ -167,6 +167,10 @@ func archive()
 	EndIf
 endfunc
 
+func get_http_error()
+	logger("HTTP request timeout.")
+EndFunc
+
 func logger($text)
 	FileWriteLine($logfile, $text)
 endfunc
