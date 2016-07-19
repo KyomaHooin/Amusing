@@ -74,6 +74,16 @@ EndFunc
 ;magic
 ;if ByteRead($ds,0,2) == '0x0301' then MsgBox(-1,"magic", "magic pass..")
 
+;get SID count
+func GetSidCount($file)
+	local $byte, $sid=0
+	for $i= 0 to 127 * 42 step 42
+		$byte = ByteRead($file, 0x100 + $i, 1)
+		if $byte == '0x00' then return $sid
+		$sid+=1
+	next
+endfunc
+
 ;get SID array
 func GetSid($file)
 	local $list, $skip=0, $sid
@@ -90,11 +100,13 @@ EndFunc
 
 ;get data buffer padding..
 func GetDSPadding($file,$sid)
-	local $byte='0x00', $pad=0, $buff
+	;local $byte='0x00', $pad=0, $buff
+	local  $buff, $pad=0
 	while 1
 		$buff = ByteRead($file,0x1600 + 20 + 8*$sid + $pad, 1)
-		$byte = BinaryMid($buff,1,1)
-		if $byte <> '0x00' then return $pad
+		;$byte = BinaryMid($buff,1,1)
+		;if $byte <> '0x00' then return $pad
+		if $buff <> '0x00' then return $pad
 		$pad+=1
 	WEnd
 EndFunc
