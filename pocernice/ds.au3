@@ -1,4 +1,10 @@
 ;
+; TODO:
+;
+; -SIDMap faster.. like GetPAdd.. while 1 if 0x00 return
+; -load sensor.txt sets..
+; -for sensor set GetDSdata() -> arraysearch -> save CSV
+; 
 ;  DS
 ;
 ;   -----------------------------
@@ -12,9 +18,12 @@
 ;  -------------------------------------------------------------------
 ; | [magic]  [name] [clock] [?][?] [path + ?] [date]  [? ]  [sensor]  |
 ;  -------------------------------------------------------------------
-; |   2+2  |   20  |   8   |16 |16|    64    |  32  | 128 |  42 * 134 |
+; |   2+2  |   20  |   8   |16 |16|    64    |  32  | 128 |  42 * 128 |
 ; |                       0x100                           |           |
 ; |                             0x1600                                |
+;
+;
+; max 128 sensors per file
 ;
 ; DATA
 ;
@@ -65,7 +74,7 @@ EndFunc
 ;magic
 ;if ByteRead($ds,0,2) == '0x0301' then MsgBox(-1,"magic", "magic pass..")
 
-;get SID mapping
+;get SID array
 func GetSid($file)
 	local $list, $skip=0, $sid
 	for $i=0 to 127
@@ -89,6 +98,19 @@ func GetDSPadding($file,$sid)
 		$pad+=1
 	WEnd
 EndFunc
+
+;get data 2D array for 24 hour period
+func GetDSData($file,$sid)
+	local $data[24][$sid], $pad, $slot
+	$pad = GetDSPadding($file,$sid)
+	$slot = 20 + 8 * $sid + $pad
+	for $i=0 to 23
+		for $j=0 to $sid*8 step 8
+			$data[$i][$j]=int(ByteRead($file,$1600 + $i * $slot + 20 + $j, 8))
+		next
+	next
+	return $data
+endfunc
 
 ;---------------------------------
 
