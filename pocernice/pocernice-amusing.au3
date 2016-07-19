@@ -46,7 +46,7 @@ FileClose($logfile)
 
 ;FUNC
 func main()
-	;CSV + ZIP
+	;CSV + GZIP
 	$csvlist = _FileListToArray(@ScriptDir, "*.csv")
 	if ubound($csvlist) < 2 then
 		logger("No new CSV files..")
