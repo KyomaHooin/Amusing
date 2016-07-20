@@ -40,6 +40,7 @@ FILE
 
 <pre>
 pocernice-amusing.au3 - Main program.
+             ZLIB.au3 - de/compression library by "Ward".
                DS.au3 - HDB parser.
  pocernice-sensor.txt - Sensor plain list.
     pocernice-hdb.txt - DS file list.
