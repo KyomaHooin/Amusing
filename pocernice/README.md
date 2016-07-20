@@ -50,4 +50,4 @@ pocernice-amusing.au3 - Main program.
 CONTACT
 
 Author: richard_bruna@nm.cz<br>
-Source: https://github.com/KyomaHooin/Amusing/pocernice
+Source: https://github.com/KyomaHooin/Amusing
