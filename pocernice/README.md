@@ -40,7 +40,10 @@ FILE
 
 <pre>
 pocernice-amusing.au3 - Main program.
- pocernice-sensor.txt - Sensor map plaintext.
+               DS.au3 - HDB parser.
+ pocernice-sensor.txt - Sensor plain list.
+    pocernice-hdb.txt - DS file list.
+              
         pocernice.ico - Program icon.
 </pre>
 
