@@ -18,5 +18,5 @@ terezin-amusing-http.au3 - Main program, HTTP transport.
 CONTACT
 
 Author: richard_bruna@nm.cz<br>
-Source: https://github.com/KyomaHooin/Amusing/terezin
+Source: https://github.com/KyomaHooin/Amusing
 
