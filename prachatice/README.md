@@ -1,7 +1,7 @@
 
 DESCRIPTION
 
-Parse Comet system temperature/humidity sensor data from DBF database into CSV file and transport compressed GZIP archives over HTTP.
+Parse "Comet System" temperature/humidity sensor data from DBF database into CSV file and transport compressed GZIP archives over HTTP.
 
 FILE
 
