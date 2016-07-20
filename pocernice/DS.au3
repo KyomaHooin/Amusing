@@ -2,8 +2,6 @@
 ; Sauter NovaPro 374c propretary binary HDB database parser by Richard Bruna
 ;
 
-#NoTrayIcon
-
 #include<Memory.au3>
 #include<File.au3>
 
