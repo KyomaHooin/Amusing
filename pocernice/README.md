@@ -1,7 +1,7 @@
 
 DESCRIPTION
 
-Parse Sauter NovaPro 374c temperature/humidity sensor data from proprietary HDB(hystorical database) binary round buffer file into CSV file and transport compressed GZ archives over HTTP.
+Parse "Sauter NovaPro 374c" temperature/humidity sensor data from proprietary HDB(hystorical database) binary round buffer file into CSV file and transport compressed GZ archives over HTTP.
 
 HDB
 
