@@ -1,5 +1,5 @@
 ;
-; Sauter NovaPro 374c  HDB -> CSV -> GZIP -> HTTP
+; Sauter NovaPro 374c binary HDB DS -> CSV -> GZIP -> HTTP
 ;
 ; schtasks /create /tn "Pocernice Amusing HTTP" /tr "c:\pocernice-amusing\pocernice-amusing.exe" /sc HOURLY
 ;
@@ -12,14 +12,20 @@
 #include<Date.au3>
 #include<File.au3>
 #include<ZLIB.au3>
+#include<DS.au3>
 
 ;VAR
 
 $location='pocernice'
-$sensors = @scriptdir & '\' & $location & '-sensor.txt'
-$runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 
-$datastore = @scriptdir & '\ds'
+$HDB = @ScriptDir & '\' & $location & '-hdb.txt'
+$MAP = @ScriptDir & '\' & $location & '-sensor.txt'
+;$DSPATH = 'c:\pvmpdata\Projekt\DEPOZIT\DS\'
+$DSPATH = 'c:\pocernice\ds\'
+
+$runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
+$dstime =  @YEAR & '/' & @MON & '/' & @MDAY & ' ' & @HOUR & ':' & '45' & ':' & '00'
+
 
 ;--------------------------------------------------
 
@@ -92,12 +98,54 @@ func main()
 endfunc
 
 func ds()
-	local $sensor
-	_FileReadToArray($sensors, $sensor, 0); zero based array
-	if @error Then
-		logger("Missing file sensor.txt.")
+	local $DS, $file, $mapping, $sid, $conversion, $data, $csv
+	_FileReadToArray($HDB,$DS,0)
+	if ubound($DS) < 2 then
+		logger('Missing HDB list.')
 		return
 	endif
+	$mapping = GetDSMapping($MAP)
+	if $mapping = '' then
+		logger('Missing sensor list.')
+		return
+	endif
+	for $i=0 to UBound($DS) - 1
+		FileCopy($DSPATH & $DS[$i] & '.DS', @ScriptDir & '\' & $DS[$i] & '.DS')
+		if @error then
+				logger('Failed to create DS copy.')
+				continueloop
+		endif
+		$file = @ScriptDir & '\' & $DS[$i] & '.DS'
+		$sid = _GetDSSidArray($file)
+		if $sid = '' then
+			logger('Failed to get SID from DS file.')
+			continueloop
+		Endif
+		$conversion = Conversion($mapping,$DS[$i],$sid)
+		if $conversion = '' then
+			logger('Failed to get Conversion.')
+			continueloop
+		endif
+		$data = _GetDSData($file,UBound($sid))
+		if $data = '' then
+			logger('Failed to get data.')
+			ContinueLoop
+		Endif
+		$csv = FileOpen(@ScriptDir & '\' & $location & '-' & $runtime & '.csv', 1);  1 - append
+		if @error Then
+			logger("Failed to create CSV file.")
+			return
+		endif
+		for $j=0 to UBound($conversion) - 1
+			$time = $dstime; reset time counter..
+			for $k=0 to UBound($data) - 1
+				FileWriteLine($csv, $conversion[$j][0] & ';' & $conversion[$j][1] & ';' & $data[$k][$conversion[$j][2]] & ';' & StringRegExpReplace($time, "^(\d+)/(\d+)/(\d+) (\d+):(\d+):(\d+)$", "\1\2\3T\4\5\6"))
+				$time = _DateAdd('n', '-15', $time)
+			next
+		next
+		FileClose($csv)
+		FileDelete($file)
+	next
 EndFunc
 
 func archive()
@@ -121,3 +169,40 @@ EndFunc
 func logger($text)
 	FileWriteLine($logfile, $text)
 endfunc
+
+func GetDSMapping($file)
+	local $max,$map,$line
+	$max = _FileCountLines($file)
+	if @error then return
+	local $mapping[$max][3]
+	$map=FileOpen($file)
+	if @error then return
+	for $i=0 to $max - 1
+		$line = StringSplit(FileReadLine($map),';',2); no count..
+		if UBound($line) <> 3 then return
+		$mapping[$i][0]=$line[0]
+		$mapping[$i][1]=$line[1]
+		$mapping[$i][2]=$line[2]
+	Next
+	FileClose($map)
+	return $mapping
+EndFunc
+
+;create conversion table
+func Conversion($map,$ds,$sid)
+	local $row, $data_row
+	$row = _ArrayFindAll($map,$ds,Default,Default,Default,Default,0); search DS name from mappping..
+	if @error then
+		return
+	else
+		local $conversion[UBound($row)][3]
+		for $i=0 to UBound($row) - 1
+			$conversion[$i][0]=$map[$row[$i]][1]; store sensor name
+			$conversion[$i][1]=$map[$row[$i]][2]; store value type
+			$data_row = _ArraySearch($sid,$map[$row[$i]][1]); search data index from SID array..
+			if @error then MsgBox(-1,"err",'No sensor data mapping found.'); CHECK !?
+			$conversion[$i][2]=$data_row; store data index
+		next
+	endif
+	Return $conversion
+EndFunc
