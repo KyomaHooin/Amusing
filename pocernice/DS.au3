@@ -30,7 +30,7 @@ EndFunc
 
 ;get sensors
 func _GetDSSidArray($file)
-	local $list, $skip=0, $sid
+	local $list, $sid
 	for $i=0 to 127*42 step 42
 		$sid = _ByteRead($file,0x100 + $i,8)
 		if $sid = '' then return
@@ -98,22 +98,21 @@ endfunc
 
 ;get sensors and descriptions
 func _GetDSSidAll($file)
-	local $list, $skip=0, $sid
-	for $i=0 to 127
-		$sid = _ByteRead($file,0x100 + $skip,8)
+	local $list, $sid
+	for $i= 0 to 127 * 42 step 42
+		$sid = _ByteRead($file,0x100 + $i,8)
 		if $sid = '' then return
 		if BinaryMid($sid,1,1) <> '0x00' then
-				$list&= '|' & _ByteStripString($sid) & ';' & _ByteStripString(_ByteRead($file,0x100 + $skip + 8, 32))
+				$list&= '|' & _ByteStripString($sid) & ';' & _ByteStripString(_ByteRead($file,0x100 + $i + 8, 32))
+		else
+				return StringSplit(StringTrimLeft($list, 1),'|', 2); array, no count..
 		endif
-		$skip+=42
 	next
-	return StringSplit(StringTrimLeft($list, 1),'|', 2); array, no count..
 EndFunc
 
 ;func _GetDSDate()
-	;$epoch = int(ByteRead($ds,146,4))
-	;MsgBox(-1,"conv",_DateAdd('s',$epoch, "1970/01/01 00:00:00"))
-	;MsgBox(-1,"name",ByteStripString(ByteRead($ds,2,12)))
+	;$date = int(ByteRead($ds,146,4))
+	;$epoch = _DateAdd('s',$epoch, "1970/01/01 00:00:00")
 ;EndFunc
 
 ;---------------------------------
