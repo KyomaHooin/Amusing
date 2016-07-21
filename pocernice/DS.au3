@@ -11,6 +11,7 @@
 ;
 ; _BinToFloat ............. Convert 8 bytes to float number.
 ; _ByteRead ............... Read single byte from file by given byte offset.
+; _ByteStripString ........ Zero byte stripped string.
 ; _ByteToDate ............. Convert 8 bytes to datetime.
 ;
 
@@ -19,15 +20,6 @@
 
 ;---------------------------------
 
-;return binary offset
-func _ByteRead($file,$offset,$count)
-	$bin_file = FileOpen($file, 16); binary..
-	if @error then return
-	FileSetPos($bin_file,$offset,0)
-	return FileRead($bin_file,$count)
-	FileClose($bin_file)
-EndFunc
-
 ;get sensors
 func _GetDSSidArray($file)
 	local $list, $sid
@@ -35,7 +27,7 @@ func _GetDSSidArray($file)
 		$sid = _ByteRead($file,0x100 + $i,8)
 		if $sid = '' then return
 		if BinaryMid($sid,1,1) <> '0x00' then
-				$list&= '|' & BinaryToString($sid)
+			$list&= '|' & BinaryToString($sid)
 		else
 			return StringSplit(StringTrimLeft($list, 1),'|', 2); array, no count..
 		endif
@@ -67,24 +59,6 @@ func _GetDSData($file,$sid)
 	return $data
 endfunc
 
-;convert binary 8-byte to float value
-func _BinToFloat($bin)
-	$binary_float=DllStructCreate("byte byte[8]")
-	$float=DllStructCreate("double")
-	DllStructSetData($binary_float,1, $bin)
-	_MemMoveMemory($binary_float,$float,8)
-	return DllStructGetData($float,1)
-EndFunc
-
-;return zero stripped string from binary
-func _ByteStripString($bstring)
-	local $bstrip
-	for $i=1 to BinaryLen($bstring)
-		if BinaryMid($bstring,$i,1) <> '0x00' then $bstrip&=chr(BinaryMid($bstring,$i,1))
-	next
-	return $bstrip
-EndFunc
-
 ;get SID count
 func _GetDSSidCount($file)
 	local $byte, $sid=0
@@ -103,17 +77,45 @@ func _GetDSSidAll($file)
 		$sid = _ByteRead($file,0x100 + $i,8)
 		if $sid = '' then return
 		if BinaryMid($sid,1,1) <> '0x00' then
-				$list&= '|' & BinaryToString($sid) & ';' & _ByteStripString(_ByteRead($file,0x100 + $i + 8, 32))
+			$list&= '|' & BinaryToString($sid) & ';' & _ByteStripString(_ByteRead($file,0x100 + $i + 8, 32))
 		else
-				return StringSplit(StringTrimLeft($list, 1),'|', 2); array, no count..
+			return StringSplit(StringTrimLeft($list, 1),'|', 2); array, no count..
 		endif
 	next
 EndFunc
 
-;func _GetDSDate()
+;convert binary 8-byte to float value
+func _BinToFloat($bin)
+	$binary_float=DllStructCreate("byte byte[8]")
+	$float=DllStructCreate("double")
+	DllStructSetData($binary_float,1, $bin)
+	_MemMoveMemory($binary_float,$float,8)
+	return DllStructGetData($float,1)
+EndFunc
+
+;return binary offset
+func _ByteRead($file,$offset,$count)
+	$bin_file = FileOpen($file, 16); binary..
+	if @error then return
+	FileSetPos($bin_file,$offset,0)
+	return FileRead($bin_file,$count)
+	FileClose($bin_file)
+EndFunc
+
+;return zero stripped string from binary
+func _ByteStripString($bstring)
+	local $bstrip
+	for $i=1 to BinaryLen($bstring)
+		if BinaryMid($bstring,$i,1) <> '0x00' then $bstrip&=chr(BinaryMid($bstring,$i,1))
+	next
+	return $bstrip
+EndFunc
+
+func _GetDSDate()
 	;$date = int(ByteRead($ds,146,4))
 	;$epoch = _DateAdd('s',$epoch, "1970/01/01 00:00:00")
-;EndFunc
+	return
+EndFunc
 
 ;---------------------------------
 
