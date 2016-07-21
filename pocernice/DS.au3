@@ -87,11 +87,11 @@ EndFunc
 
 ;get all dates for all data-slots
 func _GetDSDateAll($file,$sid)
-	local $data[2967], $pad, $slot
+	local $data[2976], $pad, $slot
 	$pad = _GetDSPadding($file,$sid)
 	if $pad = '' then return
 	$slot = 20 + 8*$sid + $pad
-	for $i=0 to 2966
+	for $i=0 to 2975
 		$data[$i]=_BinToDate(_ByteRead($file,0x1600 + $i * $slot, 4))
 	next
 	return $data
