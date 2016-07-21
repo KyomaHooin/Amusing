@@ -102,8 +102,8 @@ func dbf()
 		for $i=1 to UBound($sensorlist) - 1
 			_FileReadToArray(@ScriptDir & '\' & $sensorlist[$i], $sensor, 0); zero based array
 			if UBound($sensor) = 0 Then
-					logger("Empty sensor file " & $sensorlist[$i])
-					continueloop; skip empty sensor file..
+				logger("Empty sensor file " & $sensorlist[$i])
+				continueloop; skip empty sensor file..
 			endif
 			$controller = StringRegExpReplace($sensorlist[$i],"(\d+)-sensor.txt","$1")
 			$dbflist = _FileListToArray(@ScriptDir & '\dbf\' & $controller, "*.dbf")
