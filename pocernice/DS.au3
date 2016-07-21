@@ -27,12 +27,10 @@ func _GetDSSidArray($file)
 	for $i=0 to 127*42 step 42
 		$sid = _ByteRead($file,0x100 + $i,8)
 		if $sid = '' then return
-		if BinaryMid($sid,1,1) <> '0x00' then
-			$list&= '|' & BinaryToString($sid)
-		else
-			return StringSplit(StringTrimLeft($list, 1),'|', 2); array, no count..
-		endif
+		if BinaryMid($sid,1,1) == '0x00' then exitloop
+		$list&= '|' & BinaryToString($sid)
 	next
+	return StringSplit(StringTrimLeft($list, 1),'|', 2); array, no count..
 EndFunc
 
 ;get data slot padding
@@ -66,9 +64,10 @@ func _GetDSSidCount($file)
 	for $i= 0 to 127 * 42 step 42
 		$byte = _ByteRead($file, 0x100 + $i, 1)
 		if $byte = '' then return
-		if $byte == '0x00' then return $sid
+		if $byte == '0x00' then exitloop
 		$sid+=1
 	next
+	return $sid
 endfunc
 
 ;get sensors and descriptions
@@ -77,12 +76,10 @@ func _GetDSSidAll($file)
 	for $i= 0 to 127 * 42 step 42
 		$sid = _ByteRead($file,0x100 + $i,8)
 		if $sid = '' then return
-		if BinaryMid($sid,1,1) <> '0x00' then
-			$list&= '|' & BinaryToString($sid) & ';' & _ByteStripString(_ByteRead($file,0x100 + $i + 8, 32))
-		else
-			return StringSplit(StringTrimLeft($list, 1),'|', 2); array, no count..
-		endif
+		if BinaryMid($sid,1,1) == '0x00' then exitloop
+		$list&= '|' & BinaryToString($sid) & ';' & _ByteStripString(_ByteRead($file,0x100 + $i + 8, 32))
 	next
+	return StringSplit(StringTrimLeft($list, 1),'|', 2); array, no count..
 EndFunc
 
 ;get all dates for all data-slots
