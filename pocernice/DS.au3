@@ -3,7 +3,7 @@
 ;
 ; _GetDSSidArray .......... Sensor ID array from file.
 ; _GetDSPadding ........... Number of data slot zero-padding bytes.
-; _GetDSData .............. 24 Hour converted data array.
+; _GetDSData .............. 6 Hour converted data array.
 ; _GetDSSidCount .......... Sensor count in file.
 ; _GetDSSidAll ............ Sensor ID and description array from file.
 ; _GetDSDateAll ........... Return all dates for all data-slots.
