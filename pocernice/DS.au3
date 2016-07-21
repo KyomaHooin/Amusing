@@ -111,7 +111,7 @@ func _ByteStripString($bstring)
 	return $bstrip
 EndFunc
 
-func _GetDSDate()
+func _ByteToDate()
 	;$date = int(ByteRead($ds,146,4))
 	;$epoch = _DateAdd('s',$epoch, "1970/01/01 00:00:00")
 	return
