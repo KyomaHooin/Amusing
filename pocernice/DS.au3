@@ -6,13 +6,14 @@
 ; _GetDSData .............. 24 Hour converted data array.
 ; _GetDSSidCount .......... Sensor count in file.
 ; _GetDSSidAll ............ Sensor ID and description array from file.
+; _GetDSDateAll ........... Return all dates for all data-slots.
 ;
 ;  Internal:
 ;
 ; _BinToFloat ............. Convert 8 bytes to float number.
 ; _ByteRead ............... Read single byte from file by given byte offset.
 ; _ByteStripString ........ Zero byte stripped string.
-; _ByteToDate ............. Convert 8 bytes to datetime.
+; _BinToDate .............. Convert 4 bytes to datetime.
 ;
 
 #include<Memory.au3>
@@ -53,7 +54,7 @@ func _GetDSData($file,$sid)
 	$slot = 20 + 8*$sid + $pad
 	for $i=0 to 23
 		for $j=0 to $sid - 1
-			$data[$i][$j]=_BinToFloat(_ByteRead($file,0x1600 + $i * $slot + 20 + $j*8, 8))
+			$data[$i][$j]=_BinToFloat(_ByteRead($file,0x1600 + (2975 - $i ) * $slot + 20 + $j*8, 8)); last to least
 		next
 	next
 	return $data
@@ -84,6 +85,18 @@ func _GetDSSidAll($file)
 	next
 EndFunc
 
+;get all dates for all data-slots
+func _GetDSDateAll($file,$sid)
+	local $data[2967], $pad, $slot
+	$pad = _GetDSPadding($file,$sid)
+	if $pad = '' then return
+	$slot = 20 + 8*$sid + $pad
+	for $i=0 to 2966
+		$data[$i]=_BinToDate(_ByteRead($file,0x1600 + $i * $slot, 4))
+	next
+	return $data
+endfunc
+
 ;convert binary 8-byte to float value
 func _BinToFloat($bin)
 	$binary_float=DllStructCreate("byte byte[8]")
@@ -111,10 +124,9 @@ func _ByteStripString($bstring)
 	return $bstrip
 EndFunc
 
-func _ByteToDate()
-	;$date = int(ByteRead($ds,146,4))
-	;$epoch = _DateAdd('s',$epoch, "1970/01/01 00:00:00")
-	return
+func _BinToDate($bin)
+	local $date = DllCall("msvcrt.dll", "str:cdecl", "ctime", "int*", $bin)
+	return StringRegExpReplace($date[0],@LF &"$","$1")
 EndFunc
 
 ;---------------------------------
