@@ -32,8 +32,9 @@ HDB
  |   4   |   4  | 12|  8 * [sensor]    |   8*n      |
 
  -Padding round to 5/20/30/40/50 byte size for n-sensors.
- -Slot time -> HEADER[clock] => (15 min)
- -Max 2976 data slots per file =>  2967 / 4 / 24 = 31 days
+ -Slot time -> HEADER[clock] => (15 min).
+ -Max 2976 data slots per file =>  2967 / 4 / 24 = 31 days.
+ -Data are stored from least to last.
 </pre>
 
 FILE
