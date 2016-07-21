@@ -18,14 +18,13 @@
 
 $location='pocernice'
 
-$HDB = @ScriptDir & '\' & $location & '-hdb.txt'
-$MAP = @ScriptDir & '\' & $location & '-sensor.txt'
+$hdb = @ScriptDir & '\' & $location & '-hdb.txt'
+$map = @ScriptDir & '\' & $location & '-sensor.txt'
 ;$DSPATH = 'c:\pvmpdata\Projekt\DEPOZIT\DS\'
 $DSPATH = 'c:\pocernice\ds\'
 
 $runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 $dstime =  @YEAR & '/' & @MON & '/' & @MDAY & ' ' & @HOUR & ':' & '45' & ':' & '00'
-
 
 ;--------------------------------------------------
 
@@ -99,23 +98,23 @@ endfunc
 
 func ds()
 	local $DS, $file, $mapping, $sid, $type, $data, $csv
-	_FileReadToArray($HDB,$DS,0)
+	_FileReadToArray($hdb,$DS,0)
 	if ubound($DS) < 2 then
 		logger('Missing HDB list.')
 		return
 	endif
-	_FileReadToArray($MAP, $mapping, 0); zero based array
+	_FileReadToArray($map, $mapping, 0); zero based array
 	if @error Then
-		logger("Missing file: " & $MAP)
+		logger("Missing file: " & $map)
 		return
 	endif
 	for $i=0 to UBound($DS) - 1
-		FileCopy($DSPATH & $DS[$i] & '.DS', @ScriptDir & '\' & $DS[$i] & '.DS')
+		$file = @ScriptDir & '\' & $DS[$i] & '.DS'
+		FileCopy($DSPATH & $DS[$i] & '.DS', $file)
 		if @error then
 				logger('Failed to create DS copy.')
 				continueloop
 		endif
-		$file = @ScriptDir & '\' & $DS[$i] & '.DS'
 		$sid = _GetDSSidArray($file)
 		if $sid = '' then
 			logger('Failed to get SID from DS file.')
@@ -134,12 +133,12 @@ func ds()
 		for $j=0 to UBound($sid) - 1
 			$time = $dstime; reset time counter..
 			for $k=0 to UBound($data) - 1
-				$type = GetSensorType($mapping,$sid[$j])
+				$type = GetSensorType($sid[$j],$mapping)
 				if $type == '' Then
 					logger('Failed to find SID type mapping.')
 					ContinueLoop
 				endif
-				FileWriteLine($csv, $sid[$j] & ';' & $type & ';' & $data[$k][$j] & ';' & StringRegExpReplace($time, "^(\d+)/(\d+)/(\d+) (\d+):(\d+):(\d+)$", "\1\2\3T\4\5\6"))
+				FileWriteLine($csv, $sid[$j] & ';' & $type & ';' & $data[$k][$j] & ';' & StringRegExpReplace($time, "^(\d{4})/(\d{2})/(\d{2}) (\d{2}):(\d{2}):(\d{2})$", "$1$2$3T$4$5$6"))
 				$time = _DateAdd('n', '-15', $time)
 			next
 		next
@@ -170,9 +169,9 @@ func logger($text)
 	FileWriteLine($logfile, $text)
 endfunc
 
-func GetSensorType($map,$sid)
+func GetSensorType($sid,$map)
 	for $i=0 to UBound($map) - 1
-		if $sid = StringRegExpReplace($map[$i],"^(.*);(.*)$","$1") then Return StringRegExpReplace($map[$i],"^(.*);(.*)$","$2")
+		if $sid = StringRegExpReplace($map[$i],"^(.*);.*$","$1") then Return StringRegExpReplace($map[$i],"^.*;(.*)$","$1")
 	Next
 	return
 EndFunc
