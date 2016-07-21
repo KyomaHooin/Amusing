@@ -29,22 +29,22 @@ HDB
   --------------------------------------------------
  | [date] [date] [? ] [     value     ] [ padding ] |
   --------------------------------------------------
- |   4   |   4  | 12|  8 * [sensor]    |   8*X      |
+ |   4   |   4  | 12|  8 * [sensor]    |   8*n      |
 
  -Padding round to 5/20/30/40/50 byte size for n-sensors.
  -Slot time -> HEADER[clock] => (15 min)
- -Max 2967 data slots per file =>  2967 / 4 / 24 = 30 days
+ -Max 2976 data slots per file =>  2967 / 4 / 24 = 31 days
 </pre>
 
 FILE
 
 <pre>
 pocernice-amusing.au3 - Main program.
-             ZLIB.au3 - de/compression library by "Ward".
-               DS.au3 - HDB parser.
  pocernice-sensor.txt - Sensor plain list.
     pocernice-hdb.txt - DS file list.
         pocernice.ico - Program icon.
+             ZLIB.au3 - De/compression library by "Ward".
+               DS.au3 - HDB parser.
 </pre>
 
 CONTACT
