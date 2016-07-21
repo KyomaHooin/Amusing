@@ -86,8 +86,8 @@ func main()
 			$http.SetRequestHeader("X-Location", StringRegExpReplace($gzlist[$i], "^(" & $location & "-\d+T\d+)(.*)","$1"))
 			$http.Send($gz_data)
 			if @error or $http.Status <> 200 then
-					logger("File " & $gzlist[$i] & " HTTP transfer failed.")
-					continueloop; skip archiving..
+				logger("File " & $gzlist[$i] & " HTTP transfer failed.")
+				continueloop; skip archiving..
 			endif
 			;ARCHIVE
 			FileMove(@scriptdir & '\http\' & $gzlist[$i], @scriptdir & '\archive')
@@ -112,8 +112,8 @@ func ds()
 		$file = @ScriptDir & '\' & $DS[$i] & '.DS'
 		FileCopy($DSPATH & $DS[$i] & '.DS', $file)
 		if @error then
-				logger('Failed to create DS copy.')
-				continueloop
+			logger('Failed to create DS copy.')
+			continueloop
 		endif
 		$sid = _GetDSSidArray($file)
 		if $sid = '' then
