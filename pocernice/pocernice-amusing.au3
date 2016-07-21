@@ -20,8 +20,8 @@ $location='pocernice'
 
 $hdb = @ScriptDir & '\' & $location & '-hdb.txt'
 $map = @ScriptDir & '\' & $location & '-sensor.txt'
-;$DSPATH = 'c:\pvmpdata\Projekt\DEPOZIT\DS\'
-$DSPATH = 'c:\pocernice\ds\'
+;$ds_path = 'c:\pvmpdata\Projekt\DEPOZIT\DS\'
+$ds_path = 'c:\pocernice\ds\'
 
 $runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 $dstime =  @YEAR & '/' & @MON & '/' & @MDAY & ' ' & @HOUR & ':' & '45' & ':' & '00'
@@ -42,8 +42,8 @@ $logfile = FileOpen(@scriptdir & '\' & $location & '-amusing.log', 1); 1 = appen
 if @error then exit; silent exit..
 logger(@CRLF & "Program start: " & $runtime)
 ds(); Parse data from DS buffer
-;main(); Pack and transport data over HTTP
-;archive(); Archive logrotate
+main(); Pack and transport data over HTTP
+archive(); Archive logrotate
 logger("Program end.")
 FileClose($logfile)
 
@@ -82,7 +82,7 @@ func main()
 			$gz_file = FileOpen(@ScriptDir & '\http\' & $gzlist[$i], 16)
 			$gz_data = FileRead($gz_file)
 			FileClose($gz_file)
-			$http.open("POST","http://amusing.nm.cz/sensors/rawpost.php", False); No async HTTP..
+			$http.open("POST","[removed]", False); No async HTTP..
 			$http.SetRequestHeader("X-Location", StringRegExpReplace($gzlist[$i], "^(" & $location & "-\d+T\d+)(.*)","$1"))
 			$http.Send($gz_data)
 			if @error or $http.Status <> 200 then
@@ -97,9 +97,9 @@ func main()
 endfunc
 
 func ds()
-	local $DS, $file, $mapping, $sid, $type, $data, $csv
-	_FileReadToArray($hdb,$DS,0)
-	if ubound($DS) < 2 then
+	local $ds, $file, $mapping, $sid, $type, $data, $csv
+	_FileReadToArray($hdb,$ds,0)
+	if ubound($ds) < 2 then
 		logger('Missing HDB list.')
 		return
 	endif
@@ -108,9 +108,9 @@ func ds()
 		logger("Missing file: " & $map)
 		return
 	endif
-	for $i=0 to UBound($DS) - 1
-		$file = @ScriptDir & '\' & $DS[$i] & '.DS'
-		FileCopy($DSPATH & $DS[$i] & '.DS', $file)
+	for $i=0 to UBound($ds) - 1
+		$file = @ScriptDir & '\' & $ds[$i] & '.DS'
+		FileCopy($ds_path & $ds[$i] & '.DS', $file)
 		if @error then
 			logger('Failed to create DS copy.')
 			continueloop
