@@ -103,7 +103,7 @@ func _GetDSSidAll($file)
 		$sid = _ByteRead($file,0x100 + $i,8)
 		if $sid = '' then return
 		if BinaryMid($sid,1,1) <> '0x00' then
-				$list&= '|' & _ByteStripString($sid) & ';' & _ByteStripString(_ByteRead($file,0x100 + $i + 8, 32))
+				$list&= '|' & BinaryToString($sid) & ';' & _ByteStripString(_ByteRead($file,0x100 + $i + 8, 32))
 		else
 				return StringSplit(StringTrimLeft($list, 1),'|', 2); array, no count..
 		endif
