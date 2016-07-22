@@ -99,13 +99,13 @@ endfunc
 func ds()
 	local $ds, $file, $mapping, $sid, $type, $data, $csv
 	_FileReadToArray($hdb,$ds,0)
-	if ubound($ds) < 2 then
+	if @error then
 		logger('Missing HDB list.')
 		return
 	endif
 	_FileReadToArray($map, $mapping, 0); zero based array
 	if @error Then
-		logger("Missing file: " & $map)
+		logger('Missing sensor file.')
 		return
 	endif
 	for $i=0 to UBound($ds) - 1
