@@ -3,6 +3,7 @@
 ;
 ; _GetDSSidArray .......... Sensor ID array from file.
 ; _GetDSPadding ........... Number of data slot zero-padding bytes.
+; _GetDSLastOffset ........ Last data slot offset.
 ; _GetDSData .............. 6 Hour converted data array.
 ; _GetDSSidCount .......... Sensor count in file.
 ; _GetDSSidAll ............ Sensor ID and description array from file.
@@ -10,9 +11,9 @@
 ;
 ;  Internal:
 ;
-; _BinToFloat ............. Convert 8 bytes to float number.
 ; _ByteRead ............... Read single byte from file by given byte offset.
 ; _ByteStripString ........ Zero byte stripped string.
+; _BinToFloat ............. Convert 8 bytes to float number.
 ; _BinToDate .............. Convert 4 bytes to datetime.
 ;
 
@@ -44,15 +45,33 @@ func _GetDSPadding($file,$sid)
 	WEnd
 EndFunc
 
+;get last record offset
+func _GetDSLastOffset($file,$sid)
+	local $data[2976], $pad, $slot, $next, $offset
+	$pad = _GetDSPadding($file,$sid)
+	if $pad = '' then return
+	$slot = 20 + 8*$sid + $pad
+	$offset=0
+	for $i=0 to 2975
+		$next=_ByteRead($file,0x1600 + $i * $slot, 4)
+		if int($next) > $offset then $offset=int($next)
+		if int($next) < $offset then return $i - 1
+	next
+	return 2975; full buffer
+endfunc
+
 ;get sensors data for last 6 hour period = 4 * 6 (* 15min)
 func _GetDSData($file,$sid)
 	local $data[24][$sid], $pad, $slot
 	$pad = _GetDSPadding($file,$sid)
 	if $pad = '' then return
+	$offset = _GetDSLastOffset($file,$sid)
+	if $offset = '' then return
 	$slot = 20 + 8*$sid + $pad
 	for $i=0 to 23
 		for $j=0 to $sid - 1
-			$data[$i][$j]=_BinToFloat(_ByteRead($file,0x1600 + (2975 - $i ) * $slot + 20 + $j*8, 8)); last to least
+			$data[$i][$j]=_BinToFloat(_ByteRead($file,0x1600 + ($offset - $i ) * $slot + 20 + $j*8, 8)); FIFO
+			if $offset - $i =-1 then $offset=2975; buffer overflow
 		next
 	next
 	return $data
@@ -94,15 +113,6 @@ func _GetDSDateAll($file,$sid)
 	return $data
 endfunc
 
-;convert binary 8-byte to float value
-func _BinToFloat($bin)
-	$binary_float=DllStructCreate("byte byte[8]")
-	$float=DllStructCreate("double")
-	DllStructSetData($binary_float,1, $bin)
-	_MemMoveMemory($binary_float,$float,8)
-	return DllStructGetData($float,1)
-EndFunc
-
 ;return binary offset
 func _ByteRead($file,$offset,$count)
 	$bin_file = FileOpen($file, 16); binary..
@@ -121,6 +131,16 @@ func _ByteStripString($bstring)
 	return $bstrip
 EndFunc
 
+;convert binary 8-byte to float value
+func _BinToFloat($bin)
+	$binary_float=DllStructCreate("byte byte[8]")
+	$float=DllStructCreate("double")
+	DllStructSetData($binary_float,1, $bin)
+	_MemMoveMemory($binary_float,$float,8)
+	return DllStructGetData($float,1)
+EndFunc
+
+;convert binary 4-byte to datetime
 func _BinToDate($bin)
 	local $date = DllCall("msvcrt.dll", "str:cdecl", "ctime", "int*", $bin)
 	return StringRegExpReplace($date[0],@LF &"$","$1")
