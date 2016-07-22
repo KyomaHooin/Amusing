@@ -46,12 +46,9 @@ func _GetDSPadding($file,$sid)
 EndFunc
 
 ;get last record offset
-func _GetDSLastOffset($file,$sid)
-	local $data[2976], $pad, $slot, $next, $offset
-	$pad = _GetDSPadding($file,$sid)
-	if $pad = '' then return
+func _GetDSLastOffset($file,$sid,$pad)
+	local $slot, $next, $offset
 	$slot = 20 + 8*$sid + $pad
-	$offset=0
 	for $i=0 to 2975
 		$next=_ByteRead($file,0x1600 + $i * $slot, 4)
 		if int($next) > $offset then $offset=int($next)
@@ -65,7 +62,7 @@ func _GetDSData($file,$sid)
 	local $data[24][$sid], $pad, $slot
 	$pad = _GetDSPadding($file,$sid)
 	if $pad = '' then return
-	$offset = _GetDSLastOffset($file,$sid)
+	$offset = _GetDSLastOffset($file,$sid,$pad)
 	if $offset = '' then return
 	$slot = 20 + 8*$sid + $pad
 	for $i=0 to 23
