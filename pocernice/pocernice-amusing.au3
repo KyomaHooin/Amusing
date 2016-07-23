@@ -42,8 +42,8 @@ $logfile = FileOpen(@scriptdir & '\' & $location & '-amusing.log', 1); 1 = appen
 if @error then exit; silent exit..
 logger(@CRLF & "Program start: " & $runtime)
 ds(); Parse data from DS buffer
-main(); Pack and transport data over HTTP
-archive(); Archive logrotate
+;main(); Pack and transport data over HTTP
+;archive(); Archive logrotate
 logger("Program end.")
 FileClose($logfile)
 
@@ -108,6 +108,11 @@ func ds()
 		logger('Missing sensor file.')
 		return
 	endif
+	$csv = FileOpen(@ScriptDir & '\' & $location & '-' & $runtime & '.csv', 1);  1 - append
+	if @error Then
+		logger("Failed to create CSV file.")
+		return
+	endif
 	for $i=0 to UBound($ds) - 1
 		$file = @ScriptDir & '\' & $ds[$i] & '.DS'
 		FileCopy($ds_path & $ds[$i] & '.DS', $file)
@@ -125,11 +130,6 @@ func ds()
 			logger('Failed to get data.')
 			ContinueLoop
 		Endif
-		$csv = FileOpen(@ScriptDir & '\' & $location & '-' & $runtime & '.csv', 1);  1 - append
-		if @error Then
-			logger("Failed to create CSV file.")
-			return
-		endif
 		for $j=0 to UBound($sid) - 1
 			$time = $dstime; reset time counter..
 			for $k=0 to UBound($data) - 1
@@ -142,9 +142,9 @@ func ds()
 				$time = _DateAdd('n', '-15', $time)
 			next
 		next
-		FileClose($csv)
 		FileDelete($file)
 	next
+	FileClose($csv)
 EndFunc
 
 func archive()
