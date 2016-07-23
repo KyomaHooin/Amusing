@@ -36,7 +36,7 @@ EndFunc
 
 ;get data slot padding
 func _GetDSPadding($file,$sid)
-	local  $buff, $pad=0
+	local  $buff, $pad
 	while 1
 		$buff = _ByteRead($file,0x1600 + 20 + 8*$sid + $pad, 1)
 		if $buff = '' then return
@@ -58,24 +58,28 @@ endfunc
 
 ;get sensors data for last 6 hour period = 4 * 6 (* 15min)
 func _GetDSData($file,$sid)
-	local $data[24][$sid], $pad, $slot
+	local $data[24][$sid], $pad, $slot, $buff
 	$pad = _GetDSPadding($file,$sid)
 	if $pad = '' then return
 	$offset = _GetDSLastOffset($file,$sid,$pad)
-	if $offset = '' then return
 	$slot = 20 + 8*$sid + $pad
 	for $i=0 to 23
 		for $j=0 to $sid - 1
-			$data[$i][$j]=_BinToFloat(_ByteRead($file,0x1600 + ($offset - $i ) * $slot + 20 + $j*8, 8)); FIFO
-			if $offset - $i =-1 then $offset=2975; buffer overflow
+			$data[$i][$j]=_BinToFloat(_ByteRead($file,0x1600 + ($offset - $buff ) * $slot + 20 + $j*8, 8)); FIFO
 		next
+		if $offset - $buff = 0 then; buffer overflow
+				$offset = 2975
+				$buff = 0
+		else
+			$buff+=1
+		endif
 	next
 	return $data
 endfunc
 
 ;get SID count
 func _GetDSSidCount($file)
-	local $byte, $sid=0
+	local $byte, $sid
 	for $i= 0 to 127 * 42 step 42
 		$byte = _ByteRead($file, 0x100 + $i, 1)
 		if $byte = '' then return
