@@ -68,8 +68,8 @@ func _GetDSData($file,$sid)
 			$data[$i][$j]=_BinToFloat(_ByteRead($file,0x1600 + ($offset - $buff ) * $slot + 20 + $j*8, 8)); FIFO
 		next
 		if $offset - $buff = 0 then; buffer overflow
-				$offset = 2975
-				$buff = 0
+			$offset = 2975
+			$buff = 0
 		else
 			$buff+=1
 		endif
