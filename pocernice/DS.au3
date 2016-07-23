@@ -115,11 +115,13 @@ endfunc
 
 ;return binary offset
 func _ByteRead($file,$offset,$count)
+	local $byte
 	$bin_file = FileOpen($file, 16); binary..
 	if @error then return
 	FileSetPos($bin_file,$offset,0)
-	return FileRead($bin_file,$count)
+	$byte = FileRead($bin_file,$count)
 	FileClose($bin_file)
+	return $byte
 EndFunc
 
 ;return zero stripped string from binary
