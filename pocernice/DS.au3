@@ -47,14 +47,13 @@ EndFunc
 
 ;get last record offset
 func _GetDSLastOffset($file,$sid,$pad)
-	local $slot, $next, $offset
+	local $slot, $last, $date
 	$slot = 20 + 8*$sid + $pad
+	$last=_ByteRead($file, 0x9A, 4); last header date
 	for $i=0 to 2975
-		$next=_ByteRead($file,0x1600 + $i * $slot, 4)
-		if int($next) > $offset then $offset=int($next)
-		if int($next) < $offset then return $i - 1
+		$date=_ByteRead($file,0x1600 + $i * $slot, 4)
+		if $last = $date then return $i
 	next
-	return 2975; full buffer
 endfunc
 
 ;get sensors data for last 6 hour period = 4 * 6 (* 15min)
