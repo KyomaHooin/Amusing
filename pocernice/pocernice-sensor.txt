@@ -70,7 +70,7 @@ N010M011;temperature
 N010M008;humidity
 N010M010;humidity
 N010M007;temperature
-N040M005;temperature
+B040M005;temperature
 N010M149;humidity
 N010M163;temperature
 N010M000;temperature
@@ -111,7 +111,7 @@ N011M011;temperature
 N011M008;humidity
 N011M010;humidity
 N011M007;temperature
-N040M005;temperature
+B140M005;temperature
 N011M149;humidity
 N011M163;temperature
 N011M000;temperature
@@ -136,7 +136,7 @@ N013M011;temperature
 N013M008;humidity
 N013M010;humidity
 N013M007;temperature
-N040M005;temperature
+B240M005;temperature
 N013M149;humidity
 N013M163;temperature
 N014M002;temperature
@@ -249,12 +249,12 @@ N026M028;humidity
 N026M029;humidity
 N026M030;humidity
 N026M031;humidity
-N017M008;temperature
-N017M009;temperature
-N017M010;temperature
-N017M011;temperature
-N017M012;temperature
-N017M013;temperature
+B017M008;temperature
+B017M009;temperature
+B017M010;temperature
+B017M011;temperature
+B017M012;temperature
+B017M013;temperature
 N026M014;temperature
 N026M015;temperature
 N026M016;temperature
