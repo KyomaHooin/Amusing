@@ -139,15 +139,15 @@ func ds()
 					ContinueLoop
 				endif
 				;Suater duplicity bugfix
-				if $ds = 'DVZT01'  and $sid[$j] = 'N017M008' then $sid[$j] = 'B017M008'
-				if $ds = 'DVZT01'  and $sid[$j] = 'N017M009' then $sid[$j] = 'B017M009'
-				if $ds = 'DVZT01'  and $sid[$j] = 'N017M010' then $sid[$j] = 'B017M010'
-				if $ds = 'DVZT01'  and $sid[$j] = 'N017M011' then $sid[$j] = 'B017M011'
-				if $ds = 'DVZT01'  and $sid[$j] = 'N017M012' then $sid[$j] = 'B017M012'
-				if $ds = 'DVZT01'  and $sid[$j] = 'N017M013' then $sid[$j] = 'B017M013'
-				if $ds = 'BVZT02A' and $sid[$j] = 'N040M005' then $sid[$j] = 'B040M005'
-				if $ds = 'BVZT02B' and $sid[$j] = 'N040M005' then $sid[$j] = 'B140M005'
-				if $ds = 'BVZT04'  and $sid[$j] = 'N040M005' then $sid[$j] = 'B240M005'
+				if $ds[$i] = 'DVZT01'  and $sid[$j] = 'N017M008' then $sid[$j] = 'B017M008'
+				if $ds[$i] = 'DVZT01'  and $sid[$j] = 'N017M009' then $sid[$j] = 'B017M009'
+				if $ds[$i] = 'DVZT01'  and $sid[$j] = 'N017M010' then $sid[$j] = 'B017M010'
+				if $ds[$i] = 'DVZT01'  and $sid[$j] = 'N017M011' then $sid[$j] = 'B017M011'
+				if $ds[$i] = 'DVZT01'  and $sid[$j] = 'N017M012' then $sid[$j] = 'B017M012'
+				if $ds[$i] = 'DVZT01'  and $sid[$j] = 'N017M013' then $sid[$j] = 'B017M013'
+				if $ds[$i] = 'BVZT02A' and $sid[$j] = 'N040M005' then $sid[$j] = 'B040M005'
+				if $ds[$i] = 'BVZT02B' and $sid[$j] = 'N040M005' then $sid[$j] = 'B140M005'
+				if $ds[$i] = 'BVZT04'  and $sid[$j] = 'N040M005' then $sid[$j] = 'B240M005'
 				;write CSV data
 				FileWriteLine($csv, $sid[$j] & ';' & $type & ';' & $data[$k][$j] & ';' & StringRegExpReplace($time, "^(\d{4})/(\d{2})/(\d{2}) (\d{2}):(\d{2}):(\d{2})$", "$1$2$3T$4$5$6"))
 				$time = _DateAdd('n', '-15', $time)
