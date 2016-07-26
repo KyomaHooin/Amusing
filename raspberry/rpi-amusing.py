@@ -11,7 +11,7 @@
 #                                ._____________ Local ID
 #
 
-import httplib,serial,socket,time,gzip,os,re
+import httplib,serial,socket,time,gzip,sys,os,re
 
 LOCATION='archa'
 PAYLOAD=''
@@ -28,7 +28,7 @@ try:
 		LOG.write('Program start: ' + time.strftime("%d.%m.%Y %H:%M") + '\n')
 	except IOError:
 		print 'Failed to create log file.'
-		exit(1)
+		sys.exit(1)
 	while 1:
 		try:	# SERIAL
 			s = serial.Serial('/dev/ttyUSB0',9600,timeout=5)# 8,N,1; 5s scan..
@@ -86,6 +86,5 @@ try:
 					LOG.write('Failed to remove archive ' + old + '.\n')
 except Exception as e:
 	print 'Something bad ' + e.args[0]
-	exit(2)
-exit(0)
+	sys.exit(2)
 
