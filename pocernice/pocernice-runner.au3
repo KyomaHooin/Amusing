@@ -7,7 +7,7 @@
 #AutoIt3Wrapper_Icon=pocernice.ico
 #NoTrayIcon
 
-$amusing = 'c:\pocernice-amusing\pocernice-amusing.exe'
+$amusing = @ScriptDir & '\pocernice-amusing.exe'
 $token=True
 
 while 1
