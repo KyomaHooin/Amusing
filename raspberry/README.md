@@ -9,7 +9,7 @@ INSTALL
 mkdir /root/amusing
 mount -t tmpfs -o size=32m tmpfs /root/amusing/ramdisk
 
-/etc/crontab:
+/etc/fstab:
 
 tmpfs /root/amusing/ramdisk   tmpfs   nodev,nosuid,size=32M   0       0
 
