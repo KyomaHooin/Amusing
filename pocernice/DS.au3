@@ -1,5 +1,5 @@
 ;
-; Sauter NovaPro 374c propretary binary HDB database DS file parser by Richard Bruna
+; Sauter NovaPro 374c proprietary binary HDB database DS file parser by Richard Bruna
 ;
 ; _GetDSSidArray .......... Sensor ID array from file.
 ; _GetDSPadding ........... Number of data slot zero-padding bytes.
