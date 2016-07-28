@@ -5,10 +5,11 @@
 # DATA[5min]:
 #
 #               'Got msg #311 : *ZF#T273H370L000B467'
-#                                .  .   .   .__ Serial/timestamp[?]
-#                                .  .   .______ Humidity
-#                                .  .__________ Temperature
-#                                ._____________ Local ID
+#                                .  .   .   .   ._____ Battery
+#                                .  .   .   ._________ Light
+#                                .  .   ._____________ Humidity
+#                                .  ._________________ Temperature
+#                                .____________________ Local ID
 #
 
 import httplib,serial,socket,time,gzip,sys,os,re
@@ -34,11 +35,15 @@ try:
 			s = serial.Serial('/dev/ttyUSB0',9600,timeout=5)# 8,N,1; 5s scan..
 			data = s.readline()
 			if data != '':
-				pattern = re.compile('^.* \*.(.)#T(\d\d)(\d)H(\d\d)(\d).*$')
+				pattern = re.compile('^.* \*.(.)#T(\d\d)(\d)H(\d\d)(\d)L(\d\d)(\d)B(\d)(\d\d).*$')
 				if re.match(pattern, data):# rubbish..
 					PAYLOAD+=(re.sub(pattern,'\\1;temperature;\\2.\\3;'
 						+ time.strftime("%Y%m%dT%H%M%S"), data)
 						+ re.sub(pattern,'\\1;humidity;\\4.\\5;'
+						+ time.strftime("%Y%m%dT%H%M%S"), data)
+						+ re.sub(pattern,'\\1;light;\\6.\\7;'
+						+ time.strftime("%Y%m%dT%H%M%S"), data)
+						+ re.sub(pattern,'\\1;battery;\\8.\\9;'
 						+ time.strftime("%Y%m%dT%H%M%S"), data))
 			s.close()
 		except serial.SerialException:
