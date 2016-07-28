@@ -41,6 +41,7 @@ FILE
 
 <pre>
 pocernice-amusing.au3 - Main program.
+ pocernice-runner.au3 - Simple scheduler.
  pocernice-sensor.txt - Sensor plain list.
     pocernice-hdb.txt - DS file list.
         pocernice.ico - Program icon.
