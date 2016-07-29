@@ -48,7 +48,7 @@ try:
 			s.close()
 		except serial.SerialException:
 			LOG.write('Serial error.\n')
-		if time.strftime("%M") == '50' and CALL: #hourly..
+		if int(time.strftime("%M")) % 15 == 0 and CALL: # 15 min interval..
 			CALL=False
 			try:	# GZIP + PAYLOAD
 				GZIP_FILE=RAMDISK + 'http/' + LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S") + '.csv.gz'
@@ -80,7 +80,7 @@ try:
 			# reset buffered payload string..
 			PAYLOAD=''
 		# reset transport token..
-		if time.strftime("%M") == '51': CALL=True
+		if int(time.strftime("%M")) % 15 == 1: CALL=True
 		# cleanup archive
 		for old in os.listdir(RAMDISK + 'archive'):
 			old_full=RAMDISK + 'archive/' + old
