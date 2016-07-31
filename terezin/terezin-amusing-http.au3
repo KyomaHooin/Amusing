@@ -137,7 +137,7 @@ func sql()
 					if $data_row[2] = '192' Then; 192 -> alive
 						;YYYYmmddHHiiss -> ISO: YYYYMMDDThhmmss
 						$timestamp = StringRegExpReplace($data_row[0],"^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$", "$1/$2/$3 $4:$5:$6")
-						$timestamp = _DateAdd('h', '-1' , $timestamp); GMT+1 to UTC
+						$timestamp = _DateAdd('h', '-1', $timestamp); GMT+1 to UTC
 						$timestamp = StringRegExpReplace($timestamp,"^(\d{4})/(\d{2})/(\d{2}) (\d{2}):(\d{2}):(\d{2})$", "$1$2$3T$4$5$6")
 						;write data
 						FileWriteLine($csv, $sensor[$i] & ';' & $data_row[1] & ';' & $timestamp)
