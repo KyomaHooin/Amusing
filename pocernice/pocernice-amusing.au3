@@ -20,8 +20,7 @@ $location='pocernice'
 
 $hdb = @ScriptDir & '\' & $location & '-hdb.txt'
 $map = @ScriptDir & '\' & $location & '-sensor.txt'
-;$ds_path = 'c:\pvmpdata\Projekt\DEPOZIT\DS\'
-$ds_path = 'c:\pocernice\ds\'
+$ds_path = 'c:\pvmpdata\Projekt\DEPOZIT\DS\'
 
 $runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 $dstime =  @YEAR & '/' & @MON & '/' & @MDAY & ' ' & @HOUR & ':' & '15' & ':' & '00'
@@ -42,8 +41,8 @@ $logfile = FileOpen(@scriptdir & '\' & $location & '-amusing.log', 1); 1 = appen
 if @error then exit; silent exit..
 logger(@CRLF & "Program start: " & $runtime)
 ds(); Parse data from DS buffer
-;main(); Pack and transport data over HTTP
-;archive(); Archive logrotate
+main(); Pack and transport data over HTTP
+archive(); Archive logrotate
 logger("Program end.")
 FileClose($logfile)
 
