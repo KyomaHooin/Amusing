@@ -24,7 +24,7 @@ $map = @ScriptDir & '\' & $location & '-sensor.txt'
 $ds_path = 'c:\pocernice\ds\'
 
 $runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
-$dstime =  @YEAR & '/' & @MON & '/' & @MDAY & ' ' & @HOUR & ':' & '45' & ':' & '00'
+$dstime =  @YEAR & '/' & @MON & '/' & @MDAY & ' ' & @HOUR & ':' & '15' & ':' & '00'
 
 ;--------------------------------------------------
 
