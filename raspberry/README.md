@@ -16,6 +16,13 @@ tmpfs /root/amusing/ramdisk   tmpfs   nodev,nosuid,size=32M   0       0
 /etc/rc.local:
 
 /root/amusing/rpi-amusing.py &
+/root/firewall &
+
+/etc/network/intefaces:
+
+iface wlan0 inet dhcp
+	wpa-ssid nm-private
+	wpa-psk ******************************************* <- wpa_passphrase
 </pre>
 
 FILE
