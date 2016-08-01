@@ -1,7 +1,7 @@
 ;
 ; Very simple "hourly" runner..
 ;
-; Start > Startup > pocernce-runner.exe
+; Start > Startup > pocernice-runner.exe
 ;
 
 #AutoIt3Wrapper_Icon=pocernice.ico
