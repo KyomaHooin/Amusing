@@ -12,7 +12,8 @@ mount -t tmpfs -o size=32m tmpfs /root/amusing/ramdisk
 /etc/fstab:
 
 tmpfs	/root/amusing/ramdisk   tmpfs   nodev,nosuid,size=32M   0       0
-tmpfs	/tmp	tmpfs	defaults,noatime,nosuid,size=100m	0	0
+
+tmpfs	/tmp		tmpfs	defaults,noatime,nosuid,size=100m	0	0
 tmpfs	/var/log	tmpfs	defaults,noatime,nosuid,mode=0755,size=100m	0	0
 tmpfs	/var/run	tmpfs	defaults,noatime,nosuid,mode=0755,size=2m	0	0
 
@@ -32,6 +33,7 @@ FILE
 
 <pre>
 rpi-amusing.py - Main program.
+      firewall - Simple restrictive firewall(performance issues).
 </pre>
 
 CONTACT
