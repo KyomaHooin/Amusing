@@ -6,7 +6,7 @@ Collect 868Mhz AVR RF sensor temperature/humidity data and transport GZIP compre
 INSTALL
 
 <pre>
-mkdir /root/amusing
+mkdir -p /root/amusing/ramdisk
 mount -t tmpfs -o size=32m tmpfs /root/amusing/ramdisk
 
 /etc/fstab:
