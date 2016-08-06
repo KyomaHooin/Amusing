@@ -6,6 +6,8 @@ Collect 868Mhz AVR RF sensor temperature/humidity data and transport GZIP compre
 INSTALL
 
 <pre>
+dpkg-reconfigure tzdata (POSIX GTM-1 => GMT+1)
+
 mkdir -p /root/amusing/ramdisk
 mount -t tmpfs -o size=32m tmpfs /root/amusing/ramdisk
 
