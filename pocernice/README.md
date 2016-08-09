@@ -34,7 +34,7 @@ HDB
  -Padding round to 5/20/30/40/50 byte size for n-sensors.
  -Slot time -> HEADER[clock] => (15 min).
  -2976 data slots per file =>  2976 / 4 / 24 = 31 days.
- -Data slots are stored in owerwriting circular buffer.
+ -Data slots are stored in overwriting circular buffer.
 </pre>
 
 FILE
