@@ -54,9 +54,9 @@ While 1
 	EndIf
 	if $event = $button_export Then; export
 		if GUICtrlRead($gui_path) == '' then
-			GUICtrlSetData($gui_error, "Error: Prazdna cesta.")
+			GUICtrlSetData($gui_error, "Chyba: Prazdna cesta.")
 		ElseIf not FileExists(GUICtrlRead($gui_path)) Then
-			GUICtrlSetData($gui_error, "Error: Neplatny adresar.")
+			GUICtrlSetData($gui_error, "Chyba: Neplatny adresar.")
 		Else
 			GUICtrlSetData($gui_error,''); clear error
 			switch GUICtrlRead($gui_type); get all files by type
@@ -68,7 +68,7 @@ While 1
 					$datalist = _FileListToArray(GUICtrlRead($gui_path), "*.dbf")
 			EndSwitch
 			if ubound($datalist) < 2 then
-				GUICtrlSetData($gui_error, "Error: Adresar neobsahuje data.")
+				GUICtrlSetData($gui_error, "Chyba: Adresar neobsahuje data.")
 			Else; parse data to RAM
 				GUICtrlSetState($button_export,$GUI_DISABLE); disable re-export
 				for $i=1 to UBound($datalist) - 1; parse & export
@@ -94,6 +94,7 @@ While 1
 				GUICtrlSetState($button_export,$GUI_ENABLE); enable export
 				GUICtrlSetData($gui_progress,0); clear progress
 			EndIf
+			GUICtrlSetData($gui_error,'Export dokoncen!'); done
 		endif
 	endif
 	If $event = $GUI_EVENT_CLOSE or $event = $button_exit then
