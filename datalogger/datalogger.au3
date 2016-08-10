@@ -14,17 +14,17 @@
 ;-------------------------------
 
 func _Get_DL_Prumstav($file)
-	return
+	return SetError(1,0, "Parsing " & $file & " failed.")
 EndFunc
 
 func _Get_DL_Volcraft($file)
-	return
+	return SetError(1,0, "Parsing " & $file & " failed.")
 EndFunc
 
 func _Get_DL_Merlin($file)
-	return
+	return SetError(1,0, "Parsing " & $file & " failed.")
 EndFunc
 
 func _Get_DL_S3120($file)
-	return
+	return SetError(1,0, "Parsing " & $file & " failed.")
 EndFunc
