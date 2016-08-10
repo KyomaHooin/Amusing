@@ -1,3 +1,4 @@
+;
 ; Manual "datalogger" parse CSV -> GZIP -> HTTP
 ;
 ; Prumstav - CSV
@@ -10,7 +11,6 @@
 #NoTrayIcon
 
 ;INCLUDE
-
 #include <GUIConstantsEx.au3>
 #include <Datalogger.au3>
 #include <ZLIB.au3>
@@ -23,9 +23,13 @@ $runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 ;already running
 if UBound(ProcessList(@ScriptName)) > 2 then Exit
 
-;GUI
+;LOGGING
+$logfile = FileOpen(@scriptdir & '\' & $location & '-amusing.log', 1); 1 = append
+if @error then exit; silent exit..
+logger(@CRLF & "Program start: " & $runtime)
 
-$gui = GUICreate("Datalogger v 1.2", 351, 91, 258, 155)
+;GUI
+$gui = GUICreate("Datalogger v 1.2", 351, 91)
 $gui_type = GUICtrlCreateCombo("", 6, 8, 75,25, 0x003); no edit
 $gui_path = GUICtrlCreateInput("", 87, 8, 175, 21)
 $button_path = GUICtrlCreateButton("Prochazet", 270, 8, 75, 21)
@@ -35,23 +39,20 @@ $button_export = GUICtrlCreateButton("Export", 188, 63, 75, 21)
 $button_exit = GUICtrlCreateButton("Exit", 270, 63, 75, 21)
 
 ;GUI INIT
-
-;GUICtrlSetColor($gui_error, 0xFF0000)
 GUICtrlSetData($gui_type,"Merlin|Prumstav|S3120|Volcraft","Merlin")
+GUICtrlSetState($gui_path,$GUI_FOCUS)
 GUISetState(@SW_SHOW)
 
 While 1
-	;catch event
-	$event = GUIGetMsg()
-	;data path
-	if $event = $button_path Then
-		$logger_path = FileSelectFolder("Datalogger Directory", @HomeDrive, Default ,$gui)
+	$event = GUIGetMsg(); catch event
+	if $event = $button_path Then; data path
+		$logger_path = FileSelectFolder("Datalogger Directory", @HomeDrive)
 		if not @error Then
 				GUICtrlSetData($gui_path, $logger_path)
 				GUICtrlSetData($gui_error,''); clear error
 		endif
 	EndIf
-	if $event = $button_export Then
+	if $event = $button_export Then; export
 		if GUICtrlRead($gui_path) == '' then
 			GUICtrlSetData($gui_error, "Error: Prazdna cesta.")
 		ElseIf not FileExists(GUICtrlRead($gui_path)) Then
@@ -60,15 +61,15 @@ While 1
 			GUICtrlSetData($gui_error,''); clear error
 			switch GUICtrlRead($gui_type); get all files by type
 				case 'Prumstav'
-					$datalist = _FileListToArray(GUICtrlRead($gui_path), "*.csv",1); files only
+					$datalist = _FileListToArray(GUICtrlRead($gui_path), "*.csv")
 				case 'Volcraft','Merlin'
-					$datalist = _FileListToArray(GUICtrlRead($gui_path), "*.xls"); files only
+					$datalist = _FileListToArray(GUICtrlRead($gui_path), "*.xls")
 				case 'S3120'
-					$datalist = _FileListToArray(GUICtrlRead($gui_path), "*.dbf"); files only
+					$datalist = _FileListToArray(GUICtrlRead($gui_path), "*.dbf")
 			EndSwitch
 			if ubound($datalist) < 2 then
 				GUICtrlSetData($gui_error, "Error: Adresar neobsahuje data.")
-			Else; parse to RAM
+			Else; parse data to RAM
 				GUICtrlSetState($button_export,$GUI_DISABLE); disable re-export
 				for $i=1 to UBound($datalist) - 1; parse & export
 					GUICtrlSetData($gui_error, "Exportuji: " & $datalist[$i]); display current file
@@ -82,9 +83,11 @@ While 1
 						case 'S3120'
 							$csv = _Get_DL_S3120($datalist[$i])
 					EndSwitch
-					if $csv <> '' Then
+					if @error Then
+						logger($csv)
+					else
 						export($csv)
-					EndIf
+					endif
 					GUICtrlSetData($gui_progress, round( $i / (UBound($datalist) -1) * 100)); update progress
 				Next
 				GUICtrlSetData($gui_error, ''); clear error
@@ -93,7 +96,11 @@ While 1
 			EndIf
 		endif
 	endif
-	If $event = $GUI_EVENT_CLOSE or $event = $button_exit then Exit; exit
+	If $event = $GUI_EVENT_CLOSE or $event = $button_exit then
+		logger("Program end.")
+		FileClose($logfile)
+		Exit; exit
+	endif
 WEnd
 
 ;FUNC
@@ -102,19 +109,19 @@ Func export($data)
 	$http_error_handler = ObjEvent("AutoIt.Error", "get_http_error"); register COM error handler
 	$http = ObjCreate("winhttp.winhttprequest.5.1"); HTTP object instance
 	if @error then
-		GUICtrlSetData($gui_error, "HTTP failed to create session.")
+		logger("HTTP failed to create session.")
 		return
 	else
 		$payload = _ZLIB_GZCompress($data)
 		if @error then
-			GUICtrlSetData($gui_error, "Failed to create payload.")
+			logger("Failed to create payload.")
 			return
 		else
 		$http.open("POST","[removed]", False); No async HTTP..
 		$http.SetRequestHeader("X-Location", StringRegExpReplace($payload, "^(" & $location & "-\d+T\d+)(.*)","$1"))
 			$http.Send($payload)
 			if @error or $http.Status <> 200 then
-				GUICtrlSetData($gui_error," Payload HTTP transfer failed.")
+				logger("Payload HTTP transfer failed.")
 			endif
 		EndIf
 	endif
@@ -124,3 +131,7 @@ EndFunc
 func get_http_error()
 	GUICtrlSetData($gui_error, "HTTP request timeout.")
 EndFunc
+
+func logger($text)
+	FileWriteLine($logfile, $text)
+endfunc
