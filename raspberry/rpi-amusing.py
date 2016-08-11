@@ -32,7 +32,7 @@ try:
 		sys.exit(1)
 	while 1:
 		try:	# SERIAL
-			s = serial.Serial('/dev/ttyUSB0',9600,timeout=5)# 8,N,1; 5s scan..
+			s = serial.Serial('/dev/AVR',9600,timeout=5)# 8,N,1; 5s scan..
 			data = s.readline()
 			if data != '':
 				pattern = re.compile('^.* \*.(.)#T(\d\d)(\d)H(\d\d)(\d)L(\d\d)(\d)B(\d)(\d\d).*$')
