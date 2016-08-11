@@ -57,7 +57,9 @@ While 1
 			GUICtrlSetData($gui_error, "Chyba: Prazdna cesta.")
 		ElseIf not FileExists(GUICtrlRead($gui_path)) Then
 			GUICtrlSetData($gui_error, "Chyba: Neplatny adresar.")
-		Else
+		Elseif not StringRegExp(GUICtrlRead($gui_path),'\d{8}') Then
+			GUICtrlSetData($gui_error, "Chyba: Neplatny nazev adresare.")
+		else
 			GUICtrlSetData($gui_error,''); clear error
 			switch GUICtrlRead($gui_type); get all files by type
 				case 'Prumstav'
@@ -73,28 +75,29 @@ While 1
 				GUICtrlSetState($button_export,$GUI_DISABLE); disable re-export
 				for $i=1 to UBound($datalist) - 1; parse & export
 					GUICtrlSetData($gui_error, "Exportuji: " & $datalist[$i]); display current file
-					switch GUICtrlRead($gui_type); get all files by type
+					switch GUICtrlRead($gui_type); get payload by type
 						case 'Prumstav'
-							$csv = _Get_DL_Prumstav($datalist[$i])
+							$csv = _Get_DL_Prumstav(GUICtrlRead($gui_path) & '\' & $datalist[$i])
 						case 'Volcraft'
-							$csv = _Get_DL_Volcraft($datalist[$i])
+							$csv = _Get_DL_Volcraft(GUICtrlRead($gui_path) & '\' & $datalist[$i])
 						case 'Merlin'
-							$csv = _Get_DL_Merlin($datalist[$i])
+							$csv = _Get_DL_Merlin(GUICtrlRead($gui_path) & '\' & $datalist[$i])
 						case 'S3120'
-							$csv = _Get_DL_S3120($datalist[$i])
+							$csv = _Get_DL_S3120(GUICtrlRead($gui_path) & '\' & $datalist[$i])
 					EndSwitch
 					if @error Then
 						logger($csv)
 					else
 						export($csv)
+						; '.done'
+						;MsgBox(-1,"err",@error)
+						if not @error then FileMove(GUICtrlRead($gui_path) & '\' & $datalist[$i], GUICtrlRead($gui_path)& '\' & $datalist[$i] & '.done')
 					endif
 					GUICtrlSetData($gui_progress, round( $i / (UBound($datalist) -1) * 100)); update progress
 				Next
-				GUICtrlSetData($gui_error, ''); clear error
 				GUICtrlSetState($button_export,$GUI_ENABLE); enable export
 				GUICtrlSetData($gui_progress,0); clear progress
 			EndIf
-			GUICtrlSetData($gui_error,'Export dokoncen!'); done
 		endif
 	endif
 	If $event = $GUI_EVENT_CLOSE or $event = $button_exit then
@@ -111,18 +114,19 @@ Func export($data)
 	$http = ObjCreate("winhttp.winhttprequest.5.1"); HTTP object instance
 	if @error then
 		logger("HTTP failed to create session.")
-		return
+		return SetError(-1)
 	else
 		$payload = _ZLIB_GZCompress($data)
 		if @error then
 			logger("Failed to create payload.")
-			return
+			return SetError(-1)
 		else
 		$http.open("POST","[removed]", False); No async HTTP..
 		$http.SetRequestHeader("X-Location", StringRegExpReplace($payload, "^(" & $location & "-\d+T\d+)(.*)","$1"))
 			$http.Send($payload)
 			if @error or $http.Status <> 200 then
 				logger("Payload HTTP transfer failed.")
+				return SetError(-1)
 			endif
 		EndIf
 	endif
