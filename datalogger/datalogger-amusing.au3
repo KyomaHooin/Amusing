@@ -77,20 +77,18 @@ While 1
 					GUICtrlSetData($gui_error, "Exportuji: " & $datalist[$i]); display current file
 					switch GUICtrlRead($gui_type); get payload by type
 						case 'Prumstav'
-							$csv = _Get_DL_Prumstav(GUICtrlRead($gui_path) & '\' & $datalist[$i])
+							$csv = _GetDLPrumstav(GUICtrlRead($gui_path) & '\' & $datalist[$i])
 						case 'Volcraft'
-							$csv = _Get_DL_Volcraft(GUICtrlRead($gui_path) & '\' & $datalist[$i])
+							$csv = _GetDLVolcraft(GUICtrlRead($gui_path) & '\' & $datalist[$i])
 						case 'Merlin'
-							$csv = _Get_DL_Merlin(GUICtrlRead($gui_path) & '\' & $datalist[$i])
+							$csv = _GetDLMerlin(GUICtrlRead($gui_path) & '\' & $datalist[$i])
 						case 'S3120'
-							$csv = _Get_DL_S3120(GUICtrlRead($gui_path) & '\' & $datalist[$i])
+							$csv = _GetDLS3120(GUICtrlRead($gui_path) & '\' & $datalist[$i])
 					EndSwitch
 					if @error Then
 						logger($csv)
 					else
 						export($csv)
-						; '.done'
-						;MsgBox(-1,"err",@error)
 						if not @error then FileMove(GUICtrlRead($gui_path) & '\' & $datalist[$i], GUICtrlRead($gui_path)& '\' & $datalist[$i] & '.done')
 					endif
 					GUICtrlSetData($gui_progress, round( $i / (UBound($datalist) -1) * 100)); update progress
