@@ -2,13 +2,15 @@
 
 DESCRIPTION
 
-Parse manual datalogger export from Volcraft, Merlin, Prumstav DL-121TH, S3120 to CSV and transport GZIP payload over HTTP.
+Parse data files from DL-121TH, S3120 & DS100 datalogger to CSV and transport GZIP payload over HTTP.
 
 FILE
 
 <pre>
 datalogger-amusing.au3 - Main program.
         datalogger.au3 - Logger parser.
+             Xbase.au3 - FoxBase+/dBase III DBF library by A.R.T. Jonkers.
+              ZLIB.au3 - De/compression library by "Ward".
         datalogger.ico - Icon file.
  datalogger_screen.png - Screenshot.
 </pre>
