@@ -31,6 +31,8 @@ iface wlan0 inet dhcp
 /etc/udev/rules.d/23-usb-serial.rules:
 
 SUBSYSTEM=="tty", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303" SYMLINK+="AVR"
+
+udevadm trigger
 </pre>
 
 FILE
