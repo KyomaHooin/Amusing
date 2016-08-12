@@ -17,7 +17,7 @@
 func _GetDLPrumstav($file)
 	local $raw, $data
 	_FileReadToArray($file,$raw,0); no count
-	if @error then return SetError(1,0, "Failed to read " & $file)
+	if @error then return SetError(1,0, "Failed to read CSV: " & $file)
 	for $i=1 to UBound($raw) - 1; skip first line..
 		$line = StringSplit($raw[$i],",",2); no count..
 		$timestamp = StringRegExpReplace($line[1],"(\d+)\.(\d+).(\d+) (\d+):(\d+):(\d+)"," $3 $2 $1 $4 $5 $6 ")
@@ -38,7 +38,7 @@ EndFunc
 func _GetDLS3120($file)
 	local $raw, $data
 	_Xbase_ReadToArray($file, $raw)
-	if @error then return SetError(1,0, "Failed to read " & $file)
+	if @error then return SetError(1,0, "Failed to read DBF: " & $file)
 	for $i=0 to UBound($raw) - 1
 		$timestamp = StringRegExpReplace($raw[$i][0],"(\d+)-(\d+)-(\d+)","$3$1$2") & 'T' & StringRegExpReplace($raw[$i][1],"(\d+):(\d+):(\d+)","$1$2$3")
 		$data &= 'sensor' & ';temperature;' & $raw[$i][3] & ';' & $timestamp & @CRLF
@@ -51,7 +51,7 @@ EndFunc
 func _GetDLVolcraft($file)
 	local $raw, $data
 	$excel = _Excel_Open(); excel instance
-	if @error then return SetError(1,0, "Failed to create XLS object.")
+	if @error then return SetError(1,0, "Failed to create XLS object: " & $file)
 	$book = _Excel_BookOpen($excel,$file, True, False); invisible read only..
 	if @error then return SetError(1,0, "Failed to open XLS workbook for " & $file)
 	for $i=5 to $excel.ActiveSheet.UsedRange.Rows.Count; 5+ line
@@ -68,7 +68,7 @@ EndFunc
 func _GetDLMerlin($file)
 	local $raw, $data
 	$excel = _Excel_Open(); excel instance
-	if @error then return SetError(1,0, "Failed to create XLS object.")
+	if @error then return SetError(1,0, "Failed to create XLS object: " & $file)
 	$book = _Excel_BookOpen($excel,$file, True, False); invisible read only..
 	if @error then return SetError(1,0, "Failed to open XLS workbook for " & $file)
 	for $i=6 to $excel.ActiveSheet.UsedRange.Rows.Count; 6+ line
