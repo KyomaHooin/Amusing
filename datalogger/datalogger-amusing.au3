@@ -59,8 +59,8 @@ While 1
 			GUICtrlSetData($gui_error, "Chyba: Prazdna cesta.")
 		ElseIf not FileExists(GUICtrlRead($gui_path)) Then
 			GUICtrlSetData($gui_error, "Chyba: Adresar neexistuje.")
-		elseif StringRegExp(GUICtrlRead($gui_path),"(prumstav|volcraft|merlin|s3120)\\?$") then	; type solving
-			$type = StringRegExpReplace(GUICtrlRead($gui_path),".*(prumstav|volcraft|merlin|s3120)\\?$","$1")
+		elseif StringRegExp(GUICtrlRead($gui_path),"(prumstav|pracom|merlin|s3120)\\?$") then	; type solving
+			$type = StringRegExpReplace(GUICtrlRead($gui_path),".*(prumstav|pracom|merlin|s3120)\\?$","$1")
 			$seriallist = _FileListToArray(GUICtrlRead($gui_path), Default, 2); dirs only..
 			if ubound($seriallist) < 2 then
 				GUICtrlSetData($gui_error, "Chyba: Adresar neobsahuje senzor.")
@@ -88,8 +88,8 @@ While 1
 				GUICtrlSetData($gui_progress,0); clear progress
 				GUICtrlSetData($gui_error, "Hotovo!")
 			endif
-		elseif StringRegExp(GUICtrlRead($gui_path),'(prumstav\d+|pracom\d+|\d{8})\\?$') then; sensor solving
-			$serial = StringRegExpReplace(GUICtrlRead($gui_path),".*(prumstav\d+|pracom\d+|\d{8})\\?$","$1")
+		elseif StringRegExp(GUICtrlRead($gui_path),'(prumstav\d+|pracom\d+|merlin\d+|\d{8})\\?$') then; sensor solving
+			$serial = StringRegExpReplace(GUICtrlRead($gui_path),".*(prumstav\d+|pracom\d+|merlin\d+|\d{8})\\?$","$1")
 			$filelist = getSIDarray(GUICtrlRead($gui_type), GUICtrlRead($gui_path))
 			if ubound($filelist) < 2 then
 				GUICtrlSetData($gui_error, "Chyba: Adresar neobsahuje data.")
@@ -129,13 +129,13 @@ Func getCSV($type,$serial,$file)
 	local $data
 	switch $type
 		case 'prumstav'
-			$data = _GetDLPrumstav($serial,$file)
+			$data = _GetDS100($serial,$file)
 		case 's3120'
-			$data = _GetDLS3120($serial,$file)
-		case 'volcraft'
-			$data = _GetDLVolcraft($serial,$file)
+			$data = _GetDS3120($serial,$file)
+		case 'pracom'
+			$data = _GetDL121TH($serial,$file)
 		case 'merlin'
-			$data = _GetDLMerlin($serial,$file)
+			$data = _GetDLHM8($serial,$file)
 	EndSwitch
 	if @error then SetError(1, 0, $data)
 	return $data
@@ -148,7 +148,7 @@ func getSIDarray($type,$dir)
 			$datalist = _FileListToArray($dir, "*.csv", 1); files only..
 		case 's3120'
 			$datalist = _FileListToArray($dir, "*.dbf", 1); files only..
-		case 'volcraft'
+		case 'pracom'
 			$datalist = _FileListToArray($dir, "*.xls", 1); files only..
 		case 'merlin'
 			$datalist = _FileListToArray($dir, "*.xlsx", 1); files only..
