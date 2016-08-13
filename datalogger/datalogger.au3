@@ -2,10 +2,10 @@
 ;  DL-121TH & S3120 parser by Richard Bruna
 ;
 ; _GetDS100 ............... Convert Fine Offset Electronic DS100 datalogger TSV export to CSV buffer
-; _GetDS3120 .............. Convert Comet S3120 datalogger DBF export to CSV buffer
+; _GetDS3120 .............. Convert Comet S3120/ZTH/D3120 datalogger DBF export to CSV buffer
 ; _GetDL121TH ............. Convert Volcraft DL121-TH datalogger manual XLS to CSV buffer
 ; _GetDLH8 ................ Convert Merlin HM8 datalogger manual XSLX to CSV buffer
-;
+; _GetDL .................. Preformated generic datalogger file "as is" to buffer
 
 #include <File.au3>
 #include <Xbase.au3>
@@ -34,7 +34,7 @@ func _GetDS100($serial,$file)
 	return $data
 EndFunc
 
-;Comet S3120 datalogger export to CSV data
+;Comet S3120/DTH/D3120 datalogger export to CSV data
 func _GetDS3120($serial,$file)
 	local $raw, $data
 	_Xbase_ReadToArray($file, $raw)
@@ -78,6 +78,14 @@ func _GetDLHM8($serial,$file)
 		$data &= $serial & ';temperature;' & $raw[1] & ';' & $timestamp & @CRLF
 		$data &= $serial & ';humidity;' & $raw[2] & ';' & $timestamp & @CRLF
 	next
+	return $data
+EndFunc
+
+;Generic datalogger preformated file into CSV data
+func _GetDL($file)
+	local $data
+	$data = FileRead($file)
+	if @error then Return SetError(1,0,"Failed to read CSV: " & $file)
 	return $data
 EndFunc
 
