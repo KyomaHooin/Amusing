@@ -1,10 +1,10 @@
 ;
 ;  DL-121TH & S3120 parser by Richard Bruna
 ;
-; _GetDLPrumstav ............. Convert DS100 datalogger TSV export to CSV buffer
-; _GetDLS3120 ................ Convert datalogger DBF export to CSV buffer
-; _GetDLVolcraft ............. Convert DL121-TH datalogger manual XLS to CSV buffer
-; _GetDLMerlin ............... Convert DL121-TH datalogger manual XSLX to CSV buffer
+; _GetDS100 ............... Convert Fine Offset Electronic DS100 datalogger TSV export to CSV buffer
+; _GetDS3120 .............. Convert Comet S3120 datalogger DBF export to CSV buffer
+; _GetDL121TH ............. Convert Volcraft DL121-TH datalogger manual XLS to CSV buffer
+; _GetDLH8 ................ Convert Merlin HM8 datalogger manual XSLX to CSV buffer
 ;
 
 #include <File.au3>
@@ -13,8 +13,8 @@
 
 ;-------------------------------
 
-;Prumstav DS100 export to CSV data
-func _GetDLPrumstav($serial,$file)
+;Fine Offset Electronic DS100 export to CSV data
+func _GetDS100($serial,$file)
 	local $raw, $data
 	_FileReadToArray($file,$raw,0); no count
 	if @error then return SetError(1,0, "Failed to read CSV: " & $file)
@@ -34,8 +34,8 @@ func _GetDLPrumstav($serial,$file)
 	return $data
 EndFunc
 
-;S3120 datalogger export to CSV data
-func _GetDLS3120($serial,$file)
+;Comet S3120 datalogger export to CSV data
+func _GetDS3120($serial,$file)
 	local $raw, $data
 	_Xbase_ReadToArray($file, $raw)
 	if @error then return SetError(1,0, "Failed to read DBF: " & $file)
@@ -48,7 +48,7 @@ func _GetDLS3120($serial,$file)
 EndFunc
 
 ;Volcraft DL121-TH manual data to CSV data
-func _GetDLVolcraft($serial,$file)
+func _GetDL121TH($serial,$file)
 	local $raw, $data
 	$excel = _Excel_Open(); excel instance
 	if @error then return SetError(1,0, "Failed to create XLS object: " & $file)
@@ -64,8 +64,8 @@ func _GetDLVolcraft($serial,$file)
 	return $data
 EndFunc
 
-;Merlin DS121-TH manual data to CSV data
-func _GetDLMerlin($serial,$file)
+;Merlin HM8 manual data to CSV data
+func _GetDLHM8($serial,$file)
 	local $raw, $data
 	$excel = _Excel_Open(); excel instance
 	if @error then return SetError(1,0, "Failed to create XLS object: " & $file)
