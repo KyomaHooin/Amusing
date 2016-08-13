@@ -9,7 +9,7 @@ DIRECTORY STRUCTURE
 <pre>
 [type]		[serial]	[data]
 
-ZTH			\d{8}		*.dbf
+ZTH				\d{8}			*.dbf
 D3120
 S3120
 
