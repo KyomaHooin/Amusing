@@ -7,9 +7,9 @@
 
 ;INCLUDE
 #include <GUIConstantsEx.au3>
+#include <GUIEdit.au3>
 #include <Datalogger.au3>
 #include <ZLIB.au3>
-#include <GUIEdit.au3>
 
 ;VAR
 $location='datalogger'
@@ -33,7 +33,7 @@ $button_path = GUICtrlCreateButton("Prochazet", 270, 8, 75, 21)
 $gui_progress = GUICtrlCreateProgress(6, 38, 338, 16)
 $gui_error = GUICtrlCreateLabel("", 8, 65, 168, 17)
 $button_export = GUICtrlCreateButton("Export", 188, 63, 75, 21)
-$button_exit = GUICtrlCreateButton("Exit", 270, 63, 75, 21)
+$button_exit = GUICtrlCreateButton("Konec", 270, 63, 75, 21)
 
 ;GUI INIT
 GUICtrlSetData($gui_type,"s3120|prumstav|pracom|merlin|zth|d3120|datalogger","s3120")
