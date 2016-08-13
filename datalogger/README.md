@@ -7,17 +7,17 @@ Parse data from DS100, S3120, D3120, ZTH, DL-121DH, HM8 datalogger to CSV and tr
 DIRECTORY STRUCTURE
 
 <pre>
-[type]		[serial]	[data]
+[type]       [serial]       [data]
 
-ZTH				\d{8}			*.dbf
+ZTH          \d{8}          *.dbf
 D3120
 S3120
 
-Prumstav	prumstav\d+	*.csv
+Prumstav     prumstav\d+    *.csv
 Datalogger	\d{8}
 
-Pracom		pracom\d+	*.xls
-Merlin		merlin\d+	*.xlsx
+Pracom       pracom\d+      *.xls
+Merlin       merlin\d+      *.xlsx
 </pre>
 
 FILE
