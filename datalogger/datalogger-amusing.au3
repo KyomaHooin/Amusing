@@ -36,7 +36,7 @@ $button_export = GUICtrlCreateButton("Export", 188, 63, 75, 21)
 $button_exit = GUICtrlCreateButton("Exit", 270, 63, 75, 21)
 
 ;GUI INIT
-GUICtrlSetData($gui_type,"merlin|prumstav|s3120|volcraft","merlin")
+GUICtrlSetData($gui_type,"s3120|prumstav|pracom|merlin|zth|d3120|datalogger","s3120")
 GUICtrlSetState($gui_type,$GUI_DISABLE)
 GUICtrlSetState($gui_path,$GUI_FOCUS)
 _GUICtrlEdit_SetSel($gui_path,-1,-1)
@@ -45,8 +45,8 @@ GUISetState(@SW_SHOW)
 While 1
 	$event = GUIGetMsg(); catch event
 	;serial solving
-	if GUICtrlGetState($gui_type) == $GUI_DISABLE + $GUI_SHOW and StringRegExp(GUICtrlRead($gui_path),'(prumstav\d+|pracom\d+|\d{8})\\?$') then GUICtrlSetState($gui_type,$GUI_ENABLE)
-	if GUICtrlGetState($gui_type) == $GUI_ENABLE + $GUI_SHOW and not StringRegExp(GUICtrlRead($gui_path),'(prumstav\d+|pracom\d+|\d{8})\\?$') then GUICtrlSetState($gui_type,$GUI_DISABLE)
+	if GUICtrlGetState($gui_type) == $GUI_DISABLE + $GUI_SHOW and StringRegExp(GUICtrlRead($gui_path),'(prumstav\d+|pracom\d+|merlin\d+|\d{8})\\?$') then GUICtrlSetState($gui_type,$GUI_ENABLE)
+	if GUICtrlGetState($gui_type) == $GUI_ENABLE + $GUI_SHOW and not StringRegExp(GUICtrlRead($gui_path),'(prumstav\d+|pracom\d+|merlin\d+|\d{8})\\?$') then GUICtrlSetState($gui_type,$GUI_DISABLE)
 	if $event = $button_path Then; data path
 		$logger_path = FileSelectFolder("Datalogger/Serial Directory", @HomeDrive, Default, $last)
 		if not @error then
@@ -59,8 +59,8 @@ While 1
 			GUICtrlSetData($gui_error, "Chyba: Prazdna cesta.")
 		ElseIf not FileExists(GUICtrlRead($gui_path)) Then
 			GUICtrlSetData($gui_error, "Chyba: Adresar neexistuje.")
-		elseif StringRegExp(GUICtrlRead($gui_path),"(prumstav|pracom|merlin|s3120)\\?$") then	; type solving
-			$type = StringRegExpReplace(GUICtrlRead($gui_path),".*(prumstav|pracom|merlin|s3120)\\?$","$1")
+		elseif StringRegExp(StringLower(GUICtrlRead($gui_path)),"(zth|d3120|prumstav|pracom|merlin|s3120)\\?$") then	; type solving
+			$type = StringRegExpReplace(StringLower(GUICtrlRead($gui_path)),".*(zth|d3120|prumstav|pracom|merlin|s3120)\\?$","$1")
 			$seriallist = _FileListToArray(GUICtrlRead($gui_path), Default, 2); dirs only..
 			if ubound($seriallist) < 2 then
 				GUICtrlSetData($gui_error, "Chyba: Adresar neobsahuje senzor.")
@@ -129,13 +129,15 @@ Func getCSV($type,$serial,$file)
 	local $data
 	switch $type
 		case 'prumstav'
-			$data = _GetDS100($serial,$file)
-		case 's3120'
-			$data = _GetDS3120($serial,$file)
+			$data = _GetDS100($serial, $file)
+		case 's3120','d3120','zth'
+			$data = _GetDS3120($serial, $file)
 		case 'pracom'
-			$data = _GetDL121TH($serial,$file)
+			$data = _GetDL121TH($serial, $file)
 		case 'merlin'
-			$data = _GetDLHM8($serial,$file)
+			$data = _GetDLHM8($serial, $file)
+		case 'datalogger'
+			$data = _GetDL($file)
 	EndSwitch
 	if @error then SetError(1, 0, $data)
 	return $data
@@ -144,9 +146,9 @@ EndFunc
 func getSIDarray($type,$dir)
 	local $datalist
 	switch $type
-		case 'prumstav'
+		case 'prumstav','datalogger'
 			$datalist = _FileListToArray($dir, "*.csv", 1); files only..
-		case 's3120'
+		case 's3120','d3120','zth'
 			$datalist = _FileListToArray($dir, "*.dbf", 1); files only..
 		case 'pracom'
 			$datalist = _FileListToArray($dir, "*.xls", 1); files only..
