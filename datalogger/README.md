@@ -14,7 +14,7 @@ D3120
 S3120
 
 Prumstav     prumstav\d+    *.csv
-Datalogger	\d{8}
+Datalogger   \d{8}
 
 Pracom       pracom\d+      *.xls
 Merlin       merlin\d+      *.xlsx
