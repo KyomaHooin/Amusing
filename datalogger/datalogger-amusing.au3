@@ -150,10 +150,8 @@ func getSIDarray($type,$dir)
 			$datalist = _FileListToArray($dir, "*.csv", 1); files only..
 		case 's3120','d3120','zth'
 			$datalist = _FileListToArray($dir, "*.dbf", 1); files only..
-		case 'pracom'
-			$datalist = _FileListToArray($dir, "*.xls", 1); files only..
-		case 'merlin'
-			$datalist = _FileListToArray($dir, "*.xlsx", 1); files only..
+		case 'pracom','merlin'
+			$datalist = _FileListToArray($dir, "*.xls?", 1); files only..
 	EndSwitch
 	Return $datalist
 EndFunc
