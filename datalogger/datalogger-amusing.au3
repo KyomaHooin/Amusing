@@ -101,7 +101,7 @@ While 1
 						logger($csv)
 					else
 						if export(GUICtrlRead($gui_type), $runtime, $csv) then
-							FileMove(GUICtrlRead($gui_path) & '\' & $filelist[$i], GUICtrlRead($gui_path) & $filelist[$i] & '.done')
+							FileMove(GUICtrlRead($gui_path) & '\' & $filelist[$i], GUICtrlRead($gui_path) & '\' & $filelist[$i] & '.done')
 						EndIf
 					endif
 					GUICtrlSetData($gui_progress, round( $i / (UBound($filelist) - 1) * 100)); update progress
