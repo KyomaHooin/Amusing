@@ -130,7 +130,7 @@ func dbf()
 					for $m=0 to UBound($dbf, 1) - 1; rows..
 						;dd-mm-YYYY -> YYYYmmdd HH:ii:ss -> HHmmss
 						$timestamp = StringRegExpReplace($dbf[$m][0],"^(\d{2})-(\d{2})-(\d{4})$", "$3/$2/$1") & ' ' & $dbf[$m][1]
-						$timestamp = _DateAdd('h', '-1', $timestamp); GMT+1 to UTC
+						$timestamp = _DateAdd('h', -1 + _Date_Time_GetTimeZoneInformation()[1]/60, $timestamp); Local time to UTC
 						$timestamp = StringRegExpReplace($timestamp,"^(\d{4})/(\d{2})/(\d{2}) (\d{2}):(\d{2}):(\d{2})$", "$1$2$3T$4$5$6")
 						;write data
 						FileWriteLine($csv, $sensor[$k] & ';' & 'temperature' & ';' & $dbf[$m][$k*2+3] & ';' & $timestamp ); offset 3 col
