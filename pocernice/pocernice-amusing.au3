@@ -130,7 +130,7 @@ func ds()
 			ContinueLoop
 		Endif
 		for $j=0 to UBound($sid) - 1
-			$time = _DateAdd('h', '-1', $dstime); GMT+1 to UTC and time counter reset..
+			$time = _DateAdd('h', -1 + _Date_Time_GetTimeZoneInformation()[1]/60, $dstime); Local time to UTC and time counter reset..
 			;Sauter duplicity bug
 			if $ds[$i] = 'DVZT01'  and $sid[$j] = 'N017M008' then $sid[$j] = 'B017M008'
 			if $ds[$i] = 'DVZT01'  and $sid[$j] = 'N017M009' then $sid[$j] = 'B017M009'
