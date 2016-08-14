@@ -75,10 +75,8 @@ While 1
 							$csv = getCSV($type, $seriallist[$i], GUICtrlRead($gui_path) & '\' & $seriallist[$i] & '\' & $filelist[$j])
 							if @error Then
 								logger($csv)
-							else
-								if export($type, $runtime, $csv) then
-									FileMove(GUICtrlRead($gui_path) & '\' & $seriallist[$i] & '\' & $filelist[$j], GUICtrlRead($gui_path)& '\' & $seriallist[$i] & '\' & $filelist[$j] & '.done')
-								endif
+							elseif export($type, $runtime, $csv) then
+								FileMove(GUICtrlRead($gui_path) & '\' & $seriallist[$i] & '\' & $filelist[$j], GUICtrlRead($gui_path)& '\' & $seriallist[$i] & '\' & $filelist[$j] & '.done')
 							endif
 							GUICtrlSetData($gui_progress, round( $j / (UBound($filelist) - 1) * 100)); update progress
 						next
@@ -99,10 +97,8 @@ While 1
 					$csv = getCSV(GUICtrlRead($gui_type), $serial, GUICtrlRead($gui_path) & '\' & $filelist[$i])
 					if @error then
 						logger($csv)
-					else
-						if export(GUICtrlRead($gui_type), $runtime, $csv) then
-							FileMove(GUICtrlRead($gui_path) & '\' & $filelist[$i], GUICtrlRead($gui_path) & '\' & $filelist[$i] & '.done')
-						EndIf
+					elseif export(GUICtrlRead($gui_type), $runtime, $csv) then
+						FileMove(GUICtrlRead($gui_path) & '\' & $filelist[$i], GUICtrlRead($gui_path) & '\' & $filelist[$i] & '.done')
 					endif
 					GUICtrlSetData($gui_progress, round( $i / (UBound($filelist) - 1) * 100)); update progress
 				next
