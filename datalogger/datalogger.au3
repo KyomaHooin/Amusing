@@ -22,7 +22,7 @@ func _GetDS100($serial,$file)
 		$line = StringSplit($raw[$i],",",2); no count..
 		$timestamp = StringRegExpReplace($line[1],"(\d+)\.(\d+).(\d+) (\d+):(\d+):(\d+)"," $3 $2 $1 $4 $5 $6 ")
 		$timestamp = StringRegExpReplace($timestamp," (\d) "," 0$1 "); fix lead zero..
-		$timestamp = StringRegExpReplace($timestamp," (\d+) (\d+) (\d+) (\d+) (\d+) (\d+) ","$3$2$1T$4$5$6"); to ISO..
+		$timestamp = StringRegExpReplace($timestamp," (\d+) (\d+) (\d+) (\d+) (\d+) (\d+) ","$3$2$1T$4$5$6Z"); Full ISO datetime
 		if UBound($line) = 5 then; missused CSV delimeter..
 			$data &= $serial & ';temperature;' & $line[2] & '.' & $line[3] & ';' & $timestamp & @CRLF
 			$data &= $serial & ';humidity;' & $line[4] & ';' & $timestamp & @CRLF
@@ -40,7 +40,7 @@ func _GetDS3120($serial,$file)
 	_Xbase_ReadToArray($file, $raw)
 	if @error then return SetError(1,0, "Failed to read DBF: " & $file)
 	for $i=0 to UBound($raw) - 1
-		$timestamp = StringRegExpReplace($raw[$i][0],"(\d+)-(\d+)-(\d+)","$3$1$2") & 'T' & StringRegExpReplace($raw[$i][1],"(\d+):(\d+):(\d+)","$1$2$3")
+		$timestamp = StringRegExpReplace($raw[$i][0],"(\d+)-(\d+)-(\d+)","$3$2$1") & 'T' & StringRegExpReplace($raw[$i][1],"(\d+):(\d+):(\d+)","$1$2$3") & 'Z'; Full ISO datetime
 		$data &= $serial & ';temperature;' & $raw[$i][3] & ';' & $timestamp & @CRLF
 		$data &= $serial & ';humidity;' & $raw[$i][4] & ';' & $timestamp & @CRLF
 	next
@@ -58,7 +58,7 @@ func _GetDL121TH($serial,$file)
 	while 1
 		$raw = _Excel_RangeRead($book,Default,"A" & $i & ":C" & $i); Ax:Cx
 		if not $raw[0][0] then exitloop; end of data
-		$timestamp = StringRegExpReplace($raw[0][0],"(\d\d)-(\d\d)-(\d{4}) (\d\d):(\d\d):(\d\d)","$3$2$1T$4$5$6")
+		$timestamp = StringRegExpReplace($raw[0][0],"(\d\d)-(\d\d)-(\d{4}) (\d\d):(\d\d):(\d\d)","$3$2$1T$4$5$6Z"); Full ISO datetime
 		$data &= $serial & ';temperature;' & $raw[0][1] & ';' & $timestamp & @CRLF
 		$data &= $serial & ';humidity;' & $raw[0][2] & ';' & $timestamp & @CRLF
 	WEnd
@@ -78,7 +78,7 @@ func _GetDLHM8($serial,$file)
 	while 1
 		$raw = _Excel_RangeRead($book,Default,"A" & $i & ":C" & $i); Ax:Cx
 		if not $raw[0][0] then exitloop; end of data
-		$timestamp = StringRegExpReplace($raw[0][0],"^(\d{4})(\d\d)(\d\d)","$3$2$1T120000")
+		$timestamp = StringRegExpReplace($raw[0][0],"^(\d{4})(\d\d)(\d\d)","$3$2$1T120000Z"); Full ISO datetime
 		$data &= $serial & ';temperature;' & $raw[0][2] & ';' & $timestamp & @CRLF
 		$data &= $serial & ';humidity;' & $raw[0][1] & ';' & $timestamp & @CRLF
 	wend
