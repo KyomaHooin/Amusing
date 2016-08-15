@@ -72,13 +72,14 @@ While 1
 					Else
 						GUICtrlSetState($button_export,$GUI_DISABLE); disable re-export
 						for $j=1 to UBound($filelist) - 1
+							GUICtrlSetData($gui_error, $filelist[$j])
 							$csv = getCSV($type, $seriallist[$i], GUICtrlRead($gui_path) & '\' & $seriallist[$i] & '\' & $filelist[$j])
 							if @error Then
 								logger($csv)
 							elseif export($type, $runtime, $csv) then
 								FileMove(GUICtrlRead($gui_path) & '\' & $seriallist[$i] & '\' & $filelist[$j], GUICtrlRead($gui_path)& '\' & $seriallist[$i] & '\' & $filelist[$j] & '.done')
 							endif
-							GUICtrlSetData($gui_progress, round( $j / (UBound($filelist) - 1) * 100)); update progress
+							GUICtrlSetData($gui_progress, round( $i / (UBound($seriallist) - 1) * 100)); update progress
 						next
 					Endif
 				next
@@ -94,6 +95,7 @@ While 1
 			else
 				GUICtrlSetState($button_export,$GUI_DISABLE); disable re-export
 				for $i=1 to UBound($filelist) - 1
+					GUICtrlSetData($gui_error, $filelist[$i])
 					$csv = getCSV(GUICtrlRead($gui_type), $serial, GUICtrlRead($gui_path) & '\' & $filelist[$i])
 					if @error then
 						logger($csv)
