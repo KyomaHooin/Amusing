@@ -147,7 +147,7 @@ func ds()
 					logger('Failed to find SID type mapping.')
 					ContinueLoop
 				endif
-				FileWriteLine($csv, $sid[$j] & ';' & $type & ';' & $data[$k][$j] & ';' & StringRegExpReplace($time, "^(\d{4})/(\d{2})/(\d{2}) (\d{2}):(\d{2}):(\d{2})$", "$1$2$3T$4$5$6"))
+				FileWriteLine($csv, $sid[$j] & ';' & $type & ';' & $data[$k][$j] & ';' & StringRegExpReplace($time, "^(\d{4})/(\d{2})/(\d{2}) (\d{2}):(\d{2}):(\d{2})$", "$1$2$3T$4$5$6Z")); Full ISO datetime
 				$time = _DateAdd('n', '-15', $time)
 			next
 		next
