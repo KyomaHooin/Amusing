@@ -38,13 +38,13 @@ try:
 				pattern = re.compile('^.* \*.(.)#T(\d\d)(\d)H(\d\d)(\d)L(\d\d)(\d)B(\d)(\d\d).*$')
 				if re.match(pattern, data):# rubbish..
 					PAYLOAD+=(re.sub(pattern,'\\1;temperature;\\2.\\3;'
-						+ time.strftime("%Y%m%dT%H%M%S",time.gmtime()), data)
+						+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data)
 						+ re.sub(pattern,'\\1;humidity;\\4.\\5;'
-						+ time.strftime("%Y%m%dT%H%M%S",time.gmtime()), data)
+						+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data)
 						+ re.sub(pattern,'\\1;light;\\6.\\7;'
-						+ time.strftime("%Y%m%dT%H%M%S",time.gmtime()), data)
+						+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data)
 						+ re.sub(pattern,'\\1;battery;\\8.\\9;'
-						+ time.strftime("%Y%m%dT%H%M%S",time.gmtime()), data))
+						+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data))
 			s.close()
 		except serial.SerialException:
 			LOG.write('Serial error.\n')
