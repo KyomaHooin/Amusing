@@ -131,7 +131,7 @@ func dbf()
 						;dd-mm-YYYY -> YYYYmmdd HH:ii:ss -> HHmmss
 						$timestamp = StringRegExpReplace($dbf[$m][0],"^(\d{2})-(\d{2})-(\d{4})$", "$3/$2/$1") & ' ' & $dbf[$m][1]
 						$timestamp = _DateAdd('h', '-1', $timestamp); GMT+1 to UTC
-						$timestamp = StringRegExpReplace($timestamp,"^(\d{4})/(\d{2})/(\d{2}) (\d{2}):(\d{2}):(\d{2})$", "$1$2$3T$4$5$6")
+						$timestamp = StringRegExpReplace($timestamp,"^(\d{4})/(\d{2})/(\d{2}) (\d{2}):(\d{2}):(\d{2})$", "$1$2$3T$4$5$6Z"); Full ISO datetime
 						;write data
 						FileWriteLine($csv, $sensor[$k] & ';' & 'temperature' & ';' & $dbf[$m][$k*2+3] & ';' & $timestamp ); offset 3 col
 						FileWriteLine($csv, $sensor[$k] & ';' & 'humidity' & ';' & $dbf[$m][$k*2+4] & ';' & $timestamp ); offset 4 col
