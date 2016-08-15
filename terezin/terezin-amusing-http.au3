@@ -138,7 +138,7 @@ func sql()
 						;YYYYmmddHHiiss -> ISO: YYYYMMDDThhmmss
 						$timestamp = StringRegExpReplace($data_row[0],"^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$", "$1/$2/$3 $4:$5:$6")
 						$timestamp = _DateAdd('h', -1 + _Date_Time_GetTimeZoneInformation()[1]/60, $timestamp); Local time to UTC
-						$timestamp = StringRegExpReplace($timestamp,"^(\d{4})/(\d{2})/(\d{2}) (\d{2}):(\d{2}):(\d{2})$", "$1$2$3T$4$5$6")
+						$timestamp = StringRegExpReplace($timestamp,"^(\d{4})/(\d{2})/(\d{2}) (\d{2}):(\d{2}):(\d{2})$", "$1$2$3T$4$5$6Z"); Full ISO datetime
 						;write data
 						FileWriteLine($csv, $sensor[$i] & ';' & $data_row[1] & ';' & $timestamp)
 					endif
