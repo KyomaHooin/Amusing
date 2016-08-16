@@ -83,10 +83,9 @@ try:
 		if int(time.strftime("%M")) % 15 == 1: CALL=True
 		# cleanup archive
 		for old in os.listdir(RAMDISK + 'archive'):
-			old_full=RAMDISK + 'archive/' + old
-			if os.path.getmtime(old_full) < (time.time() - 1814400):# 3 week old
+			if os.path.getmtime(RAMDISK + 'archive/' + old) < (time.time() - 1814400):# 3 week old
 				try:
-					os.remove(old_full)
+					os.remove(RAMDISK + 'archive/' + old)
 				except OSError:
 					LOG.write('Failed to remove archive ' + old + '.\n')
 except Exception as e:
