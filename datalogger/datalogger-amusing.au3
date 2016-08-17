@@ -61,17 +61,17 @@ While 1
 				GUICtrlSetData($gui_error, "Chyba: Adresar neobsahuje data.")
 			else
 				for $i=1 to UBound($filelist) - 1
-					$serial = StringRegExpReplace($filelist[$i],".*\\(.*)\\.*$","$1");parent directory
+					$serial = StringRegExpReplace($filelist[$i], ".*\\(.*)\\.*$", "$1"); parent directory
 					GUICtrlSetData($gui_error, StringRegExpReplace($filelist[$i], ".*\\(.*)$", "$1"))
 					GUICtrlSetData($gui_progress, round( $i / (UBound($filelist) - 1) * 100)); update progress
-					$csv = getCSV(GUICtrlRead($gui_type),$serial, $filelist[$i])
+					$csv = getCSV(GUICtrlRead($gui_type), $serial, $filelist[$i])
 					if @error Then
 						logger($csv)
 					elseif export(GUICtrlRead($gui_type), $runtime, $csv) then
 						FileMove($filelist[$i], $filelist[$i] & '.done')
 					endif
 				next
-				GUICtrlSetData($gui_progress,0); clear progress
+				GUICtrlSetData($gui_progress, 0); clear progress
 				GUICtrlSetData($gui_error, "Hotovo!")
 			endif
 		endif
@@ -109,13 +109,13 @@ func getSIDarray($type,$dir)
 	local $datalist
 	switch $type
 		case 'prumstav','datalogger'
-			$datalist = _FileListToArrayRec($dir,'*.csv',1,1,Default,2); recursion, files only, fullpath..
+			$datalist = _FileListToArrayRec($dir, '*.csv', 1, 1, Default, 2); recursion, files only, fullpath..
 		case 's3120','d3120','zth'
-			$datalist = _FileListToArrayRec($dir,'*.dbf',1,1,Default,2); recursion, files only, fullpath..
+			$datalist = _FileListToArrayRec($dir, '*.dbf', 1, 1, Default, 2); recursion, files only, fullpath..
 		case 'pracom'
-			$datalist = _FileListToArrayRec($dir,'*.xls',1,1,Default,2); recursion, files only, fullpath..
+			$datalist = _FileListToArrayRec($dir,'*.xls', 1, 1, Default, 2); recursion, files only, fullpath..
 		case 'merlin'
-			$datalist = _FileListToArrayRec($dir,'*.xlsx',1,1,Default,2); recursion, files only, fullpath..
+			$datalist = _FileListToArrayRec($dir, '*.xlsx', 1, 1, Default, 2); recursion, files only, fullpath..
 	EndSwitch
 	Return $datalist
 EndFunc
