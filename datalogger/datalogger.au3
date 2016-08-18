@@ -20,9 +20,9 @@ func _GetDS100($serial,$file)
 	if @error then return SetError(1,0, "Failed to read CSV: " & $file)
 	for $i=1 to UBound($raw) - 1; skip first line..
 		$line = StringSplit($raw[$i],",",2); no count..
-		$timestamp = StringRegExpReplace($line[1],"(\d+)\.(\d+).(\d+) (\d+):(\d+):(\d+)"," $3 $2 $1 $4 $5 $6 ")
-		$timestamp = StringRegExpReplace($timestamp," (\d) "," 0$1 "); fix lead zero..
-		$timestamp = StringRegExpReplace($timestamp," (\d+) (\d+) (\d+) (\d+) (\d+) (\d+) ","$3$2$1T$4$5$6Z"); Full ISO datetime
+		$timestamp = StringRegExpReplace($line[1], "(\d+)\.(\d+).(\d+) (\d+):(\d+):(\d+)", "$3 $2 $1 $4 $5 $6")
+		$timestamp = StringRegExpReplace($timestamp, "(?<!\d)(\d)(?!\d)", "0$1"); fix lead zero..
+		$timestamp = StringRegExpReplace($timestamp,"(\d+) (\d+) (\d+) (\d+) (\d+) (\d+)", "$1$2$3T$4$5$6Z"); Full ISO datetime
 		if UBound($line) = 5 then; missused CSV delimeter..
 			$data &= $serial & ';temperature;' & $line[2] & '.' & $line[3] & ';' & $timestamp & @CRLF
 			$data &= $serial & ';humidity;' & $line[4] & ';' & $timestamp & @CRLF
