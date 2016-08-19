@@ -36,6 +36,7 @@ $gui_progress = GUICtrlCreateProgress(6, 38, 338, 16)
 $gui_error = GUICtrlCreateLabel("", 8, 65, 168, 15)
 $button_export = GUICtrlCreateButton("Export", 188, 63, 75, 21)
 $button_exit = GUICtrlCreateButton("Konec", 270, 63, 75, 21)
+
 ;GUI INIT
 GUICtrlSetData($gui_type,"s3120|prumstav|pracom|merlin|zth|d3120|datalogger","s3120")
 GUICtrlSetState($gui_path,$GUI_FOCUS)
