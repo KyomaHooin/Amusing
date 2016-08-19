@@ -26,12 +26,12 @@ $last = FileReadLine(@scriptdir & '\' & $location & '-amusing.log', -1); history
 logger(@CRLF & "Program start: " & $runtime)
 
 ;GUI
-$gui = GUICreate("Datalogger v 1.2", 351, 91)
+$gui = GUICreate("Datalogger v 1.3", 351, 91)
 $gui_type = GUICtrlCreateCombo("", 6, 8, 75,25, 0x003); no edit
 $gui_path = GUICtrlCreateInput($last, 87, 8, 175, 21)
 $button_path = GUICtrlCreateButton("Prochazet", 270, 8, 75, 21)
 $gui_progress = GUICtrlCreateProgress(6, 38, 338, 16)
-$gui_error = GUICtrlCreateLabel("", 8, 65, 168, 17)
+$gui_error = GUICtrlCreateLabel("", 8, 65, 168, 15)
 $button_export = GUICtrlCreateButton("Export", 188, 63, 75, 21)
 $button_exit = GUICtrlCreateButton("Konec", 270, 63, 75, 21)
 
@@ -61,17 +61,17 @@ While 1
 				GUICtrlSetData($gui_error, "Chyba: Adresar neobsahuje data.")
 			else
 				for $i=1 to UBound($filelist) - 1
-					$serial = StringRegExpReplace($filelist[$i], ".*\\(.*)\\.*$", "$1"); parent directory
+					$serial = StringRegExpReplace($filelist[$i], ".*\\(.*)\\.*$", "$1");parent directory
 					GUICtrlSetData($gui_error, StringRegExpReplace($filelist[$i], ".*\\(.*)$", "$1"))
 					GUICtrlSetData($gui_progress, round( $i / (UBound($filelist) - 1) * 100)); update progress
 					$csv = getCSV(GUICtrlRead($gui_type), $serial, $filelist[$i])
 					if @error Then
 						logger($csv)
-					elseif export(GUICtrlRead($gui_type), $runtime, $csv) then
+					elseif export(GUICtrlRead($gui_type), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv) then
 						FileMove($filelist[$i], $filelist[$i] & '.done')
 					endif
 				next
-				GUICtrlSetData($gui_progress, 0); clear progress
+				GUICtrlSetData($gui_progress,0); clear progress
 				GUICtrlSetData($gui_error, "Hotovo!")
 			endif
 		endif
@@ -111,9 +111,9 @@ func getSIDarray($type,$dir)
 		case 'prumstav','datalogger'
 			$datalist = _FileListToArrayRec($dir, '*.csv', 1, 1, Default, 2); recursion, files only, fullpath..
 		case 's3120','d3120','zth'
-			$datalist = _FileListToArrayRec($dir, '*.dbf', 1, 1, Default, 2); recursion, files only, fullpath..
+			$datalist = _FileListToArrayRec($dir, '*.dbf',1,1,Default,2); recursion, files only, fullpath..
 		case 'pracom'
-			$datalist = _FileListToArrayRec($dir,'*.xls', 1, 1, Default, 2); recursion, files only, fullpath..
+			$datalist = _FileListToArrayRec($dir, '*.xls', 1, 1, Default, 2); recursion, files only, fullpath..
 		case 'merlin'
 			$datalist = _FileListToArrayRec($dir, '*.xlsx', 1, 1, Default, 2); recursion, files only, fullpath..
 	EndSwitch
