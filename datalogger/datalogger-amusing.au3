@@ -7,6 +7,7 @@
 
 ;INCLUDE
 #include <GUIConstantsEx.au3>
+#include <GUIComboBox.au3>
 #include <GUIEdit.au3>
 #include <Datalogger.au3>
 #include <ZLIB.au3>
@@ -22,7 +23,8 @@ if UBound(ProcessList(@ScriptName)) > 2 then Exit
 ;LOGGING
 $logfile = FileOpen(@scriptdir & '\' & $location & '-amusing.log', 1); append..
 if @error then exit; silent exit..
-$last = FileReadLine(@scriptdir & '\' & $location & '-amusing.log', -1); history..
+$history = FileReadLine(@scriptdir & '\' & $location & '-amusing.log', -1)
+$last = StringRegExpReplace($history, "(.*)\|.*", "$1"); last dir..
 logger(@CRLF & "Program start: " & $runtime)
 
 ;GUI
@@ -34,11 +36,11 @@ $gui_progress = GUICtrlCreateProgress(6, 38, 338, 16)
 $gui_error = GUICtrlCreateLabel("", 8, 65, 168, 15)
 $button_export = GUICtrlCreateButton("Export", 188, 63, 75, 21)
 $button_exit = GUICtrlCreateButton("Konec", 270, 63, 75, 21)
-
 ;GUI INIT
 GUICtrlSetData($gui_type,"s3120|prumstav|pracom|merlin|zth|d3120|datalogger","s3120")
 GUICtrlSetState($gui_path,$GUI_FOCUS)
 _GUICtrlEdit_SetSel($gui_path,-1,-1)
+_GUICtrlComboBox_SetCurSel($gui_type, StringRegExpReplace($history, ".*\|(\d)", "$1"))
 GUISetState(@SW_SHOW)
 
 While 1
@@ -78,8 +80,7 @@ While 1
 	endif
 	If $event = $GUI_EVENT_CLOSE or $event = $button_exit then
 		logger("Program end.")
-		if GUICtrlRead($gui_path) then FileWrite($logfile, GUICtrlRead($gui_path)); history..
-		if not GUICtrlRead($gui_path) then FileWrite($logfile, @CRLF); no history..
+		FileWrite($logfile, GUICtrlRead($gui_path) & '|' & _GUICtrlComboBox_GetCurSel($gui_type)); history..
 		FileClose($logfile)
 		Exit; exit
 	endif
