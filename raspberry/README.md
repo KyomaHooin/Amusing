@@ -6,6 +6,8 @@ Collect 868Mhz AVR RF sensor temperature/humidity data and transport GZIP compre
 INSTALL
 
 <pre>
+apt-get install imagemagick bc
+
 mkdir -p /root/amusing/ramdisk
 mount -t tmpfs -o size=32m tmpfs /root/amusing/ramdisk
 
