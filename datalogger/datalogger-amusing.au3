@@ -88,7 +88,6 @@ While 1
 WEnd
 
 ;FUNC
-
 Func getCSV($type,$serial,$file)
 	local $data
 	switch $type
