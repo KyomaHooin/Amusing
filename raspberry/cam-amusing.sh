@@ -55,9 +55,9 @@ mv $PREFIX2-05.jpeg $RAMDISK/img/cam2.jpeg
 
 if [ "$VALUE1" -a "$VALUE2" ]; then
 	echo -e "archa_box2_cam1;phototrapvalue;$VALUE1;$ISO\n\
-archa-box2-cam1;phototrapimg;$(base64 -w0 $RAMDISK/img/cam1.jpeg);$ISO" | /bin/gzip > $PREFIX1.csv.gz
+archa_box2_cam1;phototrapimg;$(base64 -w0 $RAMDISK/img/cam1.jpeg);$ISO" | /bin/gzip > $PREFIX1.csv.gz
 	echo -e "archa_box2_cam2;phototrapvalue;$VALUE2;$ISO\n\
-archa-box2-cam2;phototrapimg;$(base64 -w0 $RAMDISK/img/cam2.jpeg);$ISO" | /bin/gzip > $PREFIX2.csv.gz
+archa_box2_cam2;phototrapimg;$(base64 -w0 $RAMDISK/img/cam2.jpeg);$ISO" | /bin/gzip > $PREFIX2.csv.gz
 	mv $PREFIX1.csv.gz $RAMDISK/http
 	mv $PREFIX2.csv.gz $RAMDISK/http
 fi
