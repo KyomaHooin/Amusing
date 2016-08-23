@@ -1,14 +1,15 @@
 #!/bin/bash
 
-ISO=`date +%Y%m%dT%H%M%SZ`
+ISO=$(date -u +%Y%m%dT%H%M%SZ)
+RUNTIME=$(date +%Y%m%dT%H%M%S)
 
 MAXDIFF=0
 MINDIFF=10000
 
-ROOT='/root/amusing/ramdisk'
+RAMDISK='/root/amusing/ramdisk'
 
-PREFIX1="$ROOT/img/archabox2cam1-$ISO"
-PREFIX2="$ROOT/img/archabox2cam2-$ISO"
+PREFIX1="$RAMDISK/img/archabox2cam1-$RUNTIME"
+PREFIX2="$RAMDISK/img/archabox2cam2-$RUNTIME"
 
 #----------------
 
@@ -40,24 +41,26 @@ echo 'g200' > /dev/AVR
 /usr/bin/streamer -c /dev/video0 -t 5 -r 2 -s 800x600 -o $PREFIX1-01.jpeg 2>/dev/null
 /usr/bin/streamer -c /dev/video1 -t 5 -r 2 -s 800x600 -o $PREFIX2-01.jpeg 2>/dev/null
 
-rm $ROOT/img/*-{01..04}.jpeg
+rm $RAMDISK/img/*-{01..04}.jpeg
 
-if [ -f "$ROOT/img/cam1.jpeg" -a -f "$ROOT/img/cam2.jpeg" ]; then
-	VALUE1=$(compare $ROOT/img/cam1.jpeg $PREFIX1-05.jpeg)
-	VALUE2=$(compare $ROOT/img/cam2.jpeg $PREFIX2-05.jpeg)
+if [ -f "$RAMDISK/img/cam1.jpeg" -a -f "$RAMDISK/img/cam2.jpeg" ]; then
+	VALUE1=$(compare $RAMDISK/img/cam1.jpeg $PREFIX1-05.jpeg)
+	VALUE2=$(compare $RAMDISK/img/cam2.jpeg $PREFIX2-05.jpeg)
 fi
 
-mv $PREFIX1-05.jpeg $ROOT/img/cam1.jpeg
-mv $PREFIX2-05.jpeg $ROOT/img/cam2.jpeg
+mv $PREFIX1-05.jpeg $RAMDISK/img/cam1.jpeg
+mv $PREFIX2-05.jpeg $RAMDISK/img/cam2.jpeg
 
 if [ "$VALUE1" -a "$VALUE2" ]; then
 	echo -e "archa-box2-cam1;phototrapvalue;$VALUE1;$ISO\n\
-archa-box2-cam1;phototrapimg;$(base64 -w0 $ROOT/img/cam1.jpeg);$ISO\n" | /bin/gzip > $PREFIX1.csv.gz
+archa-box2-cam1;phototrapimg;$(base64 -w0 $RAMDISK/img/cam1.jpeg);$ISO" | /bin/gzip > $PREFIX1.csv.gz
 	echo -e "archa-box2-cam2;phototrapvalue;$VALUE2;$ISO\n\
-archa-box2-cam2;phototrapimg;$(base64 -w0 $ROOT/img/cam2.jpeg);$ISO\n" | /bin/gzip > $PREFIX2.csv.gz
-	mv $PREFIX1.csv.gz $ROOT/http
-	mv $PREFIX2.csv.gz $ROOT/http
+archa-box2-cam2;phototrapimg;$(base64 -w0 $RAMDISK/img/cam2.jpeg);$ISO" | /bin/gzip > $PREFIX2.csv.gz
+	mv $PREFIX1.csv.gz $RAMDISK/http
+	mv $PREFIX2.csv.gz $RAMDISK/http
 fi
 
 echo 'g0' >  /dev/AVR
 
+wget -q -t 1 -O /dev/null --header="X-Location:archabox2cam1-$RUNTIME" --post-file=$RAMDISK/http/archabox2cam1-$RUNTIME.csv.gz  http://10.10.19.44/sensors/rawcam.php
+wget -q -t 1 -O /dev/null --header="X-Location:archabox2cam2-$RUNTIME" --post-file=$RAMDISK/http/archabox2cam2-$RUNTIME.csv.gz  http://10.10.19.44/sensors/rawcam.php
