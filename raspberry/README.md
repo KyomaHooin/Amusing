@@ -1,7 +1,7 @@
 
 DESCRIPTION
 
-Collect 868Mhz AVR RF sensor temperature/humidity data and transport GZIP compressed CSV over HTTP.
+Collect 868Mhz AVR RF sensor temperature/humidity & camera data and transport GZIP compressed CSV over HTTP.
 
 INSTALL
 
