@@ -64,5 +64,5 @@ fi
 
 echo 'g0' >  /dev/AVR
 
-wget -q -t 1 -O /dev/null --header="X-Location:archa-$RUNTIME" --post-file=$RAMDISK/http/archabox2cam1-$RUNTIME.csv.gz  http://10.10.19.44/sensors/rawcam.php
-wget -q -t 1 -O /dev/null --header="X-Location:archa-$RUNTIME" --post-file=$RAMDISK/http/archabox2cam2-$RUNTIME.csv.gz  http://10.10.19.44/sensors/rawcam.php
+wget -q -t 1 -O /dev/null --header="X-Location:archa-$RUNTIME"01 --post-file=$RAMDISK/http/archabox2cam1-$RUNTIME.csv.gz  http://10.10.19.44/sensors/rawcam.php
+wget -q -t 1 -O /dev/null --header="X-Location:archa-$RUNTIME"02 --post-file=$RAMDISK/http/archabox2cam2-$RUNTIME.csv.gz  http://10.10.19.44/sensors/rawcam.php
