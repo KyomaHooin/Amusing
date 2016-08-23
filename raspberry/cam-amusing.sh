@@ -36,6 +36,8 @@ function compare() {
 
 #----------------
 
+mkdir $RAMDISK/img 2>/dev/null
+
 echo 'g200' > /dev/AVR
 
 /usr/bin/streamer -c /dev/video0 -t 5 -r 2 -s 800x600 -o $PREFIX1-01.jpeg 2>/dev/null
