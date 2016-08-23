@@ -28,7 +28,7 @@ tmpfs	/var/run	tmpfs	defaults,noatime,nosuid,mode=0755,size=2m	0	0
 
 iface wlan0 inet dhcp
 	wpa-ssid nm-private
-	wpa-psk ******************************************* <- wpa_passphrase
+	wpa-psk *******************************************
 
 /etc/udev/rules.d/23-usb-serial.rules:
 
@@ -41,6 +41,7 @@ FILE
 
 <pre>
 rpi-amusing.py - Main program.
+cam-amusing.sh - USB camera program.
       firewall - Simple restrictive firewall(performance issues).
 </pre>
 
