@@ -11,6 +11,10 @@ apt-get install imagemagick bc
 mkdir -p /root/amusing/ramdisk
 mount -t tmpfs -o size=32m tmpfs /root/amusing/ramdisk
 
+/etc/crontab:
+
+40 23	* * *	root	/root/amusing/cam-amusing.sh > /dev/null 2>&1
+
 /etc/fstab:
 
 tmpfs	/root/amusing/ramdisk   tmpfs   nodev,nosuid,size=32M   0       0
