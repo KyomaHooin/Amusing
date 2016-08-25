@@ -20,15 +20,15 @@ function compare() {
 			/usr/bin/convert $1 -crop 150x150+$i+$j /tmp/crop1.jpeg
 			/usr/bin/convert $2 -crop 150x150+$i+$j /tmp/crop2.jpeg
 
-			diff=$(/usr/bin/convert \
+			DIFF=$(/usr/bin/convert \
 				/tmp/crop1.jpeg /tmp/crop2.jpeg \
 				-compose Difference \
 				-composite \
 				-colorspace gray \
 				-format '%[fx:mean*100]' info:)
 		
-			if (( $(echo "$MAXDIFF < $diff" | bc) )); then MAXDIFF=$diff; fi
-			if (( $(echo "$MINDIFF > $diff" | bc) )); then MINDIFF=$diff; fi
+			if (( $(echo "$MAXDIFF < $DIFF" | bc) )); then MAXDIFF=$DIFF; fi
+			if (( $(echo "$MINDIFF > $DIFF" | bc) )); then MINDIFF=$DIFF; fi
 		done
 	done
 	echo $(echo "$MAXDIFF - $MINDIFF" | bc | sed -r 's/^(-?)\./\10\./')
