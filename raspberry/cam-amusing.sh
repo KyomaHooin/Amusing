@@ -8,8 +8,8 @@ MINDIFF=10000
 
 RAMDISK='/root/amusing/ramdisk'
 
-PREFIX1="$RAMDISK/img/archabox2cam1-$RUNTIME"
-PREFIX2="$RAMDISK/img/archabox2cam2-$RUNTIME"
+PREFIX1="$RAMDISK/img/archa-$RUNTIME"01
+PREFIX2="$RAMDISK/img/archa-$RUNTIME"02
 
 #----------------
 
