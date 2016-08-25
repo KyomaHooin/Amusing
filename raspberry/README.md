@@ -6,7 +6,7 @@ Collect 868Mhz AVR RF sensor temperature/humidity & camera data and transport GZ
 INSTALL
 
 <pre>
-apt-get install imagemagick bc
+apt-get install imagemagick bc streamer
 
 mkdir -p /root/amusing/ramdisk
 mount -t tmpfs -o size=32m tmpfs /root/amusing/ramdisk
