@@ -25,7 +25,7 @@ tmpfs	/var/run	tmpfs	defaults,noatime,nosuid,mode=0755,size=2m	0	0
 
 /etc/rc.local:
 
-ip addr add 192.168.x.x dev eth0 2>/dev/null
+ip addr add 192.168.11.x dev eth0 2>/dev/null
 /root/amusing/rpi-amusing.py &
 /root/firewall &
 
