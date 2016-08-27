@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# A4 TECH HD PC Camera processing
+#
 
 ISO=$(date -u +%Y%m%dT%H%M%SZ)
 RUNTIME=$(date +%Y%m%dT%H%M%S)
