@@ -44,6 +44,8 @@ mkdir $RAMDISK/http 2>/dev/null
 
 echo 'g200' > /dev/AVR
 
+sleep 5
+
 /usr/bin/streamer -c /dev/video0 -t 5 -r 2 -s 800x600 -o $PREFIX1-01.jpeg 2>/dev/null
 /usr/bin/streamer -c /dev/video1 -t 5 -r 2 -s 800x600 -o $PREFIX2-01.jpeg 2>/dev/null
 
