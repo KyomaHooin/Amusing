@@ -61,6 +61,7 @@ func _GetDL121TH($serial,$file)
 		$timestamp = StringRegExpReplace($raw[0][0],"(\d\d)-(\d\d)-(\d{4}) (\d\d):(\d\d):(\d\d)","$3$2$1T$4$5$6Z"); Full ISO datetime
 		$data &= $serial & ';temperature;' & $raw[0][1] & ';' & $timestamp & @CRLF
 		$data &= $serial & ';humidity;' & $raw[0][2] & ';' & $timestamp & @CRLF
+		$i+=1
 	WEnd
 	_Excel_BookClose($book)
 	_Excel_Close($excel)
@@ -81,6 +82,7 @@ func _GetDLHM8($serial,$file)
 		$timestamp = StringRegExpReplace($raw[0][0],"^(\d{4})(\d\d)(\d\d)","$3$2$1T120000Z"); Full ISO datetime
 		$data &= $serial & ';temperature;' & $raw[0][2] & ';' & $timestamp & @CRLF
 		$data &= $serial & ';humidity;' & $raw[0][1] & ';' & $timestamp & @CRLF
+		$i+=1
 	wend
 	_Excel_BookClose($book)
 	_Excel_Close($excel)
