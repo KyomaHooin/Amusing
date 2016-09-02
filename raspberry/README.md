@@ -39,7 +39,14 @@ iface wlan0 inet dhcp
 
 SUBSYSTEM=="tty", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", SYMLINK+="AVR"
 
+/etc/udev/rules.d/42-usb-cam.rules:
+
+KERNEL=="video*" SUBSYSTEM=="video4linux", KERNELS=="1-1.4", SYMLINK+="video-cam0"
+KERNEL=="video*" SUBSYSTEM=="video4linux", KERNELS=="1-1.5", SYMLINK+="video-cam1"
+
 udevadm trigger
+
+
 </pre>
 
 FILE
