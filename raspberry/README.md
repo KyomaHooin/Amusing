@@ -45,8 +45,6 @@ KERNEL=="video*" SUBSYSTEM=="video4linux", KERNELS=="1-1.4", SYMLINK+="video-cam
 KERNEL=="video*" SUBSYSTEM=="video4linux", KERNELS=="1-1.5", SYMLINK+="video-cam1"
 
 udevadm trigger
-
-
 </pre>
 
 FILE
