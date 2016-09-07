@@ -46,18 +46,18 @@ echo 'g200' > /dev/AVR
 
 sleep 5
 
-/usr/bin/streamer -c /dev/video-cam1 -t 5 -r 2 -s 800x600 -o $PREFIX1-01.jpeg 2>/dev/null
-/usr/bin/streamer -c /dev/video-cam0 -t 5 -r 2 -s 800x600 -o $PREFIX2-01.jpeg 2>/dev/null
+/usr/bin/streamer -c /dev/video-cam1 -t 10 -r 2 -s 800x600 -o $PREFIX1-01.jpeg 2>/dev/null
+/usr/bin/streamer -c /dev/video-cam0 -t 10 -r 2 -s 800x600 -o $PREFIX2-01.jpeg 2>/dev/null
 
-rm $RAMDISK/img/*-{01..04}.jpeg
+rm $RAMDISK/img/*-{01..09}.jpeg
 
 if [ -f "$RAMDISK/img/cam1.jpeg" -a -f "$RAMDISK/img/cam2.jpeg" ]; then
-	VALUE1=$(compare $RAMDISK/img/cam1.jpeg $PREFIX1-05.jpeg)
-	VALUE2=$(compare $RAMDISK/img/cam2.jpeg $PREFIX2-05.jpeg)
+	VALUE1=$(compare $RAMDISK/img/cam1.jpeg $PREFIX1-10.jpeg)
+	VALUE2=$(compare $RAMDISK/img/cam2.jpeg $PREFIX2-10.jpeg)
 fi
 
-mv $PREFIX1-05.jpeg $RAMDISK/img/cam1.jpeg
-mv $PREFIX2-05.jpeg $RAMDISK/img/cam2.jpeg
+mv $PREFIX1-10.jpeg $RAMDISK/img/cam1.jpeg
+mv $PREFIX2-10.jpeg $RAMDISK/img/cam2.jpeg
 
 if [ "$VALUE1" -a "$VALUE2" ]; then
 	echo -e "archa_box2_cam1;phototrapvalue;$VALUE1;$ISO\n\
