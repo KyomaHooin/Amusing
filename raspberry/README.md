@@ -6,7 +6,7 @@ Collect 868Mhz AVR RF sensor temperature/humidity & A4 TECH HD PC Camera data an
 INSTALL
 
 <pre>
-apt-get install imagemagick bc streamer
+apt-get install imagemagick bc streamer watchdog
 
 mkdir -p /root/amusing/ramdisk
 mount -t tmpfs -o size=32m tmpfs /root/amusing/ramdisk
@@ -45,6 +45,17 @@ KERNEL=="video*" SUBSYSTEM=="video4linux", KERNELS=="1-1.4", SYMLINK+="video-cam
 KERNEL=="video*" SUBSYSTEM=="video4linux", KERNELS=="1-1.5", SYMLINK+="video-cam1"
 
 udevadm trigger
+
+/etc/modules:
+
+snd-bcm2835
+i2c-dev
+rtc_ds1307
+bcm2708_wdog
+
+/etc/watchdog.conf:
+
+watchdog-device = /dev/watchdog
 </pre>
 
 FILE
