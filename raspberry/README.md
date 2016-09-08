@@ -56,6 +56,8 @@ bcm2708_wdog
 /etc/watchdog.conf:
 
 watchdog-device = /dev/watchdog
+
+update-rc.d watchdog enable
 </pre>
 
 FILE
