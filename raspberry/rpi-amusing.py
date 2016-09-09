@@ -14,7 +14,7 @@
 
 import httplib,serial,socket,time,gzip,sys,os,re
 
-LOCATION='archa1'
+LOCATION='archa'
 PAYLOAD=''
 RAMDISK='/root/amusing/ramdisk/'
 CALL=True
@@ -51,7 +51,7 @@ try:
 		if int(time.strftime("%M")) % 15 == 0 and CALL: # 15 min interval..
 			CALL=False
 			try:	# GZIP + PAYLOAD
-				GZIP_FILE=RAMDISK + 'http/' + LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S") + '.csv.gz'
+				GZIP_FILE=RAMDISK + 'http/' + LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S") + '10.csv.gz'
 				gzip.open(GZIP_FILE, 'ab').write(PAYLOAD)
 			except IOError:
 				LOG.write('Failed to gzip payload.\n')
