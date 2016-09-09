@@ -46,8 +46,10 @@ echo 'g200' > /dev/AVR
 
 sleep 5
 
-/usr/bin/streamer -c /dev/video-cam1 -t 10 -r 2 -s 800x600 -o $PREFIX1-01.jpeg 2>/dev/null
-/usr/bin/streamer -c /dev/video-cam0 -t 10 -r 2 -s 800x600 -o $PREFIX2-01.jpeg 2>/dev/null
+for i in $(echo '01 02 03 04 05 06 07 08 09 10'); do
+	/usr/bin/streamer -c /dev/video-cam1 -r 2 -s 800x600 -o $PREFIX1-$i.jpeg 2>/dev/null
+	/usr/bin/streamer -c /dev/video-cam0 -r 2 -s 800x600 -o $PREFIX2-$i.jpeg 2>/dev/null
+done
 
 rm $RAMDISK/img/*-{01..09}.jpeg
 
