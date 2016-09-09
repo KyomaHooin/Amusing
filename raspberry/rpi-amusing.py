@@ -14,7 +14,7 @@
 
 import httplib,serial,socket,time,gzip,sys,os,re
 
-LOCATION='archa'
+LOCATION='archa1'
 PAYLOAD=''
 RAMDISK='/root/amusing/ramdisk/'
 CALL=True
@@ -62,7 +62,7 @@ try:
 					LOG.write('Fail to read ' + PACK + '.\n')
 				try:	# HTTP
 					HEADER={'Content-type':'application/octet-stream',
-						'X-Location':re.sub('^(' + LOCATION + '-.*)\.csv\.gz$','\\1', PACK)}
+						'X-Location':re.sub('^(.*)\.csv\.gz$','\\1', PACK)}
 					c=httplib.HTTPConnection('amusing.nm.cz', '80', timeout=10)
 					c.request('POST', '[removed]', GZIP, HEADER)
 					r=c.getresponse()
