@@ -52,17 +52,15 @@ func _GetDL121TH($serial,$file)
 	local $raw, $data
 	$excel = _Excel_Open(False); excel instance
 	if @error then return SetError(1,0, "Failed to create XLS object: " & $file)
-	$book = _Excel_BookOpen($excel,$file, True); invisible read only..
+	$book = _Excel_BookOpen($excel, $file, True); invisible read only..
 	if @error then return SetError(1,0, "Failed to open XLS workbook for " & $file)
-	$i=5; from 5th line
-	while 1
-		$raw = _Excel_RangeRead($book,Default,"A" & $i & ":C" & $i); Ax:Cx
-		if not $raw[0][0] then exitloop; end of data
-		$timestamp = StringRegExpReplace($raw[0][0],"(\d\d)-(\d\d)-(\d{4}) (\d\d):(\d\d):(\d\d)","$3$2$1T$4$5$6Z"); Full ISO datetime
-		$data &= $serial & ';temperature;' & $raw[0][1] & ';' & $timestamp & @CRLF
-		$data &= $serial & ';humidity;' & $raw[0][2] & ';' & $timestamp & @CRLF
-		$i+=1
-	WEnd
+	$raw = _Excel_RangeRead($book,Default,"A5:C256"); Ax:Cx
+	if @error then return SetError(1,0, "Failed to read RANGE for " & $file)
+	for $i = 0 to UBound($raw) - 1
+		$timestamp = StringRegExpReplace($raw[$i][0],"(\d\d)-(\d\d)-(\d{4}) (\d\d):(\d\d):(\d\d)","$3$2$1T$4$5$6Z"); Full ISO datetime
+		$data &= $serial & ';temperature;' & $raw[$i][1] & ';' & $timestamp & @CRLF
+		$data &= $serial & ';humidity;' & $raw[$i][2] & ';' & $timestamp & @CRLF
+	next
 	_Excel_BookClose($book)
 	_Excel_Close($excel)
 	return $data
@@ -73,17 +71,15 @@ func _GetDLHM8($serial,$file)
 	local $raw, $data
 	$excel = _Excel_Open(False); excel instance
 	if @error then return SetError(1,0, "Failed to create XLS object: " & $file)
-	$book = _Excel_BookOpen($excel,$file, True); invisible read only..
+	$book = _Excel_BookOpen($excel, $file, True); invisible read only..
 	if @error then return SetError(1,0, "Failed to open XLS workbook for " & $file)
-	$i=6; from 6th line
-	while 1
-		$raw = _Excel_RangeRead($book,Default,"A" & $i & ":C" & $i); Ax:Cx
-		if not $raw[0][0] then exitloop; end of data
-		$timestamp = StringRegExpReplace($raw[0][0],"^(\d{4})(\d\d)(\d\d)","$3$2$1T120000Z"); Full ISO datetime
-		$data &= $serial & ';temperature;' & $raw[0][2] & ';' & $timestamp & @CRLF
-		$data &= $serial & ';humidity;' & $raw[0][1] & ';' & $timestamp & @CRLF
-		$i+=1
-	wend
+	$raw = _Excel_RangeRead($book,Default,"A6:C256"); Ax:Cx
+	if @error then return SetError(1,0, "Failed to read RANGE for " & $file)
+	for $i = 0 to UBound($raw) - 1
+		$timestamp = StringRegExpReplace($raw[$i][0],"^(\d{4})(\d\d)(\d\d)","$3$2$1T120000Z"); Full ISO datetime
+		$data &= $serial & ';temperature;' & $raw[$i][2] & ';' & $timestamp & @CRLF
+		$data &= $serial & ';humidity;' & $raw[$i][1] & ';' & $timestamp & @CRLF
+	next
 	_Excel_BookClose($book)
 	_Excel_Close($excel)
 	return $data
