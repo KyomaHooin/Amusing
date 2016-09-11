@@ -1,7 +1,7 @@
 
 DESCRIPTION
 
-Collect 868Mhz AVR RF sensor temperature/humidity & A4 TECH HD PC Camera data and transport GZIP compressed CSV over HTTP.
+Collect 868Mhz AVR sensor temperature/humidity & A4 TECH HD PC Camera data and transport GZIP compressed CSV over HTTP.
 
 INSTALL
 
@@ -48,9 +48,6 @@ udevadm trigger
 
 /etc/modules:
 
-snd-bcm2835
-i2c-dev
-rtc_ds1307
 bcm2708_wdog
 
 /etc/watchdog.conf:
@@ -63,7 +60,7 @@ update-rc.d watchdog enable
 FILE
 
 <pre>
-rpi-amusing.py - Main program.
+rpi-amusing.py - AVR program.
 cam-amusing.sh - USB camera program.
       firewall - Simple restrictive firewall(performance issues).
 </pre>
