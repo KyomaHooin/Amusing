@@ -55,7 +55,7 @@ func _GetDL121TH($serial,$file)
 	$book = _Excel_BookOpen($excel, $file, True); invisible read only..
 	if @error then return SetError(1,0, "Failed to open XLS workbook for " & $file)
 	$raw = _Excel_RangeRead($book,Default,"A5:C256"); Ax:Cx
-	if @error then return SetError(1,0, "Failed to read RANGE for " & $file)
+	if @error then return SetError(1,0, "Failed to read XLS for " & $file)
 	for $i = 0 to UBound($raw) - 1
 		$timestamp = StringRegExpReplace($raw[$i][0],"(\d\d)-(\d\d)-(\d{4}) (\d\d):(\d\d):(\d\d)","$3$2$1T$4$5$6Z"); Full ISO datetime
 		$data &= $serial & ';temperature;' & $raw[$i][1] & ';' & $timestamp & @CRLF
@@ -74,7 +74,7 @@ func _GetDLHM8($serial,$file)
 	$book = _Excel_BookOpen($excel, $file, True); invisible read only..
 	if @error then return SetError(1,0, "Failed to open XLS workbook for " & $file)
 	$raw = _Excel_RangeRead($book,Default,"A6:C256"); Ax:Cx
-	if @error then return SetError(1,0, "Failed to read RANGE for " & $file)
+	if @error then return SetError(1,0, "Failed to read XLS for " & $file)
 	for $i = 0 to UBound($raw) - 1
 		$timestamp = StringRegExpReplace($raw[$i][0],"^(\d{4})(\d\d)(\d\d)","$3$2$1T120000Z"); Full ISO datetime
 		$data &= $serial & ';temperature;' & $raw[$i][2] & ';' & $timestamp & @CRLF
