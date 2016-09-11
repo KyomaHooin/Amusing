@@ -53,7 +53,7 @@ done
 
 rm $RAMDISK/img/*-{01..09}.jpeg 2>/dev/null
 
-if [ -f "$PREFIX1-10.jpeg" -a -f "$PREFIX2-10.jpeg"]; then
+if [ -f "$PREFIX1-10.jpeg" -a -f "$PREFIX2-10.jpeg" ]; then
 	echo "archa_box2_cam1;phototrapimg;$(base64 -w0 $PREFIX1-10.jpeg);$ISO" | /bin/gzip > $PREFIX1.csv.gz
 	echo "archa_box2_cam2;phototrapimg;$(base64 -w0 $PREFIX2-10.jpeg);$ISO" | /bin/gzip > $PREFIX2.csv.gz
 
