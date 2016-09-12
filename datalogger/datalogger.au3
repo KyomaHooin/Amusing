@@ -1,5 +1,5 @@
 ;
-;  DL-121TH & S3120 parser by Richard Bruna
+;  DL-121TH / S3120 / DS100 / HM8 datalogger parser
 ;
 ; _GetDS100 ............... Convert Fine Offset Electronic DS100 datalogger TSV export to CSV buffer
 ; _GetDS3120 .............. Convert Comet S3120/ZTH/D3120 datalogger DBF export to CSV buffer
