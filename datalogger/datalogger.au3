@@ -50,13 +50,14 @@ EndFunc
 ;Volcraft DL121-TH manual data to CSV data
 func _GetDL121TH($serial,$file)
 	local $raw, $data
-	$excel = _Excel_Open(False); excel instance
+	$excel = _Excel_Open(False, Default, False, False, True); excel instance visible, alert, update, interact, force
 	if @error then return SetError(1,0, "Failed to create XLS object: " & $file)
 	$book = _Excel_BookOpen($excel, $file, True); invisible read only..
 	if @error then return SetError(1,0, "Failed to open XLS workbook for " & $file)
 	$raw = _Excel_RangeRead($book,Default,"A5:C256"); Ax:Cx
 	if @error then return SetError(1,0, "Failed to read XLS for " & $file)
 	for $i = 0 to UBound($raw) - 1
+		if $raw[$i][0] = '' then exitLoop
 		$timestamp = StringRegExpReplace($raw[$i][0],"(\d\d)-(\d\d)-(\d{4}) (\d\d):(\d\d):(\d\d)","$3$2$1T$4$5$6Z"); Full ISO datetime
 		$data &= $serial & ';temperature;' & $raw[$i][1] & ';' & $timestamp & @CRLF
 		$data &= $serial & ';humidity;' & $raw[$i][2] & ';' & $timestamp & @CRLF
@@ -69,13 +70,14 @@ EndFunc
 ;Merlin HM8 manual data to CSV data
 func _GetDLHM8($serial,$file)
 	local $raw, $data
-	$excel = _Excel_Open(False); excel instance
+	$excel = _Excel_Open(False, Default, False, False, True); excel instance visible, alert, update, interact, force
 	if @error then return SetError(1,0, "Failed to create XLS object: " & $file)
 	$book = _Excel_BookOpen($excel, $file, True); invisible read only..
 	if @error then return SetError(1,0, "Failed to open XLS workbook for " & $file)
 	$raw = _Excel_RangeRead($book,Default,"A6:C256"); Ax:Cx
 	if @error then return SetError(1,0, "Failed to read XLS for " & $file)
 	for $i = 0 to UBound($raw) - 1
+		if $raw[$i][0] = '' then exitloop
 		$timestamp = StringRegExpReplace($raw[$i][0],"^(\d{4})(\d\d)(\d\d)","$3$2$1T120000Z"); Full ISO datetime
 		$data &= $serial & ';temperature;' & $raw[$i][2] & ';' & $timestamp & @CRLF
 		$data &= $serial & ';humidity;' & $raw[$i][1] & ';' & $timestamp & @CRLF
