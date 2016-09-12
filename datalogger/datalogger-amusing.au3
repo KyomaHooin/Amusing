@@ -28,7 +28,7 @@ $last = StringRegExpReplace($history, "(.*)\|.*", "$1"); last dir..
 logger(@CRLF & "Program start: " & $runtime)
 
 ;GUI
-$gui = GUICreate("Datalogger v 1.3", 351, 91)
+$gui = GUICreate("Datalogger v 1.4", 351, 91)
 $gui_type = GUICtrlCreateCombo("", 6, 8, 75,25, 0x003); no edit
 $gui_path = GUICtrlCreateInput($last, 87, 8, 175, 21)
 $button_path = GUICtrlCreateButton("Prochazet", 270, 8, 75, 21)
@@ -110,13 +110,13 @@ func getSIDarray($type,$dir)
 	local $datalist
 	switch $type
 		case 'prumstav','datalogger'
-			$datalist = _FileListToArrayRec($dir, '*.csv', 1, 1, Default, 2); recursion, files only, fullpath..
+			$datalist = _FileListToArrayRec($dir, '*.csv', 1, 1, 1, 2); recursion, files only, fullpath, sorted..
 		case 's3120','d3120','zth'
-			$datalist = _FileListToArrayRec($dir, '*.dbf',1,1,Default,2); recursion, files only, fullpath..
+			$datalist = _FileListToArrayRec($dir, '*.dbf', 1, 1, 1, 2); recursion, files only, fullpath, sorted..
 		case 'pracom'
-			$datalist = _FileListToArrayRec($dir, '*.xls', 1, 1, Default, 2); recursion, files only, fullpath..
+			$datalist = _FileListToArrayRec($dir, '*.xls', 1, 1, 1, 2); recursion, files only, fullpath, sorted..
 		case 'merlin'
-			$datalist = _FileListToArrayRec($dir, '*.xlsx', 1, 1, Default, 2); recursion, files only, fullpath..
+			$datalist = _FileListToArrayRec($dir, '*.xlsx', 1, 1, 1, 2); recursion, files only, fullpath, sorted..
 	EndSwitch
 	Return $datalist
 EndFunc
