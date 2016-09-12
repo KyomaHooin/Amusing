@@ -6,6 +6,7 @@
 ; _GetDL121TH ............. Convert Volcraft DL121-TH datalogger manual XLS to CSV buffer
 ; _GetDLH8 ................ Convert Merlin HM8 datalogger manual XSLX to CSV buffer
 ; _GetDL .................. Preformated generic datalogger file "as is" to buffer
+;
 
 #include <File.au3>
 #include <Xbase.au3>
@@ -53,9 +54,9 @@ func _GetDL121TH($serial,$file)
 	$excel = _Excel_Open(False, Default, False, False, True); excel instance visible, alert, update, interact, force
 	if @error then return SetError(1,0, "Failed to create XLS object: " & $file)
 	$book = _Excel_BookOpen($excel, $file, True); invisible read only..
-	if @error then return SetError(1,0, "Failed to open XLS workbook for " & $file)
+	if @error then return SetError(1,0, "Failed to open XLS workbooks: " & $file)
 	$raw = _Excel_RangeRead($book,Default,"A5:C256"); Ax:Cx
-	if @error then return SetError(1,0, "Failed to read XLS for " & $file)
+	if @error then return SetError(1,0, "Failed to read XLS: " & $file)
 	for $i = 0 to UBound($raw) - 1
 		if $raw[$i][0] = '' then exitLoop
 		$timestamp = StringRegExpReplace($raw[$i][0],"(\d\d)-(\d\d)-(\d{4}) (\d\d):(\d\d):(\d\d)","$3$2$1T$4$5$6Z"); Full ISO datetime
@@ -73,9 +74,9 @@ func _GetDLHM8($serial,$file)
 	$excel = _Excel_Open(False, Default, False, False, True); excel instance visible, alert, update, interact, force
 	if @error then return SetError(1,0, "Failed to create XLS object: " & $file)
 	$book = _Excel_BookOpen($excel, $file, True); invisible read only..
-	if @error then return SetError(1,0, "Failed to open XLS workbook for " & $file)
+	if @error then return SetError(1,0, "Failed to open XLS workbook: " & $file)
 	$raw = _Excel_RangeRead($book,Default,"A6:C256"); Ax:Cx
-	if @error then return SetError(1,0, "Failed to read XLS for " & $file)
+	if @error then return SetError(1,0, "Failed to read XLS: " & $file)
 	for $i = 0 to UBound($raw) - 1
 		if $raw[$i][0] = '' then exitloop
 		$timestamp = StringRegExpReplace($raw[$i][0],"^(\d{4})(\d\d)(\d\d)","$3$2$1T120000Z"); Full ISO datetime
