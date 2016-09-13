@@ -62,10 +62,10 @@ if [ -f "$PREFIX1-10.jpeg" -a -f "$PREFIX2-10.jpeg" ]; then
 		VALUE2=$(compare $RAMDISK/img/cam2.jpeg $PREFIX2-10.jpeg)
 	fi
 
-	echo -e "archa_box2_cam1;phototrapimg;$(base64 -w0 $PREFIX1-10.jpeg);$ISO\n\
-archa_box2_cam1;phototrapvalue;$VALUE1;$ISO" | /bin/gzip > $PREFIX1.csv.gz
-	echo -e "archa_box2_cam2;phototrapimg;$(base64 -w0 $PREFIX2-10.jpeg);$ISO\n\
-archa_box2_cam2;phototrapvalue;$VALUE2;$ISO" | /bin/gzip > $PREFIX2.csv.gz
+	echo -e "archa_box1_cam1;phototrapimg;$(base64 -w0 $PREFIX1-10.jpeg);$ISO\n\
+archa_box1_cam1;phototrapvalue;$VALUE1;$ISO" | /bin/gzip > $PREFIX1.csv.gz
+	echo -e "archa_box1_cam2;phototrapimg;$(base64 -w0 $PREFIX2-10.jpeg);$ISO\n\
+archa_box1_cam2;phototrapvalue;$VALUE2;$ISO" | /bin/gzip > $PREFIX2.csv.gz
 
 	mv $PREFIX1-10.jpeg $RAMDISK/img/cam1.jpeg
 	mv $PREFIX2-10.jpeg $RAMDISK/img/cam2.jpeg
