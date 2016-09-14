@@ -6,9 +6,6 @@
 ISO=$(date -u +%Y%m%dT%H%M%SZ)
 RUNTIME=$(date +%Y%m%dT%H%M%S)
 
-VALUE1=0
-VALUE2=0
-
 MAXDIFF=0
 MINDIFF=10000
 
@@ -58,21 +55,20 @@ rm $RAMDISK/img/*-{01..09}.jpeg 2>/dev/null
 
 if [ -f "$PREFIX1-10.jpeg" -a -f "$PREFIX2-10.jpeg" ]; then
 	if [ -f "$RAMDISK/img/cam1.jpeg" -a -f "$RAMDISK/img/cam2.jpeg" ]; then
-		VALUE1=$(compare $RAMDISK/img/cam1.jpeg $PREFIX1-10.jpeg)
-		VALUE2=$(compare $RAMDISK/img/cam2.jpeg $PREFIX2-10.jpeg)
+		cat <<- EOL | /bin/gzip > $PREFIX1.csv.gz
+			archa_box1_cam1;phototrapvalue;$(compare $RAMDISK/img/cam1.jpeg $PREFIX1-10.jpeg);${ISO}
+			archa_box1_cam2;phototrapvalue;$(compare $RAMDISK/img/cam2.jpeg $PREFIX2-10.jpeg);${ISO}
+		EOL
 	fi
-
-	echo -e "archa_box1_cam1;phototrapimg;$(base64 -w0 $PREFIX1-10.jpeg);$ISO\n\
-archa_box1_cam1;phototrapvalue;$VALUE1;$ISO" | /bin/gzip > $PREFIX1.csv.gz
-	echo -e "archa_box1_cam2;phototrapimg;$(base64 -w0 $PREFIX2-10.jpeg);$ISO\n\
-archa_box1_cam2;phototrapvalue;$VALUE2;$ISO" | /bin/gzip > $PREFIX2.csv.gz
-
+	cat <<- EOL | /bin/gzip > $PREFIX2.csv.gz
+		archa_box1_cam1;phototrapimg;$(base64 -w0 $PREFIX1-10.jpeg);${ISO}
+		archa_box1_cam2;phototrapimg;$(base64 -w0 $PREFIX2-10.jpeg);${ISO}
+	EOL
 	mv $PREFIX1-10.jpeg $RAMDISK/img/cam1.jpeg
 	mv $PREFIX2-10.jpeg $RAMDISK/img/cam2.jpeg
 fi
 
-mv $PREFIX1.csv.gz $RAMDISK/http 2>/dev/null
-mv $PREFIX2.csv.gz $RAMDISK/http 2>/dev/null
+mv $RAMDISK/img/*.gz $RAMDISK/http 2>/dev/null
 
 echo 'g0' >  /dev/AVR
 
