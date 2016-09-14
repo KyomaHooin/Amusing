@@ -39,8 +39,7 @@ function compare() {
 
 #----------------
 
-mkdir $RAMDISK/img 2>/dev/null
-mkdir $RAMDISK/http 2>/dev/null
+mkdir $RAMDISK/img $RAMDISK/http 2>/dev/null
 
 echo 'g200' > /dev/AVR
 
