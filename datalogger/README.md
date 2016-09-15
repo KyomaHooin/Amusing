@@ -9,6 +9,7 @@ FILE
 <pre>
 datalogger-amusing.au3 - Main program.
         datalogger.au3 - Logger parser.
+             Excel.au3 - Fixed XLS library.
              Xbase.au3 - FoxBase+/dBase III DBF library by A.R.T. Jonkers.
               ZLIB.au3 - De/compression library by "Ward".
         datalogger.ico - Icon file.
