@@ -71,7 +71,7 @@ While 1
 					if @error Then
 						logger($csv)
 					elseif export(GUICtrlRead($gui_type), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv) then
-						FileMove($filelist[$i], $filelist[$i] & '.done')
+						FileMove($filelist[$i], $filelist[$i] & '.done', 1); overwrite
 					endif
 				next
 				GUICtrlSetData($gui_progress,0); clear progress
