@@ -4,6 +4,18 @@ DESCRIPTION
 
 Parse data from DS100, S3120, D3120, ZTH, DL-121DH, HM8 datalogger to CSV and transport GZIP payload over HTTP.
 
+<pre>
+X-Location:
+<table><tr><td>
+prumstav
+pracom
+merlin
+s3120
+d3120
+zth
+</td></tr></table>
+</pre>
+
 FILE
 
 <pre>
