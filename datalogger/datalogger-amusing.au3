@@ -69,16 +69,11 @@ While 1
 					$csv = getCSV(GUICtrlRead($gui_type), StringRegExpReplace($filelist[$i], ".*\\(.*)\\.*$", "$1"), $filelist[$i])
 					if @error then
 						logger($csv)
-					elseif GUICtrlRead($gui_type) = 'datalogger' then
-						$export = export(StringRegExpReplace($filelist[$i],".*\\(.*)-.*$","$1"), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
-					else
-						$export = export(GUICtrlRead($gui_type), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
+						continueloop
 					endif
-					if @error then
-						logger($export)
-					else
-						FileMove($filelist[$i], $filelist[$i] & '.done', 1); overwrite
-					endif
+					if GUICtrlRead($gui_type) = 'datalogger' then export(StringRegExpReplace($filelist[$i],".*\\(.*)-.*$","$1"), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
+					if GUICtrlRead($gui_type) <> 'datalogger' then export(GUICtrlRead($gui_type), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
+					if @error then FileMove($filelist[$i], $filelist[$i] & '.done', 1); overwrite
 				next
 				GUICtrlSetData($gui_progress,0); clear progress
 				GUICtrlSetData($gui_error, "Hotovo!")
@@ -131,22 +126,25 @@ Func export($type,$timestamp,$data)
 	$http_error_handler = ObjEvent("AutoIt.Error", "get_http_error"); register COM error handler
 	$http = ObjCreate("winhttp.winhttprequest.5.1"); HTTP object instance
 	if @error then
-		Return SetError(1,0,"HTTP failed to create session.")
+		logger("HTTP failed to create session.")
+		return
 	else
 		$payload = _ZLIB_GZCompress($data)
 		if @error then
-			Return SetError(1,0,"Failed to create payload.")
+			logger("Failed to create payload.")
+			return
 		else
 			$http.open("POST","[removed]", False); No async HTTP..
 			$http.SetRequestHeader("X-Location", $type & '-' & $timestamp)
 			$http.Send($payload)
 			if @error or $http.Status <> 200 then
-					Return SetError(1,0,"Payload HTTP transfer failed.")
+					logger("Payload HTTP transfer failed.")
+					return
 			endif
 		EndIf
 	endif
 	$http_error_handler = ""; Unregister COM error handler
-	return
+	return SetError(1,0,"Transport succeed.")
 EndFunc
 
 func get_http_error()
