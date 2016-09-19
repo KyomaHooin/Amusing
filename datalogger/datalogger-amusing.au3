@@ -69,11 +69,14 @@ While 1
 					$csv = getCSV(GUICtrlRead($gui_type), StringRegExpReplace($filelist[$i], ".*\\(.*)\\.*$", "$1"), $filelist[$i])
 					if @error then
 						logger($csv)
-						continueloop
+					else
+						if GUICtrlRead($gui_type) = 'datalogger' then
+							export(StringRegExpReplace($filelist[$i],".*\\(.*)-.*$","$1"), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
+						else
+							export(GUICtrlRead($gui_type), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
+						endif
+						if @error then FileMove($filelist[$i], $filelist[$i] & '.done', 1); overwrite
 					endif
-					if GUICtrlRead($gui_type) = 'datalogger' then export(StringRegExpReplace($filelist[$i],".*\\(.*)-.*$","$1"), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
-					if GUICtrlRead($gui_type) <> 'datalogger' then export(GUICtrlRead($gui_type), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
-					if @error then FileMove($filelist[$i], $filelist[$i] & '.done', 1); overwrite
 				next
 				GUICtrlSetData($gui_progress,0); clear progress
 				GUICtrlSetData($gui_error, "Hotovo!")
