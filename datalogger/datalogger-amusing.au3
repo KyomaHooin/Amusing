@@ -28,7 +28,7 @@ $last = StringRegExpReplace($history, "(.*)\|.*", "$1"); last dir..
 logger(@CRLF & "Program start: " & $runtime)
 
 ;GUI
-$gui = GUICreate("Datalogger v 1.4", 351, 91)
+$gui = GUICreate("Datalogger v 1.5", 351, 91)
 $gui_type = GUICtrlCreateCombo("", 6, 8, 75,25, 0x003); no edit
 $gui_path = GUICtrlCreateInput($last, 87, 8, 175, 21)
 $button_path = GUICtrlCreateButton("Prochazet", 270, 8, 75, 21)
@@ -64,13 +64,19 @@ While 1
 				GUICtrlSetData($gui_error, "Chyba: Adresar neobsahuje data.")
 			else
 				for $i=1 to UBound($filelist) - 1
-					$serial = StringRegExpReplace($filelist[$i], ".*\\(.*)\\.*$", "$1");parent directory
 					GUICtrlSetData($gui_error, StringRegExpReplace($filelist[$i], ".*\\(.*)$", "$1"))
 					GUICtrlSetData($gui_progress, round( $i / (UBound($filelist) - 1) * 100)); update progress
-					$csv = getCSV(GUICtrlRead($gui_type), $serial, $filelist[$i])
-					if @error Then
+					$csv = getCSV(GUICtrlRead($gui_type), StringRegExpReplace($filelist[$i], ".*\\(.*)\\.*$", "$1"), $filelist[$i])
+					if @error then
 						logger($csv)
-					elseif export(GUICtrlRead($gui_type), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv) then
+					elseif GUICtrlRead($gui_type) = 'datalogger' then
+						$export = export(StringRegExpReplace($filelist[$i],".*\\(.*)-.*$","$1"), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
+					else
+						$export = export(GUICtrlRead($gui_type), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
+					endif
+					if @error then
+						logger($export)
+					else
 						FileMove($filelist[$i], $filelist[$i] & '.done', 1); overwrite
 					endif
 				next
@@ -125,25 +131,22 @@ Func export($type,$timestamp,$data)
 	$http_error_handler = ObjEvent("AutoIt.Error", "get_http_error"); register COM error handler
 	$http = ObjCreate("winhttp.winhttprequest.5.1"); HTTP object instance
 	if @error then
-		logger("HTTP failed to create session.")
-		return
+		Return SetError(1,0,"HTTP failed to create session.")
 	else
 		$payload = _ZLIB_GZCompress($data)
 		if @error then
-			logger("Failed to create payload.")
-			return
+			Return SetError(1,0,"Failed to create payload.")
 		else
 			$http.open("POST","[removed]", False); No async HTTP..
 			$http.SetRequestHeader("X-Location", $type & '-' & $timestamp)
 			$http.Send($payload)
 			if @error or $http.Status <> 200 then
-				logger("Payload HTTP transfer failed.")
-				return
+					Return SetError(1,0,"Payload HTTP transfer failed.")
 			endif
 		EndIf
 	endif
 	$http_error_handler = ""; Unregister COM error handler
-	Return SetError(1,0,"Transport succeed.")
+	return
 EndFunc
 
 func get_http_error()
