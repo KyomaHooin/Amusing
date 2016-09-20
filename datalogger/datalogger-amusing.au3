@@ -70,11 +70,8 @@ While 1
 					if @error then
 						logger($csv)
 					else
-						if GUICtrlRead($gui_type) = 'datalogger' then
-							export(StringRegExpReplace($filelist[$i],".*\\(.*)-.*$","$1"), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
-						else
-							export(GUICtrlRead($gui_type), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
-						endif
+						if GUICtrlRead($gui_type) = 'datalogger' and StringRegExp($filelist[$i],".*\\.*-.*$") then export(StringRegExpReplace($filelist[$i],".*\\(.*)-.*$","$1"), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
+						if GUICtrlRead($gui_type) <> 'datalogger' then export(GUICtrlRead($gui_type), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
 						if @error then FileMove($filelist[$i], $filelist[$i] & '.done', 1); overwrite
 					endif
 				next
