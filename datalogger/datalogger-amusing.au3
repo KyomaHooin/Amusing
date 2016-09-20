@@ -66,13 +66,20 @@ While 1
 				for $i=1 to UBound($filelist) - 1
 					GUICtrlSetData($gui_error, StringRegExpReplace($filelist[$i], ".*\\(.*)$", "$1"))
 					GUICtrlSetData($gui_progress, round( $i / (UBound($filelist) - 1) * 100)); update progress
-					$csv = getCSV(GUICtrlRead($gui_type), StringRegExpReplace($filelist[$i], ".*\\(.*)\\.*$", "$1"), $filelist[$i])
-					if @error then
-						logger($csv)
+					if GUICtrlRead($gui_type) = 'datalogger' and not StringRegExp($filelist[$i],".*\\.*-.*$") then
+						logger("Invalid file name: " & StringRegExpReplace($filelist[$i], ".*\\(.*)$", "$1"))
 					else
-						if GUICtrlRead($gui_type) = 'datalogger' and StringRegExp($filelist[$i],".*\\.*-.*$") then export(StringRegExpReplace($filelist[$i],".*\\(.*)-.*$","$1"), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
-						if GUICtrlRead($gui_type) <> 'datalogger' then export(GUICtrlRead($gui_type), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
-						if @error then FileMove($filelist[$i], $filelist[$i] & '.done', 1); overwrite
+						$csv = getCSV(GUICtrlRead($gui_type), StringRegExpReplace($filelist[$i], ".*\\(.*)\\.*$", "$1"), $filelist[$i])
+						if @error then
+							logger($csv)
+						else
+							if GUICtrlRead($gui_type) = 'datalogger' then
+								export(StringRegExpReplace($filelist[$i],".*\\(.*)-.*$","$1"), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
+							else
+								export(GUICtrlRead($gui_type), $runtime & StringRegExpReplace($i,"(?<!\d)(\d)(?!\d)","0$1"), $csv)
+							endif
+							if @error then FileMove($filelist[$i], $filelist[$i] & '.done', 1); overwrite
+						endif
 					endif
 				next
 				GUICtrlSetData($gui_progress,0); clear progress
