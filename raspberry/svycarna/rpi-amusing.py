@@ -29,7 +29,7 @@ try:
 		if int(time.strftime("%M")) % 5 == 0 and TOKEN:# 5 min data interval..
 			try:# DHT
 				cmd = os.system(DHT)
-				if cmd == 0:
+				if cmd == 0: # shell return value
 					try:
 						data = open('/tmp/dht','r')
 						if data.read() != '':# empty..
@@ -43,12 +43,11 @@ try:
 						LOG.write('Failed to read DHT data file.' + '\n')
 				else:
 					LOG.write('Failed to call DHT binary.' + '\n')
-		#Reset transport token..
-		if int(time.strftime("%M")) % 5 == 1: TOKEN=True
-		if int(time.strftime("%M")) % 15 == 0 and CALL: # 15 min interval..
+		if int(time.strftime("%M")) % 5 == 1: TOKEN=True # reset transport token..
+		if int(time.strftime("%M")) % 15 == 0 and CALL: # 15 min http interval..
 			CALL=False
 			try:	# GZIP + PAYLOAD
-				GZIP_FILE=RAMDISK + 'http/' + LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S") + '10.csv.gz'
+				GZIP_FILE=RAMDISK + 'http/' + LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S") + '30.csv.gz'
 				gzip.open(GZIP_FILE, 'ab').write(PAYLOAD)
 			except IOError:
 				LOG.write('Failed to gzip payload.\n')
