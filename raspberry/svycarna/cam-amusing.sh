@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#  ? Camera processing
+#  ?
 #
 
 ISO=$(date -u +%Y%m%dT%H%M%SZ)
