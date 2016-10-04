@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Transport GZIP serial data over HTTP.
+# DHT22 GPIO
 #
 # DATA[5min]: 'Temperature 23.5C, Humidity: 54.5%'
 #
