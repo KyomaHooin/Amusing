@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# A4 TECH HD PC Camera processing
+# A4 TECH HD PC Camera [0ac8:3500]
 #
 
 ISO=$(date -u +%Y%m%dT%H%M%SZ)
