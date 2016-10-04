@@ -53,11 +53,11 @@ rm $RAMDISK/img/*-{01..09}.jpeg 2>/dev/null
 if [ -f "$PREFIX-10.jpeg" ]; then
 	if [ -f "$RAMDISK/img/cam.jpeg" ]; then
 		cat <<- EOL | /bin/gzip > $PREFIX.csv.gz
-			svycarna_box_cam;phototrapvalue;$(compare $RAMDISK/img/cam.jpeg $PREFIX-10.jpeg);${ISO}
+			svycarna_box;phototrapvalue;$(compare $RAMDISK/img/cam.jpeg $PREFIX-10.jpeg);${ISO}
 		EOL
 	fi
 	cat <<- EOL | /bin/gzip > $PREFIX.csv.gz
-		svycarna_box_cam;phototrapimg;$(base64 -w0 $PREFIX-10.jpeg);${ISO}
+		svycarna_box;phototrapimg;$(base64 -w0 $PREFIX-10.jpeg);${ISO}
 	EOL
 	mv $PREFIX-10.jpeg $RAMDISK/img/cam.jpeg
 fi
