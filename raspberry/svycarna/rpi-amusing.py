@@ -35,10 +35,10 @@ try:
 					if data != '':# empty..
 						pattern = re.compile('^.*(\d\d).(\d)C.*(\d\d).(\d)%.*$')
 						if re.match(pattern, data):# rubbish..
-    			                                   PAYLOAD+=(re.sub(pattern, 'svycarna_box;temperature;\\1.\\2;'
-                        	               			+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data)
-                                               			+ re.sub(pattern, 'svycarna_box;humidity;\\3.\\4;'
-                                          			+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data))
+							PAYLOAD+=(re.sub(pattern, 'svycarna_box;temperature;\\1.\\2;'
+							+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data)
+							+ re.sub(pattern, 'svycarna_box;humidity;\\3.\\4;'
+							+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data))
 				except IOError:
 					LOG.write('Failed to read DHT data file.' + '\n')
 			else:
