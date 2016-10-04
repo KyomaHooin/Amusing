@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Transport GZIP serial data over HTTP.
+# 868Mhz AVR + PL2303
 #
 # DATA[5min]:
 #
