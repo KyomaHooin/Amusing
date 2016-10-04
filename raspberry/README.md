@@ -1,9 +1,9 @@
 
 DESCRIPTION
 
-Collect 868Mhz AVR sensor temperature/humidity & A4 TECH HD PC Camera data and transport GZIP compressed CSV over HTTP.
+Collect temperature, humidity & camera data and transport GZIP compressed CSV over HTTP.
 
-INSTALL
+RPI
 
 <pre>
 apt-get install imagemagick bc streamer watchdog
@@ -60,6 +60,8 @@ update-rc.d watchdog enable
 FILE
 
 <pre>
+     svycarna/ - Local mod.
+
 rpi-amusing.py - AVR program.
 cam-amusing.sh - USB camera program.
       firewall - Simple restrictive firewall(performance issues).
