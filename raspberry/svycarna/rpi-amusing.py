@@ -27,22 +27,22 @@ try:
 		sys.exit(1)
 	while 1:
 		if int(time.strftime("%M")) % 5 == 0 and TOKEN:# 5 min data interval..
-			try:# DHT
-				cmd = os.system(DHT)
-				if cmd == 0: # shell return value
-					try:
-						data = open('/tmp/dht','r')
-						if data.read() != '':# empty..
-							pattern = re.compile('^.*(\d\d).(\d)C.*(\d\d).(\d)%$'
-							if re.match(pattern, data):# rubbish..
-    			                                    PAYLOAD+=(re.sub(pattern, location + ';temperature;\\2.\\3;'
-                                          			+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data)
-                                               			+ re.sub(pattern, location + ';humidity;\\4.\\5;'
-                                          			+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data)
-					except IOError:
-						LOG.write('Failed to read DHT data file.' + '\n')
-				else:
-					LOG.write('Failed to call DHT binary.' + '\n')
+			TOKEN=False
+			cmd = os.system(DHT)# DHT
+			if cmd == 0: # shell return value
+				try:
+					data = open('/tmp/dht','r').read()
+					if data != '':# empty..
+						pattern = re.compile('^.*(\d\d).(\d)C.*(\d\d).(\d)%.*$')
+						if re.match(pattern, data):# rubbish..
+    			                                   PAYLOAD+=(re.sub(pattern, location + ';temperature;\\1.\\2;'
+                        	               			+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data)
+                                               			+ re.sub(pattern, location + ';humidity;\\3.\\4;'
+                                          			+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data))
+				except IOError:
+					LOG.write('Failed to read DHT data file.' + '\n')
+			else:
+				LOG.write('Failed to call DHT binary.' + '\n')
 		if int(time.strftime("%M")) % 5 == 1: TOKEN=True # reset transport token..
 		if int(time.strftime("%M")) % 15 == 0 and CALL: # 15 min http interval..
 			CALL=False
