@@ -1,8 +1,4 @@
 
-DESCRIPTION
-
-Collect temperature, humidity & camera data and transport GZIP compressed CSV over HTTP.
-
 RPI
 
 <pre>
@@ -60,11 +56,8 @@ update-rc.d watchdog enable
 FILE
 
 <pre>
-     svycarna/ - Local mod.
-
 rpi-amusing.py - AVR program.
 cam-amusing.sh - USB camera program.
-      firewall - Simple restrictive firewall(performance issues).
 </pre>
 
 CONTACT
