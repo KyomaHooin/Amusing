@@ -1,7 +1,9 @@
 #!/bin/bash
 #
-#  ?
+# UVC 1.00 device FULL HD 1080P Webcam (0bda:58b0)
 #
+
+INTENSITY=400
 
 ISO=$(date -u +%Y%m%dT%H%M%SZ)
 RUNTIME=$(date +%Y%m%dT%H%M%S)
@@ -40,7 +42,9 @@ function compare() {
 
 mkdir $RAMDISK/img $RAMDISK/http 2>/dev/null
 
-#echo 'g200' > /dev/AVR
+/usr/local/bin/gpio export 18 out
+/usr/local/bin/gpio mode 1 pwm
+/usr/local/bin/gpio pwm 1 $INTENSITY
 
 sleep 5
 
@@ -64,5 +68,7 @@ fi
 
 mv $RAMDISK/img/*.gz $RAMDISK/http 2>/dev/null
 
-#echo 'g0' >  /dev/AVR
+/usr/local/bin/gpio mode 1 out
+/usr/local/bin/gpio write 1 0
+/usr/local/bin/gpio unexport 18
 
