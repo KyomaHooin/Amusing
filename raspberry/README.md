@@ -6,7 +6,7 @@ Collect temperature, humidity & camera data and transport GZIP compressed CSV ov
 EXPORT FORMAT
 
 <pre>
-rpi-[UTC ISO][BOX SUFFIX].csv.gz .....rpi-20161005T173000<font color='red'>21</font>.csv
+rpi-[UTC ISO][BOX SUFFIX].csv.gz
 </pre>
 
 FILE
