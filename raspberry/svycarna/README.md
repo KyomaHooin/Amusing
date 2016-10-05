@@ -50,6 +50,8 @@ FILE
 <pre>
 rpi-amusing.py - DHT program.
 cam-amusing.sh - USB camera program.
+      getDHT.c - DHT22 source by Dom & Gert.
+        getDHT - Precompiled ARM binary.
 </pre>
 
 CONTACT
