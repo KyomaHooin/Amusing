@@ -1,8 +1,4 @@
 
-DESCRIPTION
-
-Collect temperature, humidity & camera data and transport GZIP compressed CSV over HTTP.
-
 RPI
 
 <pre>
