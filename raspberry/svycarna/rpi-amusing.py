@@ -5,12 +5,12 @@
 # DATA[5min]: 'Temperature 23.5C, Humidity: 54.5%'
 #
 
-import httplib,serial,socket,time,gzip,sys,os,re
+import httplib,socket,time,gzip,sys,os,re
 
 LOCATION='svycarna'
 PAYLOAD=''
 RAMDISK='/root/amusing/ramdisk/'
-DHT='/usr/share/bin/getDHT 22 4 > /tmp/dht 2>/dev/null'
+DHT='/usr/local/bin/getDHT 22 4 > /tmp/dht 2>/dev/null'
 TOKEN=True
 CALL=True
 
