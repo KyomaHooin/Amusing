@@ -83,6 +83,8 @@ try:
 					os.remove(RAMDISK + 'archive/' + old)
 				except OSError:
 					LOG.write('Failed to remove archive ' + old + '.\n')
+		# prevent CPU exhaustion..
+		time.sleep(5)
 except Exception as e:
 	print 'Something bad ' + e.args[0]
 	sys.exit(2)
