@@ -13,7 +13,7 @@ MINDIFF=10000
 
 RAMDISK='/root/amusing/ramdisk'
 
-PREFIX="$RAMDISK/img/svycarna-$RUNTIME"31
+PREFIX="$RAMDISK/img/rpi-$RUNTIME"31
 
 #----------------
 
@@ -57,11 +57,11 @@ rm $RAMDISK/img/*-{01..09}.jpeg 2>/dev/null
 if [ -f "$PREFIX-10.jpeg" ]; then
 	if [ -f "$RAMDISK/img/cam.jpeg" ]; then
 		cat <<- EOL | /bin/gzip > $PREFIX.csv.gz
-			svycarna_box;phototrapvalue;$(compare $RAMDISK/img/cam.jpeg $PREFIX-10.jpeg);${ISO}
+			box3;phototrapvalue;$(compare $RAMDISK/img/cam.jpeg $PREFIX-10.jpeg);${ISO}
 		EOL
 	fi
 	cat <<- EOL | /bin/gzip > $PREFIX.csv.gz
-		svycarna_box;phototrapimg;$(base64 -w0 $PREFIX-10.jpeg);${ISO}
+		box3;phototrapimg;$(base64 -w0 $PREFIX-10.jpeg);${ISO}
 	EOL
 	mv $PREFIX-10.jpeg $RAMDISK/img/cam.jpeg
 fi

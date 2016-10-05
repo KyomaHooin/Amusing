@@ -14,7 +14,6 @@
 
 import httplib,serial,socket,time,gzip,sys,os,re
 
-LOCATION='archa'
 PAYLOAD=''
 RAMDISK='/root/amusing/ramdisk/'
 CALL=True
@@ -37,13 +36,13 @@ try:
 			if data != '':
 				pattern = re.compile('^.* \*.(.)#T(\d\d)(\d)H(\d\d)(\d)L(\d\d)(\d)B(\d)(\d\d).*$')
 				if re.match(pattern, data):# rubbish..
-					PAYLOAD+=(re.sub(pattern,'\\1;temperature;\\2.\\3;'
+					PAYLOAD+=(re.sub(pattern,'box1_\\1;temperature;\\2.\\3;'
 						+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data)
-						+ re.sub(pattern,'\\1;humidity;\\4.\\5;'
+						+ re.sub(pattern,'box1_\\1;humidity;\\4.\\5;'
 						+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data)
-						+ re.sub(pattern,'\\1;light;\\6.\\7;'
+						+ re.sub(pattern,'box1_\\1;light;\\6.\\7;'
 						+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data)
-						+ re.sub(pattern,'\\1;battery;\\8.\\9;'
+						+ re.sub(pattern,'box1_\\1;battery;\\8.\\9;'
 						+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data))
 			s.close()
 		except serial.SerialException:
@@ -51,7 +50,7 @@ try:
 		if int(time.strftime("%M")) % 15 == 0 and CALL: # 15 min interval..
 			CALL=False
 			try:	# GZIP + PAYLOAD
-				GZIP_FILE=RAMDISK + 'http/' + LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S") + '10.csv.gz'
+				GZIP_FILE=RAMDISK + 'http/rpi-' + time.strftime("%Y%m%dT%H%M%S") + '10.csv.gz'
 				gzip.open(GZIP_FILE, 'ab').write(PAYLOAD)
 			except IOError:
 				LOG.write('Failed to gzip payload.\n')

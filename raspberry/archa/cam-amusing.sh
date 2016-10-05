@@ -11,8 +11,8 @@ MINDIFF=10000
 
 RAMDISK='/root/amusing/ramdisk'
 
-PREFIX1="$RAMDISK/img/archa-$RUNTIME"11
-PREFIX2="$RAMDISK/img/archa-$RUNTIME"12
+PREFIX1="$RAMDISK/img/rpi-$RUNTIME"11
+PREFIX2="$RAMDISK/img/rpi-$RUNTIME"12
 
 #----------------
 
@@ -55,13 +55,13 @@ rm $RAMDISK/img/*-{01..09}.jpeg 2>/dev/null
 if [ -f "$PREFIX1-10.jpeg" -a -f "$PREFIX2-10.jpeg" ]; then
 	if [ -f "$RAMDISK/img/cam1.jpeg" -a -f "$RAMDISK/img/cam2.jpeg" ]; then
 		cat <<- EOL | /bin/gzip > $PREFIX1.csv.gz
-			archa_box1_cam1;phototrapvalue;$(compare $RAMDISK/img/cam1.jpeg $PREFIX1-10.jpeg);${ISO}
-			archa_box1_cam2;phototrapvalue;$(compare $RAMDISK/img/cam2.jpeg $PREFIX2-10.jpeg);${ISO}
+			box1_cam1;phototrapvalue;$(compare $RAMDISK/img/cam1.jpeg $PREFIX1-10.jpeg);${ISO}
+			box1_cam2;phototrapvalue;$(compare $RAMDISK/img/cam2.jpeg $PREFIX2-10.jpeg);${ISO}
 		EOL
 	fi
 	cat <<- EOL | /bin/gzip > $PREFIX2.csv.gz
-		archa_box1_cam1;phototrapimg;$(base64 -w0 $PREFIX1-10.jpeg);${ISO}
-		archa_box1_cam2;phototrapimg;$(base64 -w0 $PREFIX2-10.jpeg);${ISO}
+		box1_cam1;phototrapimg;$(base64 -w0 $PREFIX1-10.jpeg);${ISO}
+		box1_cam2;phototrapimg;$(base64 -w0 $PREFIX2-10.jpeg);${ISO}
 	EOL
 	mv $PREFIX1-10.jpeg $RAMDISK/img/cam1.jpeg
 	mv $PREFIX2-10.jpeg $RAMDISK/img/cam2.jpeg

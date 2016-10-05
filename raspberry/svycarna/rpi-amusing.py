@@ -7,7 +7,6 @@
 
 import httplib,socket,time,gzip,sys,os,re
 
-LOCATION='svycarna'
 PAYLOAD=''
 RAMDISK='/root/amusing/ramdisk/'
 DHT='/usr/local/bin/getDHT 22 4 > /tmp/dht 2>/dev/null'
@@ -35,9 +34,9 @@ try:
 					if data != '':# empty..
 						pattern = re.compile('^.*(\d\d).(\d)C.*(\d\d).(\d)%.*$')
 						if re.match(pattern, data):# rubbish..
-							PAYLOAD+=(re.sub(pattern, 'svycarna_box;temperature;\\1.\\2;'
+							PAYLOAD+=(re.sub(pattern,'box3;temperature;\\1.\\2;'
 							+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data)
-							+ re.sub(pattern, 'svycarna_box;humidity;\\3.\\4;'
+							+ re.sub(pattern,'box3;humidity;\\3.\\4;'
 							+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data))
 				except IOError:
 					LOG.write('Failed to read DHT data file.' + '\n')
@@ -47,7 +46,7 @@ try:
 		if int(time.strftime("%M")) % 15 == 0 and CALL: # 15 min http interval..
 			CALL=False
 			try:	# GZIP + PAYLOAD
-				GZIP_FILE=RAMDISK + 'http/' + LOCATION + '-' + time.strftime("%Y%m%dT%H%M%S") + '30.csv.gz'
+				GZIP_FILE=RAMDISK + 'http/rpi-' + time.strftime("%Y%m%dT%H%M%S") + '30.csv.gz'
 				gzip.open(GZIP_FILE, 'ab').write(PAYLOAD)
 			except IOError:
 				LOG.write('Failed to gzip payload.\n')
