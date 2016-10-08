@@ -21,6 +21,7 @@ tmpfs	/var/run	tmpfs	defaults,noatime,nosuid,mode=0755,size=2m	0	0
 
 /etc/rc.local:
 
+echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device
 ip addr add 192.168.11.x dev eth0 2>/dev/null
 /root/amusing/rpi-amusing.py &
 /root/firewall &
@@ -44,6 +45,8 @@ udevadm trigger
 
 /etc/modules:
 
+i2c-dev
+rtc_ds1307
 bcm2708_wdog
 
 /etc/watchdog.conf:
