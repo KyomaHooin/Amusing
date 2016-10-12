@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# UVC 1.00 device USB 2.0 Camera (0c45:6340)
+# Sonix Technology Co. Ltd. Microdia USB 2.0 Camera [0c45:6340]
 #
 
 ISO=$(date -u +%Y%m%dT%H%M%SZ)
@@ -18,11 +18,11 @@ PREFIX2="$RAMDISK/img/alix-$RUNTIME"41
 #----------------
 
 function compare() {
-	for i in $(echo '0 100 200 300 400 500 600 700'); do
-		for j in $(echo '0 100 200 300 400 500'); do
+	for i in $(echo '0 80 160 240 320 400 480 560'); do
+		for j in $(echo '0 80 160 240 320 400'); do
 
-			/usr/bin/convert $1 -crop 150x150+$i+$j /tmp/crop1.jpeg
-			/usr/bin/convert $2 -crop 150x150+$i+$j /tmp/crop2.jpeg
+			/usr/bin/convert $1 -crop 120x120+$i+$j /tmp/crop1.jpeg
+			/usr/bin/convert $2 -crop 120x120+$i+$j /tmp/crop2.jpeg
 
 			DIFF=$(/usr/bin/convert \
 				/tmp/crop1.jpeg /tmp/crop2.jpeg \
@@ -50,7 +50,7 @@ echo 0 > /sys/class/gpio/GPIO24/value
 
 sleep 5
 
-/usr/bin/streamer -c /dev/video0 -r 2 -s 800x600 -o $PREFIX1.jpeg 2>/dev/null
+/usr/bin/streamer -c /dev/video0 -r 2 -s 640x480 -o $PREFIX1.jpeg 2>/dev/null
 
 if [ -f "$PREFIX1.jpeg" ]; then
 	if [ -f "$RAMDISK/img/cam.jpeg" ]; then
