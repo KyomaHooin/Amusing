@@ -18,7 +18,7 @@ PREFIX2="$RAMDISK/img/alix-$RUNTIME"41
 #----------------
 
 function compare() {
-	for i in $(echo '0 10 200 300 400 500 600 700'); do
+	for i in $(echo '0 100 200 300 400 500 600 700'); do
 		for j in $(echo '0 100 200 300 400 500'); do
 
 			/usr/bin/convert $1 -crop 150x150+$i+$j /tmp/crop1.jpeg
