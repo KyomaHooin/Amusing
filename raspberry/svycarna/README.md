@@ -24,12 +24,6 @@ tmpfs	/var/run	tmpfs	defaults,noatime,nosuid,mode=0755,size=2m	0	0
 /root/amusing/rpi-amusing.py &
 /root/firewall &
 
-/etc/udev/rules.d/42-usb-cam.rules:
-
-KERNEL=="video*", SUBSYSTEM=="video4linux", KERNELS=="1-1.2", SYMLINK+="video-cam0"
-
-udevadm trigger
-
 /etc/modules:
 
 bcm2708_wdog

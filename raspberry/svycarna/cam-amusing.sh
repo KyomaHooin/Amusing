@@ -50,7 +50,7 @@ mkdir $RAMDISK/img $RAMDISK/http 2>/dev/null
 sleep 5
 
 for i in $(echo '01 02 03 04 05 06 07 08 09 10'); do
-	/usr/bin/streamer -c /dev/video-cam0 -r 2 -s 800x600 -o $PREFIX-$i.jpeg 2>/dev/null
+	/usr/bin/streamer -c /dev/video0 -r 2 -s 800x600 -o $PREFIX-$i.jpeg 2>/dev/null
 done
 
 rm $RAMDISK/img/*-{01..09}.jpeg 2>/dev/null
