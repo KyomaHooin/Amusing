@@ -55,11 +55,11 @@ sleep 5
 if [ -f "$PREFIX1.jpeg" ]; then
 	if [ -f "$RAMDISK/img/cam.jpeg" ]; then
 		cat <<- EOL | /bin/gzip > $PREFIX1.csv.gz
-			box3;phototrapvalue;$(compare $RAMDISK/img/cam.jpeg $PREFIX1.jpeg);${ISO}
+			box4;phototrapvalue;$(compare $RAMDISK/img/cam.jpeg $PREFIX1.jpeg);${ISO}
 		EOL
 	fi
 	cat <<- EOL | /bin/gzip > $PREFIX2.csv.gz
-		box3;phototrapimg;$(base64 -w0 $PREFIX1.jpeg);${ISO}
+		box4;phototrapimg;$(base64 -w0 $PREFIX1.jpeg);${ISO}
 	EOL
 	mv $PREFIX1.jpeg $RAMDISK/img/cam.jpeg
 fi
