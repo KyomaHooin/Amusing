@@ -19,6 +19,7 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 
 /etc/rc.local:
 
+ip addr add 192.168.11.x dev eth0 2>/dev/null
 /root/firewall &
 
 modrpobe cs5535-gpio
