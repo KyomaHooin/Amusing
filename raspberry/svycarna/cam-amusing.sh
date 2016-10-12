@@ -49,22 +49,18 @@ mkdir $RAMDISK/img $RAMDISK/http 2>/dev/null
 
 sleep 5
 
-for i in $(echo '01 02 03 04 05 06 07 08 09 10'); do
-	/usr/bin/streamer -c /dev/video0 -r 2 -s 800x600 -o $PREFIX-$i.jpeg 2>/dev/null
-done
+/usr/bin/streamer -c /dev/video0 -r 2 -s 800x600 -o $PREFIX1.jpeg 2>/dev/null
 
-rm $RAMDISK/img/*-{01..09}.jpeg 2>/dev/null
-
-if [ -f "$PREFIX-10.jpeg" ]; then
+if [ -f "$PREFIX1.jpeg" ]; then
 	if [ -f "$RAMDISK/img/cam.jpeg" ]; then
 		cat <<- EOL | /bin/gzip > $PREFIX1.csv.gz
-			box3;phototrapvalue;$(compare $RAMDISK/img/cam.jpeg $PREFIX-10.jpeg);${ISO}
+			box3;phototrapvalue;$(compare $RAMDISK/img/cam.jpeg $PREFIX1.jpeg);${ISO}
 		EOL
 	fi
 	cat <<- EOL | /bin/gzip > $PREFIX2.csv.gz
-		box3;phototrapimg;$(base64 -w0 $PREFIX-10.jpeg);${ISO}
+		box3;phototrapimg;$(base64 -w0 $PREFIX1.jpeg);${ISO}
 	EOL
-	mv $PREFIX-10.jpeg $RAMDISK/img/cam.jpeg
+	mv $PREFIX1.jpeg $RAMDISK/img/cam.jpeg
 fi
 
 mv $RAMDISK/img/*.gz $RAMDISK/http 2>/dev/null

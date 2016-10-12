@@ -52,7 +52,7 @@ sleep 5
 
 /usr/bin/streamer -c /dev/video0 -r 2 -s 800x600 -o $PREFIX1.jpeg 2>/dev/null
 
-if [ -f "$PREFIX.jpeg" ]; then
+if [ -f "$PREFIX1.jpeg" ]; then
 	if [ -f "$RAMDISK/img/cam.jpeg" ]; then
 		cat <<- EOL | /bin/gzip > $PREFIX1.csv.gz
 			box3;phototrapvalue;$(compare $RAMDISK/img/cam.jpeg $PREFIX1.jpeg);${ISO}
