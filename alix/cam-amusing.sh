@@ -12,8 +12,8 @@ MINDIFF=10000
 
 RAMDISK='/root/amusing/ramdisk'
 
-PREFIX1="$RAMDISK/img/alix-$RUNTIME"41
-PREFIX2="$RAMDISK/img/alix-$RUNTIME"42
+PREFIX1="$RAMDISK/img/alix-$RUNTIME"40
+PREFIX2="$RAMDISK/img/alix-$RUNTIME"41
 
 #----------------
 
@@ -50,19 +50,18 @@ echo 0 > /sys/class/gpio/GPIO24/value
 
 sleep 5
 
-#/usr/bin/streamer -c /dev/video0 -r 2 -s 800x600 -o $PREFIX.jpeg 2>/dev/null
-/usr/bin/streamer -c /dev/video0 -s 800x600 -o $PREFIX.jpeg 2>/dev/null
+/usr/bin/streamer -c /dev/video0 -r 2 -s 800x600 -o $PREFIX1.jpeg 2>/dev/null
 
 if [ -f "$PREFIX.jpeg" ]; then
 	if [ -f "$RAMDISK/img/cam.jpeg" ]; then
 		cat <<- EOL | /bin/gzip > $PREFIX1.csv.gz
-			box3;phototrapvalue;$(compare $RAMDISK/img/cam.jpeg $PREFIX.jpeg);${ISO}
+			box3;phototrapvalue;$(compare $RAMDISK/img/cam.jpeg $PREFIX1.jpeg);${ISO}
 		EOL
 	fi
 	cat <<- EOL | /bin/gzip > $PREFIX2.csv.gz
-		box3;phototrapimg;$(base64 -w0 $PREFIX.jpeg);${ISO}
+		box3;phototrapimg;$(base64 -w0 $PREFIX1.jpeg);${ISO}
 	EOL
-	mv $PREFIX.jpeg $RAMDISK/img/cam.jpeg
+	mv $PREFIX1.jpeg $RAMDISK/img/cam.jpeg
 fi
 
 mv $RAMDISK/img/*.gz $RAMDISK/http 2>/dev/null
@@ -73,7 +72,9 @@ echo 24 > /sys/class/gpio/unexport
 /sbin/sysctl vm.overcommit_memory=0 >/dev/null
 
 for F in $(find $RAMDISK/http -type f -name "*.gz"); do
-	if [[ $(wget -O /dev/null -q -S --header="X-Location: alix-$RUNTIME"4$I	--post-file=$F http://amusing.nm.cz/sensors/rawpost.php 2>&1 | grep "200") ]]; then
+	if [[ $(wget -O /dev/null -q -S \
+		--header="X-Location: alix-$RUNTIME"4$I	\
+		--post-file=$F http://amusing.nm.cz/sensors/rawpost.php 2>&1 | grep "200") ]]; then
 		mv $F $RAMDISK/archive
 		((I++))
 	fi
