@@ -80,3 +80,5 @@ for F in $(find $RAMDISK/http -type f -name "*.gz"); do
 	fi
 done
 
+find $RAMDISK/archive -type f -name "*.gz" -mtime +21 -exec rm {} \;
+
