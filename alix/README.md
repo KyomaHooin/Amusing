@@ -5,7 +5,7 @@ Alix USB camera data transport GZIP compressed CSV over HTTP.
 
 ALIX
 <pre>
-apt-get install bc imagemagick
+apt-get install bc imagemagick streamer watchdog
 
 mkdir -p /root/amusing/ramdisk
 
@@ -27,6 +27,11 @@ modrpobe cs5535-gpio
 /etc/modules:
 
 cs5535-gpio
+
+/etc/watchdog:
+
+watchdog-device = /dev/watchdog
+interval = 15
 </pre>
 
 FILE
