@@ -32,7 +32,8 @@ cs5535-gpio
 FILE
 
 <pre>
-     cam-amusing.sh - Main script.
+cam-amusing.sh - Main script.
+      firewall - Simple firewall.
 </pre>
 
 CONTACT
