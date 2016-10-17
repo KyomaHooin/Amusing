@@ -79,7 +79,7 @@ func _GetDLHM8($serial,$file)
 	if @error then return SetError(1,0, "Failed to read XLS: " & $file)
 	for $i = 0 to UBound($raw) - 1
 		if $raw[$i][0] = '' then exitloop
-		$timestamp = StringRegExpReplace($raw[$i][0],"^(\d{4})(\d\d)(\d\d)","$3$2$1T120000Z"); Full ISO datetime
+		$timestamp = StringRegExpReplace($raw[$i][0],"^(\d{4})(\d\d)(\d\d).*","$1$2$3T120000Z"); Full ISO datetime
 		$data &= $serial & ';temperature;' & $raw[$i][2] & ';' & $timestamp & @CRLF
 		$data &= $serial & ';humidity;' & $raw[$i][1] & ';' & $timestamp & @CRLF
 	next
