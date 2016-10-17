@@ -8,6 +8,7 @@ FILE
 <pre>
 terezin-amusing-http.au3 - Main program, HTTP transport.
      terezin-amusing.au3 - Main program, FTP transport.
+     terezin-sensors.au3 - Get sensor list from DB.
       terezin-sensor.txt - Sensor plain list.
              terezin.ico - Program icon.
                 ZLIB.au3 - ZLIB de/compression library by "Ward".
