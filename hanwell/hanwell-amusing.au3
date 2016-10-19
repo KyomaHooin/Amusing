@@ -38,6 +38,7 @@ DirCreate(@scriptdir & '\http')
 $logfile = FileOpen(@scriptdir & '\' & $location & '-amusing.log', 1); 1 = append
 if @error then exit; silent exit..
 logger(@CRLF & "Program start: " & $runtime)
+rl8(); Parse data from binary
 main(); Pack and transport data over HTTP
 archive(); Archive logrotate
 logger("Program end.")
@@ -124,7 +125,7 @@ func rl8()
 				else
 					FileClose($rl); close the file..
 					$sid = _RLGetSid($rl_bin)
-					if $serial = '' then
+					if $sid = '' then
 						logger("Failed to read serial from memory.")
 						continueloop
 					endif
@@ -133,14 +134,16 @@ func rl8()
 						logger("Failed to read data from memory.")
 						continueloop
 					endif
-					$type = get_sensor_type($serial,$mapping)
+					$type = get_sensor_type($sid,$mapping)
 					if $type = '' then
 						logger("No mapping for serial." & $serial)
 						continueloop
 					endif
 					;write CSV..
 					FileWriteLine($csv, $sid & $type[0] & $data[0] & $timestamp)
-					if $type[1] then FileWriteLine($csv, $sid & type[1] & $data[1] & $timestamp)
+					if ubound($type) = 2 then; second slot..
+						FileWriteLine($csv, $sid & type[1] & $data[1] & $timestamp)
+					endif
 				endif
 				FileClose($rl_bin); clear memory..
 			endif
@@ -172,13 +175,9 @@ func get_timestamp($file)
 endFunc
 
 func get_sensor_type($sid,$map)
-	$local $type[2]
 	for $i to Ubound($map) - 1
-		if $sid = StringRegExpReplace($map[$i],"^(.*);.*","$1") then
-			return StringSplit(StringTrimLeft($map[$i], 1),';', 2); array, no count..
-		endif
+		if StringInStr($sid,$map[$i]) then return StringSplit($map[$i], ';', 2); array, no count..
 	next
-	return
 endFunc
 
 func get_http_error()
