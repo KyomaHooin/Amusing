@@ -17,6 +17,7 @@
 ;VAR
 
 $location='hanwell'
+$rl8 = 'c:\RadioLog8forMuseums\Local'
 
 $runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 
@@ -90,6 +91,45 @@ func main()
 endfunc
 
 func rl8()
+	$csv = FileOpen(@ScriptDir & '\' & $location & '-' & $runtime & '.csv', 1); append
+	if @error then
+		logger("Failed to create CSV file.")
+		return
+	endif
+	$map= FileOpen(@ScriptDir & '\' & $location & '-sensor.txt')
+	if @error then
+		logger("Failed to open mapping file.")
+		return
+	endif
+	$rlist = _FileListToArray($rl8, "*.rl8")
+	if ubound($rlist) < 2 then
+		logger("No sensor files..")
+		return
+	else
+		for $i=1 to UBound($rlist) - 1
+			$rl = FileOpen($i, 16); binary
+			if @error then
+				logger("Failed to open sensor file " & $i)
+				continueloop
+			else
+				$rl_bin = FileRead($rl); read file into memory
+				if @error then
+					logger("Failed to read sensor file " & $i)
+					FileClose($rl)
+					continueloop
+				else
+					FileClose($rl); close the file..
+					$serial = _RLGetSid($rl_bin)
+					$type = GetsensorType($serial)
+					$data = _RLGetData($rl_bin)
+					FileWriteLine($csv, $serial & $type[0] & $data[0] & $timestamp)
+					if $type[2] then FileWriteLine($csv, $serial & type[1] & $data[1] & $timestamp)
+				endif
+				FileClose($rl_bin); clear memory..
+			endif
+		next
+		FileClose($csv); close CSV..
+	endif
 EndFunc
 
 func archive()
