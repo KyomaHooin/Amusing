@@ -17,7 +17,9 @@
 ;VAR
 
 $location='hanwell'
-$rl8 = 'c:\RadioLog8forMuseums\Local'
+
+$map = @ScriptDir & '\' & $location & '-sensor.txt'
+$rlpath= 'c:\RadioLog8forMuseums\Local'
 
 $runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 
@@ -91,45 +93,61 @@ func main()
 endfunc
 
 func rl8()
+	local $mapping
 	$csv = FileOpen(@ScriptDir & '\' & $location & '-' & $runtime & '.csv', 1); append
 	if @error then
 		logger("Failed to create CSV file.")
 		return
 	endif
-	$map= FileOpen(@ScriptDir & '\' & $location & '-sensor.txt')
+	_FileReadToArray($map, $mapping, 0); 0 based..
 	if @error then
 		logger("Failed to open mapping file.")
 		return
 	endif
-	$rlist = _FileListToArray($rl8, "*.rl8")
+	$rlist = _FileListToArray($rl8path, "*.rl8")
 	if ubound($rlist) < 2 then
 		logger("No sensor files..")
 		return
 	else
 		for $i=1 to UBound($rlist) - 1
-			$rl = FileOpen($i, 16); binary
+			$rl = FileOpen($rlist[$i], 16); binary
 			if @error then
-				logger("Failed to open sensor file " & $i)
+				logger("Failed to open sensor file " & $rlist[$i])
 				continueloop
 			else
-				$rl_bin = FileRead($rl); read file into memory
+				$timestamp = get_timestamp($rlist[$i]); before loading into memory..
+				$rl_bin = FileRead($rl); read file into memory..
 				if @error then
-					logger("Failed to read sensor file " & $i)
+					logger("Failed to read sensor file " & $rlist[$i])
 					FileClose($rl)
 					continueloop
 				else
 					FileClose($rl); close the file..
-					$serial = _RLGetSid($rl_bin)
-					$type = GetsensorType($serial)
+					$sid = _RLGetSid($rl_bin)
+					if $serial = '' then
+						logger("Failed to read serial from memory.")
+						continueloop
+					endif
 					$data = _RLGetData($rl_bin)
-					FileWriteLine($csv, $serial & $type[0] & $data[0] & $timestamp)
-					if $type[2] then FileWriteLine($csv, $serial & type[1] & $data[1] & $timestamp)
+					if $data = '' then
+						logger("Failed to read data from memory.")
+						continueloop
+					endif
+					$type = get_sensor_type($serial,$mapping)
+					if $type = '' then
+						logger("No mapping for serial." & $serial)
+						continueloop
+					endif
+					;write CSV..
+					FileWriteLine($csv, $sid & $type[0] & $data[0] & $timestamp)
+					if $type[1] then FileWriteLine($csv, $sid & type[1] & $data[1] & $timestamp)
 				endif
 				FileClose($rl_bin); clear memory..
 			endif
 		next
 		FileClose($csv); close CSV..
 	endif
+	FileClose($map); close map..
 EndFunc
 
 func archive()
@@ -145,6 +163,23 @@ func archive()
 		next
 	EndIf
 endfunc
+
+func get_timestamp($file)
+	$mtime = FileGetTime($file); FT_MODIFIED
+	$utc_time = _DateAdd('h', -1 + _Date_Time_GetTimeZoneInformation()[1]/60, _
+			$mtime[0] & '/' & $mtime[1] & '/' $mtime[2] & ' ' & $mtime[3] & ':' $mtime[4] & ':' $mtime[5])
+	return StringRegexpReplace($utc_time, "^(\d{4})/(\d{2})/(\d{2}) (\d{2}):(\d{2}):(\d{2})$", "$1$2$3T$4$5$6Z")
+endFunc
+
+func get_sensor_type($sid,$map)
+	$local $type[2]
+	for $i to Ubound($map) - 1
+		if $sid = StringRegExpReplace($map[$i],"^(.*);.*","$1") then
+			return StringSplit(StringTrimLeft($map[$i], 1),';', 2); array, no count..
+		endif
+	next
+	return
+endFunc
 
 func get_http_error()
 	logger("HTTP request timeout.")
