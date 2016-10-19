@@ -26,14 +26,15 @@ EndFunc
 
 ;return last data pack
 func _GetRLdata($buff)
-	local $data[2]
 	$index = _GetRLClean($buff)
+	if $index = '' then return
 	for $i=0 to (FileGetSize($buff) - 0x380) / 14 step 14
 		if $index =  _ByteRead($buff, 0x380 + $i + 5, 8) then
-			return data = [ _BinToFloat(_ByteRead($buff, 0x380 + $i + 1, 4), _
-					_BinToFloat(_ByteRead($buff, 0x380 + $i + 15, 4)]
+			return [_BinToFloat(_ByteRead($buff, 0x380 + $i + 1, 4), _
+				_BinToFloat(_ByteRead($buff, 0x380 + $i + 15, 4)]
 		endif
 	next
+	return
 endFunc
 
 ;return binary offset
