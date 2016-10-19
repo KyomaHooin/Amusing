@@ -1,12 +1,9 @@
 
 DESCRIPTION
 
-Parse "Hanwell RadioLog 8" temperature/humidity sensor data from proprietary RL8 binary data file into CSV file and transport compressed GZ archives over HTTP.
-
-RL8
+Parse "Hanwell RadioLog 8" temperature/humidity sensor data from proprietary RL8 binary file into CSV file and transport compressed GZ archives over HTTP.
 
 <pre>
-
 RL8
 
  -------- --------------
@@ -16,22 +13,24 @@ RL8
 
 HEADER
 
- ----------------------------------------------------------------------
-| [magic] | [name] | 0a | ? |   [serial]   |  ?  |  00    |  ? |  00   |
- ----------------------------------------------------------------------
-|    1    |   64   | 2  | 1 |   10 + 0x00  |  32 |  346   | 12 |  884  | 
+ -----------------------------------------------------------------------------------------------------------------------
+| magic | name | ? | serial | 0 | ? | ? | ? | B index | ? | W index | ? | ? | [suffix] |  0  | D ID | D index | ? |  0  |
+ -----------------------------------------------------------------------------------------------------------------------
+|   1   |  64  | 2 |   10   | 5 | 6 | 1 | 1 |    4    | 4 |    4    | 1 | 6 |    3     | 349 |  4   |    4    | 4 | 248 |
 
--One sensor per file.
+B = born index
+W = write index
+D = discard ID/index
 
 DATA SLOT
 
  --------------------------------
-| D | T |  value  | ID | counter |
+| D | T | value | ID | index | 0 |
  --------------------------------
-| 1 | 1 |    4    | 4  |    5    |
+|   1   |   4   | 4  |   4   | 1 |
 
-- Discard bit: 0 - ok          8 - overwrite
-- Type bit:    0 - temperature 1 - humidity
+D = Discard 4bit (0 - ok; 8 - overwrite; 4 - ?)
+T = Type 4bit (0 - temperature; 1 - humidity)
 </pre>
 
 FILE
