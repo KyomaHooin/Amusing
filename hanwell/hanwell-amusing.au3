@@ -19,7 +19,7 @@
 $location='hanwell'
 
 $map = @ScriptDir & '\' & $location & '-sensor.txt'
-$rlpath= 'c:\hanwell\data'
+$rlpath= 'c:\Radiolog8ForMuseums\Local'
 
 $runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 
