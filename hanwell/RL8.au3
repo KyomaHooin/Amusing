@@ -12,7 +12,6 @@
 ;---------------------------------
 
 #include<Memory.au3>
-#include<File.au3>
 
 ;return serial number
 func _GetRLSid($buff)
