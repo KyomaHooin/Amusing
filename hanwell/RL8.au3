@@ -28,7 +28,7 @@ func _GetRLdata($buff)
 	local $data[2]
 	$index = _GetRLClean($buff)
 	if $index = '' then return
-	for $i= BinaryLen($buff) - 14 to BinaryLen($buff) - 0x380 step -14
+	for $i= BinaryLen($buff) - 14 to 0x380 step -14
 		if $index = BinaryMid($buff, $i + 6, 8) then
 			$data[0] = _BinToFloat(BinaryMid($buff, $i -12, 4))
 			$data[1] = _BinToFloat(BinaryMid($buff, $i + 2, 4))
