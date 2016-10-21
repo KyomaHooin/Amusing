@@ -126,12 +126,12 @@ func rl8()
 					FileClose($rl); close the file..
 					$sid = _GetRLSid($rl_bin)
 					if $sid = '' then
-						logger("Failed to read serial from memory.")
+						logger("Failed to read serial from memory. " & $rlist[$i])
 						continueloop
 					endif
 					$data = _GetRLData($rl_bin)
 					if $data = '' then
-						logger("Failed to read data from memory.")
+						logger("Failed to read data from memory. " & $rlist[$i])
 						continueloop
 					endif
 					$type = get_sensor_type($sid,$mapping)
