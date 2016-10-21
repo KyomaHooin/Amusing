@@ -30,7 +30,7 @@ DATA SLOT
 |   1   |   4   | 4  |   4   | 1 |
 
 D = Discard 4bit (0 - ok; 8 - overwrite; 4 - ?)
-T = Value sequence 4bit (0 - first 1 - second..)
+S = Value sequence 4bit (0 - first 1 - second..)
 
 -Single data pack = 2 slots.
 </pre>
