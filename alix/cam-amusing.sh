@@ -40,7 +40,7 @@ function compare() {
 
 #----------------
 
-mkdir $RAMDISK/img $RAMDISK/http 2>/dev/null
+mkdir $RAMDISK/img $RAMDISK/http $RAMDISK/archive 2>/dev/null
 
 echo 24 > /sys/class/gpio/export
 echo out > /sys/class/gpio/GPIO24/direction
