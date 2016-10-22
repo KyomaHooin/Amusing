@@ -20,6 +20,7 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 
 /etc/rc.local:
 
+/usr/sbin/ntpdate ntp.server.org > /dev/null 2>&1 &
 ip addr add 192.168.11.x/24 dev eth0 2>/dev/null &
 /root/firewall &
 /root/tunnel &
