@@ -1,7 +1,7 @@
 ;
 ; Hanwell RadioLog RL8 -> CSV -> GZIP -> HTTP
 ;
-; schtasks /create /tn "Hanwell Amusing" /tr "c:\hanwell-amusing\hanwell-amusing.exe" /sc HOURLY
+; schtasks /create /tn "Hanwell Amusing" /tr "c:\hanwell-amusing\hanwell-amusing.exe" /sc MINUTE /mo 15
 ;
 
 #AutoIt3Wrapper_Icon=hanwell.ico
