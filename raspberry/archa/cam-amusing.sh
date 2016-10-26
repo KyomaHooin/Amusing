@@ -52,18 +52,27 @@ done
 
 rm $RAMDISK/img/*-{01..09}.jpeg 2>/dev/null
 
-if [ -f "$PREFIX1-10.jpeg" -a -f "$PREFIX2-10.jpeg" ]; then
-	if [ -f "$RAMDISK/img/cam1.jpeg" -a -f "$RAMDISK/img/cam2.jpeg" ]; then
-		cat <<- EOL | /bin/gzip > $PREFIX1.csv.gz
+if [ -f "$PREFIX1-10.jpeg" ]; then
+	if [ -f "$RAMDISK/img/cam1.jpeg" ]; then
+		cat <<- EOL | /bin/gzip > ${PREFIX1}0.csv.gz
 			box1_cam1;phototrapvalue;$(compare $RAMDISK/img/cam1.jpeg $PREFIX1-10.jpeg);${ISO}
+		EOL
+	fi
+	cat <<- EOL | /bin/gzip > ${PREFIX1}1.csv.gz
+		box1_cam1;phototrapimg;$(base64 -w0 $PREFIX1-10.jpeg);${ISO}
+	EOL
+	mv $PREFIX1-10.jpeg $RAMDISK/img/cam1.jpeg
+fi
+
+if [ -f "$PREFIX2-10.jpeg" ]; then
+	if [ -f "$RAMDISK/img/cam2.jpeg" ]; then
+		cat <<- EOL | /bin/gzip > ${PREFIX2}0.csv.gz
 			box1_cam2;phototrapvalue;$(compare $RAMDISK/img/cam2.jpeg $PREFIX2-10.jpeg);${ISO}
 		EOL
 	fi
-	cat <<- EOL | /bin/gzip > $PREFIX2.csv.gz
-		box1_cam1;phototrapimg;$(base64 -w0 $PREFIX1-10.jpeg);${ISO}
+	cat <<- EOL | /bin/gzip > ${PREFIX2}1.csv.gz
 		box1_cam2;phototrapimg;$(base64 -w0 $PREFIX2-10.jpeg);${ISO}
 	EOL
-	mv $PREFIX1-10.jpeg $RAMDISK/img/cam1.jpeg
 	mv $PREFIX2-10.jpeg $RAMDISK/img/cam2.jpeg
 fi
 
