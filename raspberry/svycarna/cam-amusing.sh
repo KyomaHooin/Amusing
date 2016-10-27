@@ -41,7 +41,7 @@ function compare() {
 
 #----------------
 
-mkdir $RAMDISK/img $RAMDISK/http 2>/dev/null
+mkdir $RAMDISK/img 2>/dev/null
 
 /usr/local/bin/gpio export 18 out
 /usr/local/bin/gpio mode 1 pwm
