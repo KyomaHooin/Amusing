@@ -4,6 +4,10 @@ RPI
 <pre>
 apt-get install imagemagick bc streamer watchdog
 
+gpio:
+
+<a href="http://wiringpi.com">WiringPi</a>
+
 mkdir -p /root/amusing/ramdisk
 mount -t tmpfs -o size=32m tmpfs /root/amusing/ramdisk
 
