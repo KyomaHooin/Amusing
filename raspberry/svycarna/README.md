@@ -19,6 +19,10 @@ tmpfs	/tmp		tmpfs	defaults,noatime,nosuid,size=100m	0	0
 tmpfs	/var/log	tmpfs	defaults,noatime,nosuid,mode=0755,size=100m	0	0
 tmpfs	/var/run	tmpfs	defaults,noatime,nosuid,mode=0755,size=2m	0	0
 
+/etc/udev/rules.d/42-usb-cam.rules:
+
+KERNEL=="video*", SUBSYSTEM=="video4linux", KERNELS=="1-1.2", SYMLINK+="video-cam0"
+
 /etc/rc.local:
 
 /root/amusing/rpi-amusing.py &

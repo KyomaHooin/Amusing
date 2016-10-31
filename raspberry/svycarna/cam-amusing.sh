@@ -49,7 +49,7 @@ mkdir $RAMDISK/img 2>/dev/null
 
 sleep 5
 
-/usr/bin/streamer -c /dev/video0 -r 2 -s 800x600 -o $PREFIX1.jpeg 2>/dev/null
+/usr/bin/streamer -c /dev/video-cam0 -r 2 -s 800x600 -o $PREFIX1.jpeg 2>/dev/null
 
 if [ -f "$PREFIX1.jpeg" ]; then
 	if [ -f "$RAMDISK/img/cam.jpeg" ]; then

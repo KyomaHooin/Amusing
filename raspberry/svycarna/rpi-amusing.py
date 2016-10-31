@@ -2,7 +2,7 @@
 #
 # DHT22 GPIO
 #
-# DATA[5min]: 'Temperature 23.5C, Humidity: 54.5%'
+# DATA[5min]: 'T = 16.9 *C, H = 69.9 %'
 #
 
 import httplib,socket,time,gzip,sys,os,re
@@ -32,7 +32,7 @@ try:
 				try:
 					data = open('/tmp/dht','r').read()
 					if data != '':# empty..
-						pattern = re.compile('^.*(\d\d).(\d)C.*(\d\d).(\d)%.*$')
+						pattern = re.compile('^.*(\d\d).(\d).*(\d\d).(\d).*$')
 						if re.match(pattern, data):# rubbish..
 							PAYLOAD+=(re.sub(pattern,'box3;temperature;\\1.\\2;'
 							+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data)
