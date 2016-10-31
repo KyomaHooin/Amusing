@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# UVC 1.00 device FULL HD 1080P Webcam [0bda:58b0]
+# Realtek Semiconductor Corp. FULL HD 1080P Webcam [0bda:58b0]
 #
 
 INTENSITY=400
