@@ -3,8 +3,6 @@
 # Realtek Semiconductor Corp. FULL HD 1080P Webcam [0bda:58b0]
 #
 
-INTENSITY=400
-
 ISO=$(date -u +%Y%m%dT%H%M%SZ)
 RUNTIME=$(date +%Y%m%dT%H%M%S)
 
@@ -45,7 +43,7 @@ mkdir $RAMDISK/img 2>/dev/null
 
 /usr/local/bin/gpio export 18 out
 /usr/local/bin/gpio mode 1 pwm
-/usr/local/bin/gpio pwm 1 $INTENSITY
+/usr/local/bin/gpio pwm 1 450
 
 sleep 5
 
