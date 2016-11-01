@@ -148,7 +148,6 @@ func rl8()
 		next
 		FileClose($csv); close CSV..
 	endif
-	FileClose($map); close map..
 EndFunc
 
 func archive()
