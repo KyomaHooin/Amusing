@@ -1,0 +1,19 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_URI} ^.*/getplotbin/ [NC]
+RewriteRule ^(.*)$ index.php [L]
+
+RewriteCond %{REQUEST_URI} ^.*/getplotpng/ [NC]
+RewriteRule ^(.*)$ index.php [L]
+
+RewriteCond %{REQUEST_URI} ^.*/getplotsvg/ [NC]
+RewriteRule ^(.*)$ index.php [L]
+
+RewriteCond %{REQUEST_URI} ^.*/getplotcsv/ [NC]
+RewriteRule ^(.*)$ index.php [L]
+
+RewriteCond %{REQUEST_URI} ^.*/getplotplot/ [NC]
+RewriteRule ^(.*)$ index.php [L]
+
+RewriteCond %{REQUEST_URI} !\. [NC]
+RewriteRule ^(.*)$ index.php [L]

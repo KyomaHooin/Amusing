@@ -1,0 +1,4 @@
+RewriteCond %{REQUEST_URI} ^/sensors/rawpost.php
+RewriteRule .* - [E=HTTP_X_LOCATION:%{HTTP:X-Location}]
+RewriteCond %{REQUEST_URI} !^/sensors/rawpost.php
+RewriteRule .* https://yourwebsite.com/muzeum/main [R,L]

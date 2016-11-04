@@ -1,0 +1,252 @@
+
+body {
+	margin: 8px 4px 0 4px;
+	padding: 0;
+	background-color:white;
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #333333;
+}
+
+p {
+  text-align: justify;
+}
+
+p.aright {
+  text-align: right;
+}
+
+fieldset {
+  background-color: #edecec;
+	border:1px solid #ccc;
+  margin: 2px 0;
+  padding: 1px;
+}
+
+legend  {
+	font-size: 14px;
+  font-weight: bold;
+  color: #333333;
+}
+
+.header {
+  height: 90px;
+  background-image: url(images/logo.png);
+  background-repeat: no-repeat;
+  background-position: 4px 4px;
+  background-color: #003B60;
+  color: #fff;
+}
+.user {
+  float: right;
+  padding-top: 70px;
+  padding-right:4px;
+}
+.user a:link,.user a:visited,.user a:hover {
+  color: #ffffff;
+}
+
+.man::before {
+ content: url(images/user.png);
+ padding: 3px;
+}
+
+#divmenu {
+  white-space: nowrap;
+  height: 30px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background: rgb(206, 206, 206);
+  background: -moz-linear-gradient(90deg, rgb(206, 206, 206) 30%, rgb(232, 232, 232) 90%);
+  background: -webkit-linear-gradient(90deg, rgb(206, 206, 206) 30%, rgb(232, 232, 232) 90%);
+  background: -o-linear-gradient(90deg, rgb(206, 206, 206) 30%, rgb(232, 232, 232) 90%);
+  background: -ms-linear-gradient(90deg, rgb(206, 206, 206) 30%, rgb(232, 232, 232) 90%);
+  background: linear-gradient(0deg, rgb(206, 206, 206) 30%, rgb(232, 232, 232) 90%);
+  -webkit-box-shadow: 0px 2px 1px rgba(50, 50, 50, 0.75);
+  -moz-box-shadow: 0px 2px 1px rgba(50, 50, 50, 0.75);
+  box-shadow: 0px 2px 1px rgba(50, 50, 50, 0.75);  
+}
+
+.ui-buttonset .ui-button {
+  margin-right: 0 !important;
+  color: rgb(0,59,96);
+  font-size: 12px;
+/*
+  border-left-color: #ffffff;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background: rgb(206, 206, 206);
+
+  background: -moz-linear-gradient(90deg, rgb(206, 206, 206) 30%, rgb(232, 232, 232) 90%);
+  background: -webkit-linear-gradient(90deg, rgb(206, 206, 206) 30%, rgb(232, 232, 232) 90%);
+  background: -o-linear-gradient(90deg, rgb(206, 206, 206) 30%, rgb(232, 232, 232) 90%);
+  background: -ms-linear-gradient(90deg, rgb(206, 206, 206) 30%, rgb(232, 232, 232) 90%);
+  background: linear-gradient(0deg, rgb(206, 206, 206) 30%, rgb(232, 232, 232) 90%);
+*/
+}
+
+.ui-button:hover{
+/*   border: none !important;*/
+   color:#ffffff;
+/*   padding-top: 3px;*/
+background: rgb(2, 123, 189);
+background: -moz-linear-gradient(90deg, rgb(2, 123, 189) 30%, rgb(3, 115, 185) 70%);
+background: -webkit-linear-gradient(90deg, rgb(2, 123, 189) 30%, rgb(3, 115, 185) 70%);
+background: -o-linear-gradient(90deg, rgb(2, 123, 189) 30%, rgb(3, 115, 185) 70%);
+background: -ms-linear-gradient(90deg, rgb(2, 123, 189) 30%, rgb(3, 115, 185) 70%);
+background: linear-gradient(0deg, rgb(2, 123, 189) 30%, rgb(3, 115, 185) 70%);
+}
+
+table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+td {
+  border: 1px solid #c0c0c0;
+  background-color:rgb(253,250,248);
+}
+th {
+  background: #003B60;
+  color: #FFFFFF;
+  padding: 5px 5px 5px 10px;
+  border-right: 1px solid #FFFFFF;
+  text-align: center;
+  font-weight: bold;
+}
+th a {
+  color: #ffffff
+}
+/*
+table {
+  border: 1px solid #c0c0c0;
+}
+td {
+  border: 1px solid #c0c0c0;
+}
+th {
+  border: 1px solid #c0c0c0;
+}
+*/
+fieldset table {
+    width:auto;
+}
+.nobr {
+    border:0;
+}
+.nobr td {
+    border:0;
+    background-color:transparent;
+}
+.nobr th {
+    border:0;
+    background-color:transparent;
+}
+
+.newbutton {
+  margin-bottom:4px;
+}
+
+.herr {
+    border: 2px solid red !important;
+}
+
+.showerr {
+    color: red;
+}
+
+.tlogin {
+    width:auto;
+    margin-top:30px;
+    border:0;
+}
+
+.tlogin td {
+    border:0;
+    background-color:transparent;
+}
+.finput {
+    width:40em;
+}
+.farea {
+    width:40em;
+    height:6em;
+}
+.nobreak td {
+    white-space:nowrap;
+}
+.comments {
+    margin-top:6px;
+    margin-bottom:6px;
+    background-color:rgb(253,250,248);
+}
+.comments td {
+    color:black;
+    border:1px solid black;
+}
+.comments th {
+    border:1px solid black;
+    font-weight:bold;
+    color:black;
+}
+
+span.treehigh {
+/*    text-decoration:underline;*/
+    background-color: rgb(0,59,96);
+    color: white;
+    font-weight: bold;
+    padding: 0 5px 0 5px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.graphtable {
+    border:0;
+}
+
+.graphtable td {
+    border:1px solid black;
+    white-space:nowrap;
+}
+
+#treeenv {
+    width:100%
+}
+
+#treeenv ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#treeenv li {
+    padding-left: 12px;
+    white-space:nowrap;
+}
+
+#imgfooter {
+    text-align:center;
+}
+
+#imgfooter img {
+    vertical-align: middle;
+}
+
+#thankfooter {
+    font-weight:bold;
+}
+
+button {
+    white-space:nowrap;
+}
+
+.mainuprf {
+    width:10em;
+}
+
+.pagep {
+}
