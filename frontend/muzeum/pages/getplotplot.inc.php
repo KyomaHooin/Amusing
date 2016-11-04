@@ -21,4 +21,9 @@ if(!get_ind($_SESSION->plot_outputs,$bn[0]) || get_ind($bn,1)!="plot" || !is_fil
 header("Content-type: text/plain");
 header("Content-length: ".filesize($_PLOTDIR.$bn[0]));
 
+$ol=ob_get_level();
+for($i=$ol;$i--;) ob_end_flush();
+
 readfile($_PLOTDIR.$bn[0]);
+
+for($i=$ol;$i--;) ob_start();

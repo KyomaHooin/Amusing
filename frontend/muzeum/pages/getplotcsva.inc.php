@@ -28,9 +28,11 @@ $out=fopen($_CSVDIR.$bn[0],"r");
 if($out) {
     while(($ln=fgets($out))) {
 	$l=explode(";",$ln);
-	$l[0]=gmdate("Y-m-d H:i:s",$l[0]+3600);
-	for($i=1;$i<count($l);$i++) $l[$i]=strtr($l[$i],".",",");
-	echo implode(";",$l);
+	if(count($l)>=2) {
+	    $l[0]=gmdate("Y-m-d H:i:s",$l[0]+3600);
+	    $l[1]=strtr($l[1],".",",");
+	    echo implode(";",$l);
+	} else echo $ln;
     }
     fclose($out);
 }
