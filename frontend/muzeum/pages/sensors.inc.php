@@ -7,6 +7,7 @@ showerror();
 
 ajaxsess();
 
+$makecsv=false;
 switch($ARGC) {
 case 2:
     switch($ARGV[0]) {
@@ -19,6 +20,12 @@ case 2:
 	redir();
     }
     break;
+case 1:
+    switch($ARGV[0]) {
+    case "csv":
+	$makecsv=true;
+	break;
+    }
 }
 
 $ord=array();
@@ -150,6 +157,27 @@ function buildsub() {
     $_JQUERY[]="buildsub();";
 }
 
+if($makecsv) {
+    ob_clean();
+    $_NOHEAD=true;
+//    header("Content-type: text/plain");
+    header("Content-type: text/x-csv");
+    header("Content-Disposition: attachment; filename=".$PAGE.".csv");
+    
+    ob_start();
+    echo csvline(array("#","Model","Sériové číslo","Typ","Popis","Zóna","Igorovat DST","Měřící bod","Město","Budova","Místnost","Patro","akt."));
+    $qe=$SQL->query("select * from sensor left join sensormodel on s_model=sm_id left join sensortype on s_type=st_id left join measuring on s_mid=m_id left join room on m_rid=r_id left join building on r_bid=b_id ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord));
+    while($fe=$qe->obj()) {
+	echo csvline(array($fe->s_id,$fe->sm_name." ".$fe->sm_vendor,$fe->s_serial,$fe->st_desc,$fe->s_desc,$fe->s_timezone,$fe->s_ignoredst=='Y'?"ano":"ne",
+	    $fe->m_desc,$fe->b_city,$fe->b_name,$fe->r_desc,$fe->r_floor,$fe->s_active=='Y'?"ano":"ne"));
+    }
+    $csv=ob_get_contents();
+    ob_end_clean();
+    echo csvoutput($csv);
+    
+    exit();
+}
+
 ob_start();
 $offset=(int)($_SESSION->sensor_currpage*$_PERPAGE);
 $limit=(int)$_PERPAGE;
@@ -208,6 +236,8 @@ $tbl=ob_get_clean();
 if($totalrows) pages($totalrows,$_SESSION->sensor_currpage,"<a href=\"".root().$PAGE."/page/%d\">%d</a>");
 echo $tbl;
 if($totalrows) pages($totalrows,$_SESSION->sensor_currpage,"<a href=\"".root().$PAGE."/page/%d\">%d</a>");
+
+echo "<br /><a href=\"".root().$PAGE."/csv\">Uložit jako csv</a>";
 
 echo "<script type=\"text/javascript\">
 // <![CDATA[

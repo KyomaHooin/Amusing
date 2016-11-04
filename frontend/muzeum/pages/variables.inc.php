@@ -7,6 +7,7 @@ showerror();
 
 ajaxsess();
 
+$makecsv=false;
 switch($ARGC) {
 case 2:
     switch($ARGV[0]) {
@@ -16,6 +17,12 @@ case 2:
 	redir();
     }
     break;
+case 1:
+    switch($ARGV[0]) {
+    case "csv":
+	$makecsv=true;
+	break;
+    }
 }
 
 $ord=array();
@@ -52,8 +59,42 @@ if($_SESSION->variable_filterenable) {
     if($ftmp) $whr[]="var_unit like \"%".$SQL->escape($ftmp)."%\"";
 }
 
+if($makecsv) {
+    ob_clean();
+    $_NOHEAD=true;
+//    header("Content-type: text/plain");
+    header("Content-type: text/x-csv");
+    header("Content-Disposition: attachment; filename=".$PAGE.".csv");
+    
+    ob_start();
+    echo csvline(array("#","Jednotky","Kód","Popis","Škála","Škála derivace","Barva","Implicitní","Pořadí zleva"));
+    $qe=$SQL->query("select * from variable ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord));
+    while($fe=$qe->obj()) {
+	$vdat=unserialize($fe->var_plotdata);
+	$vmin=get_ind($vdat,"min");
+	$vmax=get_ind($vdat,"max");
+	if($vmin===false || $vmax===false) $scale="nezadáno";
+	else $scale=sprintf("%.2f .. %.2f",$vmin,$vmax);
+
+	$vmin=get_ind($vdat,"dmin");
+	$vmax=get_ind($vdat,"dmax");
+	if($vmin===false || $vmax===false) $dscale="nezadáno";
+	else $dscale=sprintf("%.2f .. %.2f",$vmin,$vmax);
+
+	$color=get_ind($vdat,"color");
+	if(!$color) $color="auto";
+	echo csvline(array($fe->var_id,$fe->var_code,$fe->var_desc,$scale,$dscale,$color,$fe->var_default=='Y'?"ano":"ne",$fe->var_left));
+    }
+    $csv=ob_get_contents();
+    ob_end_clean();
+    echo csvoutput($csv);
+    
+    exit();
+}
+
 echo "<table>";
 sortlocalref(array(
+    array('n'=>"#",'a'=>false),
     array('n'=>"Jednotky",'a'=>"unit"),
     array('n'=>"Kód",'a'=>"code"),
     array('n'=>"Popis",'a'=>"desc"),
@@ -81,7 +122,7 @@ while($fe=$qe->obj()) {
     $color=get_ind($vdat,"color");
     if(!$color) $color="auto";
     else $color="<span style=\"color:".$color."\">".$color."</span>";
-    echo "<tr><td>".htmlspecialchars($fe->var_unit)."</td>
+    echo "<tr><td>".$fe->var_id."</td><td>".htmlspecialchars($fe->var_unit)."</td>
 	<td>".htmlspecialchars($fe->var_code)."</td>
 	<td>".htmlspecialchars($fe->var_desc)."</td>
 	<td>".$scale."</td>
@@ -93,6 +134,8 @@ while($fe=$qe->obj()) {
 }
 
 echo "</table>";
+
+echo "<br /><a href=\"".root().$PAGE."/csv\">Uložit jako csv</a>";
 
 echo "<script type=\"text/javascript\">
 // <![CDATA[

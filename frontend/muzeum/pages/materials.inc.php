@@ -7,6 +7,7 @@ showerror();
 
 ajaxsess();
 
+$makecsv=false;
 switch($ARGC) {
 case 2:
     switch($ARGV[0]) {
@@ -16,6 +17,12 @@ case 2:
 	redir();
     }
     break;
+case 1:
+    switch($ARGV[0]) {
+    case "csv":
+	$makecsv=true;
+	break;
+    }
 }
 
 $ord=array();
@@ -43,19 +50,42 @@ if($_SESSION->material_filterenable) {
     if($ftmp) $whr[]="ma_desc like \"%".$SQL->escape($ftmp)."%\"";
 }
 
+if($makecsv) {
+    ob_clean();
+    $_NOHEAD=true;
+//    header("Content-type: text/plain");
+    header("Content-type: text/x-csv");
+    header("Content-Disposition: attachment; filename=".$PAGE.".csv");
+    
+    ob_start();
+    echo csvline(array("#","Materiál"));
+    $qe=$SQL->query("select * from material ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord));
+    while($fe=$qe->obj()) {
+	echo csvline(array($fe->ma_id,$fe->ma_desc));
+    }
+    $csv=ob_get_contents();
+    ob_end_clean();
+    echo csvoutput($csv);
+    
+    exit();
+}
+
 echo "<table>";
 sortlocalref(array(
+    array('n'=>"#",'a'=>false),
     array('n'=>"Materiál",'a'=>"mat"),
     array('n'=>input_button("mat_filter","Filtr"),'a'=>false)
 ),$_SESSION->material_sort,$_SESSION->material_sortmode);
 
 $qe=$SQL->query("select * from material ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord));
 while($fe=$qe->obj()) {
-    echo "<tr><td>".htmlspecialchars($fe->ma_desc)."</td>
+    echo "<tr><td>".$fe->ma_id."</td><td>".htmlspecialchars($fe->ma_desc)."</td>
 	<td>".input_button("mat_edit[".$fe->ma_id."]","Editovat")."</td></tr>";
 }
 
 echo "</table>";
+
+echo "<br /><a href=\"".root().$PAGE."/csv\">Uložit jako csv</a>";
 
 echo "<script type=\"text/javascript\">
 // <![CDATA[

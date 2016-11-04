@@ -7,12 +7,41 @@ showerror();
 
 ajaxsess();
 
-if($ARGC==2) {
+$makecsv=false;
+switch($ARGC) {
+case 2:
     switch($ARGV[0]) {
     case "page":
 	$_SESSION->log_currpage=(int)$ARGV[1];
 	break;
     }
+    break;
+case 1:
+    switch($ARGV[0]) {
+    case "csv":
+	$makecsv=true;
+	break;
+    }
+}
+
+if($makecsv) {
+    ob_clean();
+    $_NOHEAD=true;
+//    header("Content-type: text/plain");
+    header("Content-type: text/x-csv");
+    header("Content-Disposition: attachment; filename=".$PAGE.".csv");
+    
+    ob_start();
+    echo csvline(array("datum","uživatel","událost"));
+    $qe=$SQL->query("select *,if(isnull(u_id),\"system\",u_fullname) as fn from log left join user on l_uid=u_id order by l_date desc");
+    while($fe=$qe->obj()) {
+	echo csvline(array($fe->l_date,$fe->fn,$fe->l_text));
+    }
+    $csv=ob_get_contents();
+    ob_end_clean();
+    echo csvoutput($csv);
+    
+    exit();
 }
 
 ob_start();
@@ -35,6 +64,8 @@ $totalrows=$fe->rows;
 if($totalrows) pages($totalrows,$_SESSION->log_currpage,"<a href=\"".root().$PAGE."/page/%d\">%d</a>");
 echo $tbl;
 if($totalrows) pages($totalrows,$_SESSION->log_currpage,"<a href=\"".root().$PAGE."/page/%d\">%d</a>");
+
+echo "<br /><a href=\"".root().$PAGE."/csv\">Uložit jako csv</a>";
 
 echo "<script type=\"text/javascript\">
 // <![CDATA[

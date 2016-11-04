@@ -7,6 +7,7 @@ showerror();
 
 ajaxsess();
 
+$makecsv=false;
 switch($ARGC) {
 case 2:
     switch($ARGV[0]) {
@@ -16,6 +17,12 @@ case 2:
 	redir();
     }
     break;
+case 1:
+    switch($ARGV[0]) {
+    case "csv":
+	$makecsv=true;
+	break;
+    }
 }
 
 $ord=array();
@@ -27,6 +34,26 @@ default:
     $_SESSION->varcode_sort="code";
 }
 $ord[]="vc_text ".($_SESSION->varcode_sortmode?"desc":"asc");
+
+if($makecsv) {
+    ob_clean();
+    $_NOHEAD=true;
+//    header("Content-type: text/plain");
+    header("Content-type: text/x-csv");
+    header("Content-Disposition: attachment; filename=".$PAGE.".csv");
+    
+    ob_start();
+    echo csvline(array("Kód","Perioda","Binární"));
+    $qe=$SQL->query("select * from varcodes order by ".implode(",",$ord));
+    while($fe=$qe->obj()) {
+	echo csvline(array($fe->vc_text,$fe->vc_expperiod,$fe->vc_bin));
+    }
+    $csv=ob_get_contents();
+    ob_end_clean();
+    echo csvoutput($csv);
+    
+    exit();
+}
 
 echo "<form action=\"".root().$PAGE."\" method=\"post\">";
 
@@ -49,6 +76,8 @@ while($fe=$qe->obj()) {
 }
 
 echo "</table>";
+
+echo "<br /><a href=\"".root().$PAGE."/csv\">Uložit jako csv</a>";
 
 echo "<script type=\"text/javascript\">
 // <![CDATA[

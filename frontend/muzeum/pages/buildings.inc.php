@@ -7,6 +7,7 @@ showerror();
 
 ajaxsess();
 
+$makecsv=false;
 switch($ARGC) {
 case 2:
     switch($ARGV[0]) {
@@ -19,6 +20,12 @@ case 2:
 	redir();
     }
     break;
+case 1:
+    switch($ARGV[0]) {
+    case "csv":
+	$makecsv=true;
+	break;
+    }
 }
 
 $ord=array();
@@ -71,6 +78,26 @@ if($_SESSION->building_filterenable) {
     if($ftmp) $whr[]="b_city=\"".$SQL->escape(my_hex2bin($ftmp))."\"";
 }
 
+if($makecsv) {
+    ob_clean();
+    $_NOHEAD=true;
+//    header("Content-type: text/plain");
+    header("Content-type: text/x-csv");
+    header("Content-Disposition: attachment; filename=".$PAGE.".csv");
+    
+    ob_start();
+    echo csvline(array("#","Název","Ulice","Město","GPS","Popis","Url"));
+    $qe=$SQL->query("select * from building ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord));
+    while($fe=$qe->obj()) {
+	echo csvline(array($fe->b_id,$fe->b_name,$fe->b_street,$fe->b_city,$fe->b_gps,$fe->b_desc,$fe->b_url));
+    }
+    $csv=ob_get_contents();
+    ob_end_clean();
+    echo csvoutput($csv);
+    
+    exit();
+}
+
 ob_start();
 echo "<table id=\"buildtable\">";
 sortlocalref(array(
@@ -94,7 +121,7 @@ while($fe=$qe->obj()) {
 	<td>".htmlspecialchars($fe->b_street)."</td>
 	<td>".htmlspecialchars($fe->b_city)."</td>
 	<td>".(strlen($fe->b_gps)?"<a target=\"_blank\" href=\"https://www.google.cz/maps/place/".htmlspecialchars($fe->b_gps)."\">".htmlspecialchars($fe->b_gps)."</a>":"")."</td>
-	<td>".htmlspecialchars(strtr($fe->b_desc,"\n","<br />"))."</td>
+	<td>".htmlspecialchars(strtr($fe->b_desc,array("\n"=>"<br />")))."</td>
 	<td>".(strlen($fe->b_url)?"<a target=\"_blank\" href=\"".htmlspecialchars($fe->b_url)."\">".htmlspecialchars($fe->b_url)."</a>":"&nbsp;")."</td>
 	<td>".($fe->b_img?"<a href=\"".root()."image/".$fe->b_img."\" target=\"_blank\"><img title=\"".$fe->b_img."\" src=\"".root()."image/".$fe->b_img."/max/100/100\" /></a>":"&nbsp;")."</td>
 	<td>".input_button("build_edit[".$fe->b_id."]","Editovat")." ".input_button("build_acc[".$fe->b_id."]","Oprávnění")."</td></tr>";
@@ -109,6 +136,8 @@ $totalrows=$fe->rows;
 if($totalrows) pages($totalrows,$_SESSION->building_currpage,"<a href=\"".root().$PAGE."/page/%d\">%d</a>");
 echo $tbl;
 if($totalrows) pages($totalrows,$_SESSION->building_currpage,"<a href=\"".root().$PAGE."/page/%d\">%d</a>");
+
+echo "<br /><a href=\"".root().$PAGE."/csv\">Uložit jako csv</a>";
 
 echo "<style>
 .ui-tooltip {

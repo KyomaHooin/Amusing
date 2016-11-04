@@ -7,6 +7,7 @@ showerror();
 
 ajaxsess();
 
+$makecsv=false;
 switch($ARGC) {
 case 2:
     switch($ARGV[0]) {
@@ -16,6 +17,12 @@ case 2:
 	redir();
     }
     break;
+case 1:
+    switch($ARGV[0]) {
+    case "csv":
+	$makecsv=true;
+	break;
+    }
 }
 
 $ord=array();
@@ -56,8 +63,29 @@ if($_SESSION->sensormodel_filterenable) {
     if($ftmp) $whr[]="sm_note like \"%".$SQL->escape($ftmp)."%\"";
 }
 
+if($makecsv) {
+    ob_clean();
+    $_NOHEAD=true;
+//    header("Content-type: text/plain");
+    header("Content-type: text/x-csv");
+    header("Content-Disposition: attachment; filename=".$PAGE.".csv");
+    
+    ob_start();
+    echo csvline(array("#","Název","Výrobce","Poznámka"));
+    $qe=$SQL->query("select * from sensormodel ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord));
+    while($fe=$qe->obj()) {
+	echo csvline(array($fe->sm_id,$fe->sm_name,$fe->sm_vendor,$fe->sm_note));
+    }
+    $csv=ob_get_contents();
+    ob_end_clean();
+    echo csvoutput($csv);
+    
+    exit();
+}
+
 echo "<table>";
 sortlocalref(array(
+    array('n'=>"#",'a'=>false),
     array('n'=>"Název",'a'=>"name"),
     array('n'=>"Výrobce",'a'=>"vendor"),
     array('n'=>"Poznámka",'a'=>false),
@@ -67,6 +95,7 @@ sortlocalref(array(
 $qe=$SQL->query("select * from sensormodel ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord));
 while($fe=$qe->obj()) {
     echo "<tr>
+	<td>".$fe->sm_id."</td>
 	<td>".htmlspecialchars($fe->sm_name)."</td>
 	<td>".htmlspecialchars($fe->sm_vendor)."</td>
 	<td>".htmlspecialchars($fe->sm_note)."</td>";
@@ -75,6 +104,8 @@ while($fe=$qe->obj()) {
 }
 
 echo "</table>";
+
+echo "<br /><a href=\"".root().$PAGE."/csv\">Uložit jako csv</a>";
 
 echo "<script type=\"text/javascript\">
 // <![CDATA[
