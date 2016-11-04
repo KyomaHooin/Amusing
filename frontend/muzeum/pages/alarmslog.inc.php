@@ -75,7 +75,7 @@ if($_SESSION->alarmslog_filterenable) { // using same filter variables
 
     $opts=array(0=>"Všechny budovy");
     if($sb) {
-	$qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(hex2bin($sb))."\" order by b_name");
+	$qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(my_hex2bin($sb))."\" order by b_name");
 	while($fe=$qe->obj()) {
 	    $opts[$fe->b_id]=$fe->b_name;
 	}
@@ -137,7 +137,7 @@ if($_SESSION->alarmslog_filterenable) { // using same filter variables
     $fb=get_ind($_SESSION->alarmslog_filter,"001_alog_var");
     if($fb) $whr[]="var_id=\"".$SQL->escape($fb)."\"";
     $ftmp=get_ind($_SESSION->alarmslog_filter,"000_alog_filter_city");
-    if($ftmp) $whr[]="b_city=\"".$SQL->escape(hex2bin($ftmp))."\"";
+    if($ftmp) $whr[]="b_city=\"".$SQL->escape(my_hex2bin($ftmp))."\"";
 
     echo "<script type=\"text/javascript\">
 // <![CDATA[
@@ -169,7 +169,6 @@ function buildsub() {
     $_JQUERY[]="buildsub();";
 }
 
-//print_read($whr);
 
 $offset=(int)($_SESSION->alarmslog_currpage*$_PERPAGE);
 $limit=(int)$_PERPAGE;

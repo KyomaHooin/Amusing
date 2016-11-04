@@ -127,7 +127,7 @@ class c_sess {
     function updateprofile() {
 	$curr=get_ind($this->mainform,'main_uprfsel');
 	if($curr) {
-	    $curr=hex2bin($curr);
+	    $curr=my_hex2bin($curr);
 	    $prf=$this->getprofiles();
 	    if(get_ind($prf,$curr)) {
 		$prf[$curr]['mids']=$this->datatogen_mids;
@@ -136,6 +136,11 @@ class c_sess {
 	    }
 	}
 // set default profile
+	if(!is_array($this->userpref)) $this->userpref=array();
+	$this->userpref["defprof"]=array("mids"=>$this->datatogen_mids);
+	saveuserpref();
+    }
+    function updatedefprofile() {
 	if(!is_array($this->userpref)) $this->userpref=array();
 	$this->userpref["defprof"]=array("mids"=>$this->datatogen_mids);
 	saveuserpref();

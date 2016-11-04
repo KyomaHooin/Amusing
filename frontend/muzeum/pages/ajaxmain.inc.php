@@ -121,7 +121,7 @@ function plotgraph($togen,$from,$to) {
 	dblock();
 	$qe=$SQL->query("show tables like \"values\\_%\"");
 	while($fe=$qe->row()) {
-	    if(preg_match("/^values_(\\d+)$/",$fe[0],$mch)) $tabs[]=$mch[1];
+	    if(preg_match('/^values_(\d+)$/',$fe[0],$mch)) $tabs[]=$mch[1];
 	}
 	dbunlock();
 	sort($tabs);
@@ -714,7 +714,7 @@ function plotbin($mv,$from,$to) {
 	dblock();
 	$qe=$SQL->query("show tables like \"valuesblob\\_%\"");
 	while($fe=$qe->row()) {
-	    if(preg_match("/^valuesblob_(\\d+)$/",$fe[0],$mch)) $tabs[]=$mch[1];
+	    if(preg_match('/^valuesblob_(\d+)$/',$fe[0],$mch)) $tabs[]=$mch[1];
 	}
 	dbunlock();
 	sort($tabs);
@@ -1068,7 +1068,7 @@ function genhidden($force=false) {
     global $_IGNOREDST;
     
     $depsel=false;
-    if(strlen(get_ind($_SESSION->mainform,"maintree_depsel"))>1) $depsel=hex2bin(get_ind($_SESSION->mainform,"maintree_depsel"));
+    if(strlen(get_ind($_SESSION->mainform,"maintree_depsel"))>1) $depsel=my_hex2bin(get_ind($_SESSION->mainform,"maintree_depsel"));
     $mdact=(get_ind($_SESSION->mainform,"maintree_showdea")=='Y');
 
     $cities=array();

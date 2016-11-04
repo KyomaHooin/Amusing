@@ -40,7 +40,7 @@ function parsedatetime($dt) {
     global $_sensor_data;
     global $_sensor_dstoff;
 
-    if(!preg_match("/^(\\d{4})(\\d{2})(\\d{2})T(\\d{2})(\\d{2})(\\d{2})$/",$dt,$mch)) deferr("Neplatný formát datumu a času: ".$dt);
+    if(!preg_match('/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})$/',$dt,$mch)) deferr("Neplatný formát datumu a času: ".$dt);
     $y=$mch[1];
     $m=$mch[2];
     $d=$mch[3];

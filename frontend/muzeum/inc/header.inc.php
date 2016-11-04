@@ -19,7 +19,7 @@ echo "<script src=\"".root()."js/jquery-ui.min.js\"></script>"; ?>
 
 <?php
 
-echo "<div class=\"header\">";
+echo "<div id=\"divheader\" class=\"header\">";
 
 if($_SESSION->user) echo "<div class=\"user\"><span class=\"man\"><a href=\"".root()."user\">".htmlspecialchars($_SESSION->user->u_uname)."</a> / <a href=\"".root()."logout\">odhlásit</a></span></div>";
 

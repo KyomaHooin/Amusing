@@ -68,7 +68,7 @@ if($_SESSION->building_filterenable) {
 //    $ftmp=get_ind($_SESSION->building_filter,"000_build_filter_city");
 //    if($ftmp) $whr[]="b_city like \"%".$SQL->escape($ftmp)."%\"";
     $ftmp=get_ind($_SESSION->building_filter,"000_build_filter_city");
-    if($ftmp) $whr[]="b_city=\"".$SQL->escape(hex2bin($ftmp))."\"";
+    if($ftmp) $whr[]="b_city=\"".$SQL->escape(my_hex2bin($ftmp))."\"";
 }
 
 ob_start();

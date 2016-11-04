@@ -189,7 +189,7 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
 		foreach(explode("\n",$ems) as $val) {
 		    foreach(explode(",",$val) as $e) {
 			$t=trim($e);
-			if(strlen($t) && !preg_match("/[a-zA-Z0-9\.\-_]+@[a-zA-Z0-9\.\-_]+\.[a-zA-Z]+/",$t)) {
+			if(strlen($t) && !preg_match('/[a-zA-Z0-9\.\-_]+@[a-zA-Z0-9\.\-_]+\.[a-zA-Z]+/',$t)) {
 			    $rerr['000_alarm_email']="<b>Nesprávně vyplněné položky.</b>";
 			    break;
 			}

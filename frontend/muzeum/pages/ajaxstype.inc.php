@@ -12,7 +12,7 @@ if(!$_SESSION->user) over();
 
 function rin1test() {
     $url=get_ind($_POST,"001_sen_ringo1_uri");
-    if(!preg_match("/^https?\\:\\/\\/.*/",$url)) {
+    if(!preg_match('/^https?\:\/\/.*/',$url)) {
 	echo "Invalidní adresa";
 	return;
     }

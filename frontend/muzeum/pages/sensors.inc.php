@@ -93,7 +93,7 @@ if($_SESSION->sensor_filterenable) {
     
     $opts=array(0=>"Všechny budovy");
     if($sb) {
-	$qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(hex2bin($sb))."\" order by b_name");
+	$qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(my_hex2bin($sb))."\" order by b_name");
 	while($fe=$qe->obj()) {
 	    $opts[$fe->b_id]=$fe->b_name;
 	}
@@ -126,7 +126,7 @@ if($_SESSION->sensor_filterenable) {
     $fb=get_ind($_SESSION->sensor_filter,"000_sen_filter_model");
     if($fb) $whr[]="s_model=\"".$SQL->escape($fb)."\"";
     $ftmp=get_ind($_SESSION->sensor_filter,"000_sen_filter_city");
-    if($ftmp) $whr[]="b_city=\"".$SQL->escape(hex2bin($ftmp))."\"";
+    if($ftmp) $whr[]="b_city=\"".$SQL->escape(my_hex2bin($ftmp))."\"";
 
     echo "<script type=\"text/javascript\">
 // <![CDATA[
@@ -236,7 +236,7 @@ function sendelete($sid) {
     global $SQL;
     $qe=$SQL->query("show tables");
     while($fe=$qe->row()) { // maybe not needed
-	if(preg_match("/^rawvalues_\\d+$/",$fe[0])) {
+	if(preg_match('/^rawvalues_\d+$/',$fe[0])) {
 	    $SQL->query("update ".$fe[0]." set rv_sid=0 where rv_sid=".$sid);
 	}
     }

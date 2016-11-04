@@ -15,6 +15,9 @@ RewriteRule ^(.*)$ index.php [L]
 RewriteCond %{REQUEST_URI} ^.*/getplotcsv/ [NC]
 RewriteRule ^(.*)$ index.php [L]
 
+RewriteCond %{REQUEST_URI} ^.*/getplotcsva/ [NC]
+RewriteRule ^(.*)$ index.php [L]
+
 RewriteCond %{REQUEST_URI} ^.*/getplotplot/ [NC]
 RewriteRule ^(.*)$ index.php [L]
 

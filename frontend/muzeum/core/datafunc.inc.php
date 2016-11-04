@@ -314,7 +314,7 @@ function val_saverawvalues(&$vals,$vid,$mid,$sid,$send=false) {
     $d=0;
     $w=0;
     foreach($lin as $val) {
-	if(preg_match("/^Records\\:\\s+(\\d+)\\s+Duplicates\\:\\s+(\\d+)\\s+Warnings\\:\\s+(\\d+)$/",trim($val),$mch)) {
+	if(preg_match('/^Records\:\s+(\d+)\s+Duplicates\:\s+(\d+)\s+Warnings\:\s+(\d+)$/',trim($val),$mch)) {
 	    $r+=$mch[1];
 	    $d+=$mch[2];
 	    $w+=$mch[3];

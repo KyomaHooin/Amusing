@@ -35,7 +35,7 @@ echo "<tr><td>Město:&nbsp;</td><td>".input_select_temp_err("001_room_city",$opt
 $opts=array(0=>"Zvolte budovu");
 $sb=get_temp("001_room_city");
 if($sb) {
-    $qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(hex2bin($sb))."\" order by b_name");
+    $qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(my_hex2bin($sb))."\" order by b_name");
     while($fe=$qe->obj()) {
 	$opts[$fe->b_id]=$fe->b_name;
     }

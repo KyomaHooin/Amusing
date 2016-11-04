@@ -18,7 +18,7 @@ case 2:
 	$bcity=$ARGV[1];
 	$opts=array(0=>"Zvolte budovu");
 	if($bcity!="0") {
-	    $qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(hex2bin($bcity))."\" order by b_name");
+	    $qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(my_hex2bin($bcity))."\" order by b_name");
 	    while($fe=$qe->obj()) {
 		$opts[$fe->b_id]=$fe->b_name;
 	    }
@@ -29,7 +29,7 @@ case 2:
 	$bcity=$ARGV[1];
 	$opts=array(0=>"Všechny budovy");
 	if($bcity!="0") {
-	    $qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(hex2bin($bcity))."\" order by b_name");
+	    $qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(my_hex2bin($bcity))."\" order by b_name");
 	    while($fe=$qe->obj()) {
 		$opts[$fe->b_id]=$fe->b_name;
 	    }

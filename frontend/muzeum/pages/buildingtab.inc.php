@@ -82,10 +82,10 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
     if(get_ind($_POST,"build_save")) {
 	$rerr=postcheck($ITEMS,$_POST);
 	$url=get_ind($_POST,"000_build_url");
-	if(strlen($url) && !preg_match("/^https?\\:\\/\\/.+$/",$url)) $rerr['000_build_url']="Neplatný formát url";
+	if(strlen($url) && !preg_match('/^https?\:\/\/.+$/',$url)) $rerr['000_build_url']="Neplatný formát url";
 	$gps=get_ind($_POST,"000_build_gps");
 	if(strlen($gps)) { // check and correct gps mark
-	    if(!preg_match("/(\\-?\\d+\\.?\\d*)\\s*,\\s*(\\-?\\d+\\.?\\d*)$/",$gps,$mch)) $rerr['000_build_gps']="Neplatný formát gps";
+	    if(!preg_match('/(\-?\d+\.?\d*)\s*,\s*(\-?\d+\.?\d*)$/',$gps,$mch)) $rerr['000_build_gps']="Neplatný formát gps";
 	    else $gps=$mch[1].",".$mch[2]; // strip spaces
 	}
 	if(count($rerr)) {

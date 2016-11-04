@@ -40,7 +40,7 @@ function plotgraph($togen,$from,$to,$usescales=true,$showextremes=true,$showalar
 	dblock();
 	$qe=$SQL->query("show tables like \"values\\_%\"");
 	while($fe=$qe->row()) {
-	    if(preg_match("/^values_(\\d+)$/",$fe[0],$mch)) $tabs[]=$mch[1];
+	    if(preg_match('/^values_(\d+)$/',$fe[0],$mch)) $tabs[]=$mch[1];
 	}
 	dbunlock();
 	sort($tabs);
@@ -378,7 +378,7 @@ if($ARGC!=7) over();
 $mids=array();
 $newest=0;
 foreach(explode("-",$ARGV[0]) as $val) {
-    if(!preg_match("/^(\\d+)_(\\d+)$/",$val,$mch)) over();
+    if(!preg_match('/^(\d+)_(\d+)$/',$val,$mch)) over();
     $mids[]=array($mch[1],$mch[2]);
     $qe=$SQL->query("select * from varmeascache where vmc_mid=".$mch[1]." && vmc_varid=".$mch[2]);
     $fe=$qe->obj();

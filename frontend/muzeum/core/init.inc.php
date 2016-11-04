@@ -48,6 +48,7 @@ $ARGV=explode("/",substr($ARGV[0],strlen($_ROOTPATH)));
 
 $pages=array(
     "main"=>true,
+    "main_print"=>true,
     "ajax"=>true,
     "ajaxmain"=>true,
     "login"=>true,
@@ -83,6 +84,7 @@ $pages=array(
     "getplotsvg"=>true,
     "getplotjs"=>true,
     "getplotcsv"=>true,
+    "getplotcsva"=>true,
     "getplotplot"=>true,
     "getplotbin"=>true,
     "getplotref"=>true,

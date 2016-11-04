@@ -70,7 +70,7 @@ if($_SESSION->comments_filterenable) { // using same filter variables
 
     $opts=array(0=>"Všechny budovy");
     if($sb) {
-	$qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(hex2bin($sb))."\" order by b_name");
+	$qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(my_hex2bin($sb))."\" order by b_name");
 	while($fe=$qe->obj()) {
 	    $opts[$fe->b_id]=$fe->b_name;
 	}
@@ -116,7 +116,7 @@ if($_SESSION->comments_filterenable) { // using same filter variables
     $fb=get_ind($_SESSION->comments_filter,"001_comm_user");
     if($fb) $whr[]="u_id=\"".$SQL->escape($fb)."\"";
     $ftmp=get_ind($_SESSION->comments_filter,"000_comm_filter_city");
-    if($ftmp) $whr[]="b_city=\"".$SQL->escape(hex2bin($ftmp))."\"";
+    if($ftmp) $whr[]="b_city=\"".$SQL->escape(my_hex2bin($ftmp))."\"";
 
     echo "<script type=\"text/javascript\">
 // <![CDATA[

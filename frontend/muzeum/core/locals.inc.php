@@ -83,7 +83,11 @@ function showmenu() {
     case 'U':
 	$items=array(
 	    "main"=>"přehled",
-	    "measpoints"=>"měřící body");
+	    "measpoints"=>"měřící body",
+	    "comments"=>"komentáře",
+	    "alarms"=>"alarmy",
+	    "alarmslog"=>"al. události",
+	    "alarmsack"=>"al. potvrzení");
 	break;
     default:
 	return;
@@ -121,9 +125,17 @@ function pageperm() {
     }
     switch($PAGE) {
     case "main":
+    case "main_print":
     case "user":
     case "measpoints":
     case "import":
+    case "comments":
+    case "commenttab":
+    case "alarms":
+    case "alarmtab":
+    case "alarmslog":
+    case "alarmsack":
+    case "alarmacktab":
 	break;
     default:
 	redir(root()."main");
@@ -206,6 +218,14 @@ function showtime2($s) { // convert sql utc timestamp into server local time
     return gmdate("Y-m-d",$s+3600)."<br />".gmdate("H:i:s",$s+3600);
 }
 
+function showtime3($s) { // convert sql utc timestamp into server local time
+    global $_IGNOREDST;
+//    if(!$_IGNOREDST) return "<nobr>".date("Y-m-d",$s)."</nobr> ".date("H:i:s",$s);
+//    return "<nobr>".gmdate("Y-m-d",$s+3600)."</nobr> ".gmdate("H:i:s",$s+3600); // NASTY !!!
+    if(!$_IGNOREDST) return strtr(date("Y-m-d H:i:s",$s),array("-"=>"&#8209;"));
+    return strtr(gmdate("Y-m-d H:i:s",$s+3600),array("-"=>"&#8209;")); // NASTY !!!
+}
+
 function showdate($s) {
     global $_IGNOREDST;
     if(!$_IGNOREDST) return date("Y-m-d",$s);
@@ -214,19 +234,19 @@ function showdate($s) {
 
 function gettime($s) {
     global $_IGNOREDST;
-    if(preg_match("/^(\\d+)\\-(\\d+)\\-(\\d+)$/",trim($s),$mch)) {
+    if(preg_match('/^(\d+)\-(\d+)\-(\d+)$/',trim($s),$mch)) {
 	if(!checkdate($mch[2],$mch[3],$mch[1])) return false;
 	if(!$_IGNOREDST) return mktime(0,0,0,$mch[2],$mch[3],$mch[1]);
 	return gmmktime(0,0,0,$mch[2],$mch[3],$mch[1])-3600;
     }
-    if(preg_match("/^(\\d+)\\-(\\d+)\\-(\\d+)\\s+(\\d+)\\:(\\d+)$/",trim($s),$mch)) {
+    if(preg_match('/^(\d+)\-(\d+)\-(\d+)\s+(\d+)\:(\d+)$/',trim($s),$mch)) {
 	if(!checkdate($mch[2],$mch[3],$mch[1])) return false;
 	if($mch[4]>23) return false;
 	if($mch[5]>59) return false;
 	if(!$_IGNOREDST) return mktime($mch[4],$mch[5],0,$mch[2],$mch[3],$mch[1]);
 	return gmmktime($mch[4],$mch[5],0,$mch[2],$mch[3],$mch[1])-3600;
     }
-    if(preg_match("/^(\\d+)\\-(\\d+)\\-(\\d+)\\s+(\\d+)\\:(\\d+)\\:(\\d+)$/",trim($s),$mch)) {
+    if(preg_match('/^(\d+)\-(\d+)\-(\d+)\s+(\d+)\:(\d+)\:(\d+)$/',trim($s),$mch)) {
 	if(!checkdate($mch[2],$mch[3],$mch[1])) return false;
 	if($mch[4]>23) return false;
 	if($mch[5]>59) return false;
@@ -292,6 +312,11 @@ if(!function_exists("hex2bin")) {
     }
 }
 
+function my_hex2bin($str) {
+    if(!strlen($str) || (strlen($str)&1)) return false;
+    return @hex2bin($str);
+}
+
 function getcolumns($t) {
     global $SQL;
     
@@ -305,7 +330,7 @@ function getcolumns($t) {
 }
 
 function is_intnumber($val) {
-    return preg_match("/^\\d+$/",$val)!=0;
+    return preg_match('/^\d+$/',$val)!=0;
 }
 
 function saveuserpref() {
@@ -357,4 +382,23 @@ function freshlock() {
     global $locked;
     if(!$locked) return;
     $SQL->query("update cronlock set cl_date=now() where cl_pid=".getmypid());
+}
+
+function forcsv($s) {
+//    return "\"".addslashes(strtr($s,"\n\r","  "))."\"";
+    return strtr($s,array("\n"=>" ","\r"=>" ","\t"=>" ",";"=>","));
+}
+
+function csvline($v) {
+    $e=array();
+    foreach($v as $val) $e[]=forcsv($val);
+    return implode(";",$e)."\n";
+}
+
+function csvoutput($c) {
+    return iconv("utf-8","cp1250//TRANSLIT",$c);
+}
+
+function dotdouble($d) {
+    return strtr(sprintf("%.1f",$d),".",",");
 }

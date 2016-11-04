@@ -82,7 +82,7 @@ if($_SESSION->measpoint_filterenable) {
     
     $opts=array(0=>"Všechny budovy");
     if($sb) {
-	$qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(hex2bin($sb))."\" order by b_name");
+	$qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(my_hex2bin($sb))."\" order by b_name");
 	while($fe=$qe->obj()) {
 	    $opts[$fe->b_id]=$fe->b_name;
 	}
@@ -114,7 +114,7 @@ if($_SESSION->measpoint_filterenable) {
     $fb=get_ind($_SESSION->measpoint_filter,"001_ajax_room");
     if($fb) $whr[]="r_id=\"".$SQL->escape($fb)."\"";
     $ftmp=get_ind($_SESSION->measpoint_filter,"000_meas_filter_city");
-    if($ftmp) $whr[]="b_city=\"".$SQL->escape(hex2bin($ftmp))."\"";
+    if($ftmp) $whr[]="b_city=\"".$SQL->escape(my_hex2bin($ftmp))."\"";
 
     echo "<script type=\"text/javascript\">
 // <![CDATA[
@@ -310,11 +310,11 @@ function measdelete($mid) {
     global $SQL;
     $qe=$SQL->query("show tables");
     while($fe=$qe->row()) {
-	if(preg_match("/^values_\\d+$/",$fe[0])) {
+	if(preg_match('/^values_\d+$/',$fe[0])) {
 	    $SQL->query("delete from ".$fe[0]." where v_mid=".$mid);
-	} else if(preg_match("/^valuesblob_\\d+$/",$fe[0])) {
+	} else if(preg_match('/^valuesblob_\d+$/',$fe[0])) {
 	    $SQL->query("delete from ".$fe[0]." where vb_mid=".$mid);
-	} else if(preg_match("/^rawvalues_\\d+$/",$fe[0])) {
+	} else if(preg_match('/^rawvalues_\d+$/',$fe[0])) {
 	    $SQL->query("delete from ".$fe[0]." where rv_mid=".$mid);
 	}
     }

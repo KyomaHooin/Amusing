@@ -36,7 +36,7 @@ if(!$_SESSION->user) {
 
 switch($ARGC) {
 case 3:
-    if($ARGV[1]!="page" || !preg_match("/^\\d+$/",$ARGV[2])) {
+    if($ARGV[1]!="page" || !preg_match('/^\d+$/',$ARGV[2])) {
 	header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 	exit();
     }
@@ -70,7 +70,7 @@ case 1:
 	dblock();
 	$qe=$SQL->query("show tables like \"valuesblob\\_%\"");
 	while($fe=$qe->row()) {
-	    if(preg_match("/^valuesblob_(\\d+)$/",$fe[0],$mch)) $tabs[]=$mch[1];
+	    if(preg_match('/^valuesblob_(\d+)$/',$fe[0],$mch)) $tabs[]=$mch[1];
 	}
 	dbunlock();
 	sort($tabs);

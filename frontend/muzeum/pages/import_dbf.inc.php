@@ -49,7 +49,7 @@ function parsedatetime($dt,$t) {
     $d=substr($dt,6,2);
     if(!checkdate($m,$d,$y)) deferr("Neplatný formát datumu: ".$dt);
     
-    if(!preg_match("/^(\\d{2})\\:(\\d{2})\\:(\\d{2})$/",$t,$mch)) deferr("Neplatný formát času: ".$t);
+    if(!preg_match('/^(\d{2})\:(\d{2})\:(\d{2})$/',$t,$mch)) deferr("Neplatný formát času: ".$t);
     $ret=mktime($mch[1],$mch[2],$mch[3],$m,$d,$y);
     if($ret===false || $ret<0) deferr("Neplatný formát času: ".$dt." ".$t);
     return $ret+$_sensor_dstoff;

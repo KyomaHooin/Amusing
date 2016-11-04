@@ -63,7 +63,7 @@ if($_SESSION->room_filterenable) {
 
     $opts=array(0=>"Všechny budovy");
     if($sb) {
-	$qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(hex2bin($sb))."\" order by b_name");
+	$qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(my_hex2bin($sb))."\" order by b_name");
 	while($fe=$qe->obj()) {
 	    $opts[$fe->b_id]=$fe->b_name;
 	}
@@ -92,7 +92,7 @@ if($_SESSION->room_filterenable) {
     $fb=get_ind($_SESSION->room_filter,"001_ajax_build");
     if($fb) $whr[]="b_id=\"".$SQL->escape($fb)."\"";
     $ftmp=get_ind($_SESSION->room_filter,"000_room_filter_city");
-    if($ftmp) $whr[]="b_city=\"".$SQL->escape(hex2bin($ftmp))."\"";
+    if($ftmp) $whr[]="b_city=\"".$SQL->escape(my_hex2bin($ftmp))."\"";
 }
 
 //print_read($_SESSION->room_filter);

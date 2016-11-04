@@ -297,13 +297,13 @@ function postcheck(&$items,&$posted) {
 		break;
 	    }
 	    $posted[$val]=trim($posted[$val]);
-	    if(!preg_match("/[a-zA-Z0-9\.\-_]+@[a-zA-Z0-9\.\-_]+\.[a-zA-Z]+/",$posted[$val])) $rerr[$val]="<b>Nesprávně vyplněné položky.</b>";
+	    if(!preg_match('/^[a-zA-Z0-9\.\-_]+@[a-zA-Z0-9\.\-_]+\.[a-zA-Z]+$/',$posted[$val])) $rerr[$val]="<b>Nesprávně vyplněné položky.</b>";
 	    break;
 	case "004_":
 	    if(get_ind($posted,$val)===false) break;
 	    $posted[$val]=trim($posted[$val]);
 	    if(!strlen($posted[$val])) break;
-	    if(!preg_match("/[a-zA-Z0-9\.\-_]+@[a-zA-Z0-9\.\-_]+\.[a-zA-Z]+/",$posted[$val])) $rerr[$val]="<b>Nesprávně vyplněné položky.</b>";
+	    if(!preg_match('/^[a-zA-Z0-9\.\-_]+@[a-zA-Z0-9\.\-_]+\.[a-zA-Z]+$/',$posted[$val])) $rerr[$val]="<b>Nesprávně vyplněné položky.</b>";
 	    break;
 	case "005_":
 	    if(get_ind($posted,$val)===false) break;

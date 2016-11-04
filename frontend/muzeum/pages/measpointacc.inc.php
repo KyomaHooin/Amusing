@@ -104,7 +104,7 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
 	    $_SESSION->error_text="Neplatné oprávnění";
 	    sredir();
 	}
-	if(!preg_match("/^\\d+$/",$uid)) {
+	if(!preg_match('/^\d+$/',$uid)) {
 	    $_SESSION->error_text="Neplatný uživatel";
 	    sredir();
 	}
@@ -123,8 +123,8 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
     }
     if(get_ind($_POST,"macc_rem")) {
 	if(is_array($_POST['macc_rem'])) {
-	    $torem=hex2bin(key($_POST['macc_rem']));
-	    if(preg_match("/^(\\d+)_(\\d+)_([IV])$/",$torem,$mch)) {
+	    $torem=my_hex2bin(key($_POST['macc_rem']));
+	    if(preg_match('/^(\d+)_(\d+)_([IV])$/',$torem,$mch)) {
 		$SQL->query("delete from permission where
 		    pe_uid=".$mch[1]." && pe_mid=".$mch[2]." && pe_type=\"".$mch[3]."\"");
 		$_SESSION->error_text="Oprávnění odebráno";

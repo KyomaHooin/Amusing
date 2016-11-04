@@ -94,7 +94,7 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
 
 	$color=get_ind($_POST,"000_var_color");
 	if(!strlen($color)) $color=false;
-	else if(!preg_match("/^\\#[0-9A-F]{6}$/",$color)) $rerr['000_var_color']="Neplatně zadaná barva";
+	else if(!preg_match('/^\#[0-9A-F]{6}$/',$color)) $rerr['000_var_color']="Neplatně zadaná barva";
 	
 	$vc=get_ind($_POST,"000_var_code");
 	if(!$vc && !$variableedit) $rerr['000_var_code']="Nezvolen kód veličiny";

@@ -15,7 +15,7 @@ function makeemails($ems) {
     foreach(explode("\n",$ems) as $val) {
 	foreach(explode(",",$val) as $e) {
 	    $t=trim($e);
-	    if(strlen($t) && preg_match("/[a-zA-Z0-9\.\-_]+@[a-zA-Z0-9\.\-_]+\.[a-zA-Z]+/",$t)) $ret[]=$t;
+	    if(strlen($t) && preg_match('/[a-zA-Z0-9\.\-_]+@[a-zA-Z0-9\.\-_]+\.[a-zA-Z]+/',$t)) $ret[]=$t;
 	}
     }
     return implode(",",$ret);
@@ -163,7 +163,6 @@ do {
     }
 
 // alarm crons (nodata class only ?)
-   echo "zpracovavam alarmy..\n";
     $qe=$SQL->query("select * from alarm where a_class=\"c_alarm_nodata\"");
     while($fe=$qe->obj()) {
 	$al=c_alarm_gen::getalarmbyname($fe->a_class);
@@ -171,7 +170,6 @@ do {
     }
     
 // alarm solving
-   echo "posilam alarmy..\n";
     $qe=$SQL->query("select *,if(adddate(a_mailed,interval 1 day)<now(),0,1) as ag from alarm left join user on a_uid=u_id left join variable on var_id=a_vid left join measuring on a_mid=m_id left join room on r_id=m_rid left join building on b_id=r_bid where a_alarmed!='N'");
     while($fe=$qe->obj()) {
 	if($fe->a_crit=='Y') { // send email every day till ack

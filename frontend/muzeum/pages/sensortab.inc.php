@@ -31,7 +31,7 @@ echo "<form id=\"formsentab\" action=\"".root().$PAGE."/edit/".$sensoredit."\" m
 	$opts=array(0=>"Zvolte budovu");
 	$sb=get_temp("001_sen_city");
 	if($sb) {
-	    $qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(hex2bin($sb))."\" order by b_name");
+	    $qe=$SQL->query("select * from building where b_city=\"".$SQL->escape(my_hex2bin($sb))."\" order by b_name");
 	    while($fe=$qe->obj()) {
 		$opts[$fe->b_id]=$fe->b_name;
 	    }
