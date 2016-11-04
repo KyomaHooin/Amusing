@@ -70,7 +70,7 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
     }
     if(get_ind($_POST,"vc_edit")) {
 	if(is_array($_POST['vc_edit'])) {
-	    $varcodeedit=hex2bin(key($_POST['vc_edit']));
+	    $varcodeedit=my_hex2bin(key($_POST['vc_edit']));
 	    if($varcodeedit) {
 		$qe=$SQL->query("select * from varcodes where vc_text=\"".$SQL->escape($varcodeedit)."\"");
 		$fe=$qe->obj();
