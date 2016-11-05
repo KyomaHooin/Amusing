@@ -16,7 +16,7 @@ from email.mime.application import MIMEApplication
 img = open('graph.png','w')
 
 try:# GRAPH
-	c = httplib.HTTPSConnection('amusing.nm.cz','443')
+	c = httplib.HTTPSConnection('[removed]','443')
 	c.request('GET','/muzeum/getplotref/42_1-42_2-43_1-43_2-44_1-44_2-45_1-45_2/1D/1/0/0/0/0')
 	r = c.getresponse()
 	if r.status == 200:
@@ -59,8 +59,8 @@ ps: Tato zprava je generovana automaticky. Pro odhalseni napiste na adresu: rich
 
 try:# MAIL
 	msg = MIMEMultipart()
-	msg['From'] = 'Amusing Report <webmaster@amusing.nm.cz>'
-	msg['To'] = 'richard_bruna@nm.cz'
+	msg['From'] = 'Amusing Report <[removed]>'
+	msg['To'] = '[removed]'
 	msg['Subject'] = "Amusing Report - " + time.strftime("%d.%m.%Y %H:%M")
 
 	msg.attach(MIMEText(text))
@@ -71,7 +71,7 @@ try:# MAIL
 	msg.attach(a)
 
 	s = smtplib.SMTP('ms.nm.cz')
-	s.sendmail('webmaster@amusing.nm.cz', 'michal_pech@nm.cz',msg.as_string())
+	s.sendmail('[removed]', '[removed]',msg.as_string())
 except:
 	print ('Failed to send email.')
 	sys.exit(1)
