@@ -54,7 +54,7 @@ Amusing
 
 ------
 
-ps: Tato zprava je generovana automaticky. Pro odhalseni napiste na adresu: richard_bruna@nm.cz
+ps: Tato zprava je generovana automaticky. Pro odhlaseni napiste na adresu: [removed]
 """
 
 try:# MAIL
@@ -66,7 +66,7 @@ try:# MAIL
 	msg.attach(MIMEText(text))
 
 	a = MIMEApplication(open('report.pdf').read())
-	a['Content-Disposition'] = 'attachment; filename="amusing-report' + time.strftime("%d_%m_%Y_%H_%M") + '.pdf"'
+	a['Content-Disposition'] = 'attachment; filename="amusing-report-archa-' + time.strftime("%d_%m_%Y_%H_%M") + '.pdf"'
 
 	msg.attach(a)
 
