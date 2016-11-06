@@ -3,36 +3,35 @@
 # A4: 595 x 842 PT
 #
 
-import smtplib,httplib,socket,time,PIL,sys
+import StringIO,smtplib,httplib,time,PIL,sys
 
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib import pagesizes
-from reportlab.lib.units import cm
+from reportlab.lib.utils import ImageReader
 
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
-
-img = open('graph.png','w')
 
 try:# GRAPH
 	c = httplib.HTTPSConnection('[removed]','443')
 	c.request('GET','/muzeum/getplotref/42_1-42_2-43_1-43_2-44_1-44_2-45_1-45_2/1D/1/0/0/0/0')
 	r = c.getresponse()
 	if r.status == 200:
-		img.write(r.read())
-		img.close()
-except socket.error:
+		img = StringIO.StringIO(r.read())
+except:
 	print("Failed to get graph.")
 	sys.exit(3)
 
+fbuff = StringIO.StringIO()
+
 try:# PDF
-	pdf = Canvas('report.pdf', pagesize=pagesizes.landscape(pagesizes.A4))
+	pdf = Canvas(fbuff, pagesize=pagesizes.landscape(pagesizes.A4))
 	pdf.setFont('Helvetica', 10)
 	pdf.drawString(50,550,"Amusing Report 1.2")
 	pdf.drawString(640,550,"Vygenerovano: " + time.strftime("%d.%m.%Y %H:%M"))
 	pdf.line(50,545,790,543)
-	pdf.drawImage('graph.png',70,50,700,470)
+	pdf.drawImage(ImageReader(img),70,50,700,470)
 	pdf.line(50,45,790,43)
 	pdf.showPage()
 	pdf.save()
@@ -65,12 +64,12 @@ try:# MAIL
 
 	msg.attach(MIMEText(text))
 
-	a = MIMEApplication(open('report.pdf').read())
+	a = MIMEApplication(fbuff.getvalue())
 	a['Content-Disposition'] = 'attachment; filename="amusing-report-archa-' + time.strftime("%d_%m_%Y_%H_%M") + '.pdf"'
 
 	msg.attach(a)
 
-	s = smtplib.SMTP('ms.nm.cz')
+	s = smtplib.SMTP('[removed]')
 	s.sendmail('[removed]', '[removed]',msg.as_string())
 except:
 	print ('Failed to send email.')
