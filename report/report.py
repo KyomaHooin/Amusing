@@ -14,13 +14,9 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 
-fbuff = StringIO.StringIO()
-ibuff = StringIO.StringIO()
+fbuff = ibuff = StringIO.StringIO()
 
-spravce = '[removed]'
-
-report= {'[removed]':('archa','42_1-42_2-43_1-43_2-44_1-44_2-45_1-45_2')
-}
+report= {'[removed]':('archa','42_1-42_2-43_1-43_2-44_1-44_2-45_1-45_2')}
 
 #
 
@@ -37,7 +33,7 @@ for email in report.keys():
 		sys.exit(3)
 
 	try:# PDF
-		pdf = Canvas(fbuff, pagesize=pagesizes.landscape(pagesizes.A4))
+		pdf = Canvas(fbuff,pagesize=pagesizes.landscape(pagesizes.A4))
 		pdf.setFont('Helvetica', 10)
 		pdf.drawString(50,550,"Amusing Report 1.2")
 		pdf.drawString(640,550,"vygenerováno v " + time.strftime("%d.%m.%Y %H:%M"))
@@ -55,7 +51,7 @@ for email in report.keys():
 			report[email][0] + \
 			"\n\nAmusing NM\n\n------\n\n" + \
 			"Tato zpráva je generována bez možnosti příjmu Vaší odpovedi.\n" + \
-			"Pro odhlášení napište na adresu: " + spravce
+			"Pro odhlášení napište na adresu: [removed] "
 
 		msg = MIMEMultipart()
 		msg['From'] = 'Amusing Report <[removed]>'
@@ -78,6 +74,5 @@ for email in report.keys():
 	except:
 		print ('Failed to send email.')
 		sys.exit(1)
-
 fbuff.close()
 ibuff.close()
