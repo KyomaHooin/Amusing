@@ -50,7 +50,7 @@ for email in report.keys():
 		text = "\n\nDobrý den,\n\nAutomatický report pro lokalitu: " + \
 			report[email][0] + \
 			"\n\nAmusing NM\n\n------\n\n" + \
-			"Tato zpráva je generována bez možnosti příjmu Vaší odpovedi.\n" + \
+			"Tato zpráva je generována bez možnosti příjmu Vaší odpovědi.\n" + \
 			"Pro odhlášení napište na adresu: [removed] "
 
 		msg = MIMEMultipart()
