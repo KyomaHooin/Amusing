@@ -63,7 +63,7 @@ case "dateack":
 default:
     $_SESSION->alarmsack_sort="date";
 }
-$ord[]="ac_dategen ".($_SESSION->alarmsack_sortmode?"desc":"asc");
+$ord[]="ac_dategen ".($_SESSION->alarmsack_sortmode?"asc":"desc");
 
 echo "<form id=\"aackform\" action=\"".root().$PAGE."\" method=\"post\">";
 $whr=array();
