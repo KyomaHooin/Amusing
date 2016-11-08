@@ -1,7 +1,7 @@
 
 DESCRIPTION
 
-Export setting for Fides System as. Asset software for data export. 
+Export setting for Asset software by Fides System a.s. 
 
 FILE
 <pre>
