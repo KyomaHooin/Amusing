@@ -7,6 +7,7 @@ showerror();
 
 ajaxsess();
 
+$makecsv=false;
 switch($ARGC) {
 case 2:
     switch($ARGV[0]) {
@@ -17,6 +18,12 @@ case 2:
 	break;
     case "page":
 	$_SESSION->alarmslog_currpage=(int)$ARGV[1];
+	break;
+    }
+case 1:
+    switch($ARGV[0]) {
+    case "csv":
+	$makecsv=true;
 	break;
     }
 }
@@ -61,6 +68,14 @@ $ord[]="al_date ".($_SESSION->alarmslog_sortmode?"asc":"desc");
 echo "<form action=\"".root().$PAGE."\" method=\"post\">";
 
 $whr=array();
+switch(urole()) {
+case 'A':
+case 'D':
+    break;
+default:
+    $whr[]="u_id=".uid();
+}
+
 if($_SESSION->alarmslog_filterenable) { // using same filter variables
     echo "<fieldset><legend>Filtr</legend>";
     echo "<table class=\"nobr\">";
@@ -169,6 +184,29 @@ function buildsub() {
     $_JQUERY[]="buildsub();";
 }
 
+$acl=array();
+if($makecsv) {
+    ob_clean();
+    $_NOHEAD=true;
+//    header("Content-type: text/plain");
+    header("Content-type: text/x-csv");
+    header("Content-Disposition: attachment; filename=".$PAGE.".csv");
+    
+    ob_start();
+    echo csvline(array("Datum","Město","Budova","Místnost","Patro","Měřící bod","Veličina","Uživatel","Typ","Charakter","Hrana","Text"));
+    $qe=$SQL->query("select * from alarmlog left join variable on al_vid=var_id left join measuring on al_mid=m_id left join room on m_rid=r_id left join building on r_bid=b_id left join user on al_uid=u_id ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord));
+    while($fe=$qe->obj()) {
+	if(!get_ind($acl,$fe->al_class)) $acl[$fe->al_class]=c_alarm_gen::getalarmbyname($fe->al_class);
+	$ca=$acl[$fe->al_class];
+	echo csvline(array(showtime($fe->al_date),$fe->b_city,$fe->b_name,$fe->r_desc,$fe->r_floor,$fe->m_desc,$fe->var_desc." ".$fe->var_unit,$fe->u_fullname,
+	    c_alarm_gen::getdescbyname($fe->al_class),$fe->al_crit=='Y'?"Kritický":"Varování",$fe->al_edge=='R'?"vzestupná":"sestupná",$ca?$ca->desc($fe->al_data):"NaN"));
+    }
+    $csv=ob_get_contents();
+    ob_end_clean();
+    echo csvoutput($csv);
+    
+    exit();
+}
 
 $offset=(int)($_SESSION->alarmslog_currpage*$_PERPAGE);
 $limit=(int)$_PERPAGE;
@@ -192,7 +230,6 @@ sortlocalref(array(
     array('n'=>input_button("alog_filter","Filtr"),'a'=>false)
 ),$_SESSION->alarmslog_sort,$_SESSION->alarmslog_sortmode);
 
-$acl=array();
 while($fe=$qe->obj()) {
     if(!get_ind($acl,$fe->al_class)) $acl[$fe->al_class]=c_alarm_gen::getalarmbyname($fe->al_class);
     $ca=$acl[$fe->al_class];
@@ -219,6 +256,8 @@ $totalrows=$fe->rows;
 if($totalrows) pages($totalrows,$_SESSION->alarmslog_currpage,"<a href=\"".root().$PAGE."/page/%d\">%d</a>");
 echo $tbl;
 if($totalrows) pages($totalrows,$_SESSION->alarmslog_currpage,"<a href=\"".root().$PAGE."/page/%d\">%d</a>");
+
+echo "<br /><a href=\"".root().$PAGE."/csv\">Uložit jako csv</a>";
 
 echo "<script type=\"text/javascript\">
 // <![CDATA[

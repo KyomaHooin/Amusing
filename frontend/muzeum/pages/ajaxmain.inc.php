@@ -245,7 +245,7 @@ function plotgraph($togen,$from,$to) {
 		    }
 		    ob_start();
 		    while($fe=$qe->obj()) {
-			echo $fe->al_date.";".$fe->al_value.";".c_alarm_gen::getdescbyname($fe->al_class)."\n"; // could be separated edges, now only rising edge
+			echo $fe->al_date.";".$fe->al_value.";".strtr(c_alarm_gen::getdescbyname($fe->al_class),";\n",", ")."\n"; // could be separated edges, now only rising edge
 		    }
 		    if(file_put_contents($fna,ob_get_clean())===false) {
 			sherr("Nelze uložit tempcsv pro alarm");
@@ -274,20 +274,19 @@ function plotgraph($togen,$from,$to) {
 	    $vars[$val['var']]['d'][]=array(
 		"mid"=>$val['mid'],
 		"mimg"=>$fe->m_img,
-		"mname"=>htmlspecialchars($fe->m_desc),
+		"mname"=>$fe->m_desc,
 		"csv"=>$fn,
 		"csva"=>$fna,
 		"desc"=>$fe->b_name." ".$fe->r_desc." ".$fe->r_floor." ".$fe->m_desc." ".$vars[$val['var']]['n'],
-//		"desc2"=>htmlspecialchars($fe->b_name)."<br />".htmlspecialchars($fe->r_desc." ".$fe->r_floor)."<br />".htmlspecialchars($fe->m_desc),
 		"avg"=>$avg,
 		"max"=>$max,
 		"min"=>$min,
 		"bid"=>$fe->b_id,
 		"bimg"=>$fe->b_img,
-		"bname"=>htmlspecialchars($fe->b_name),
+		"bname"=>$fe->b_name,
 		"rid"=>$fe->r_id,
 		"rimg"=>$fe->r_img,
-		"rname"=>htmlspecialchars($fe->r_desc." ".$fe->r_floor),
+		"rname"=>$fe->r_desc." ".$fe->r_floor,
 		"datalines"=>$totcnt,
 		"firsttime"=>$firsttime,
 		"lasttime"=>$lasttime,
@@ -295,7 +294,8 @@ function plotgraph($togen,$from,$to) {
 		"lastrawtime"=>$lastrawtime,
 		"sigma"=>($totcnt?sqrt(($sq-$totcnt*$avg*$avg)/$totcnt):0.0),
 		"median"=>$median,
-		"integration"=>$integration/3600.0
+		"integration"=>$integration/3600.0,
+		"dbdata"=>$fe
 	    );
 	}
 	$vars=array_values($vars);
@@ -520,6 +520,7 @@ function plotgraph($togen,$from,$to) {
 	    @unlink($plotjs);
 	    @unlink($fn);
 	}
+	
 // output page
 // brutal sort per building, room and measpoint ?, madafaka...
 	$tdata=array();
@@ -543,143 +544,101 @@ function plotgraph($togen,$from,$to) {
 	    $mspan[$dat['mid']][0]++;
 	}
 	$current=time();
-	echo "<table class=\"graphtable\">";
-	echo "<tr>";
-	if($totcnt) echo "<td rowspan=\"17\" style=\"vertical-align:top;\"><a href=\"".root()."getplotpng/".basename($plotpng).".png\" target=\"_blank\"><img src=\"".root()."getplotpng/".basename($plotpng).".png\" width=\"800\" /></a>";
-	else echo "<td rowspan=\"17\" style=\"vertical-align:top;\">žádná data";
-	echo "<br /><a target=\"_blank\" href=\"".$getref1d."\">graf 1D</a><br /><a target=\"_blank\" href=\"".$getref7d."\">graf 7D</a>";
-	echo "</td>";
-	echo "<td>budova</td>";
-	foreach($bspan as $val) {
-	    echo "<td style=\"vertical-align:top;\" colspan=\"".$val[0]."\">";
-	    if($val[2]) echo "<a href=\"".root()."image/".$val[2]."\" target=\"_blank\"><img style=\"margin:2px;\" src=\"".root()."image/".$val[2]."/max/100/100\" /></a><br />";
-	    echo $val[1];
-	    echo "</td>";
-	}
-	echo "</tr><tr>";
-	echo "<td>místnost</td>";
-	foreach($rspan as $val) {
-	    echo "<td style=\"vertical-align:top;\" colspan=\"".$val[0]."\">";
-	    if($val[2]) echo "<a href=\"".root()."image/".$val[2]."\" target=\"_blank\"><img style=\"margin:2px;\" src=\"".root()."image/".$val[2]."/max/100/100\" /></a><br />";
-	    echo $val[1];
-	    echo "</td>";
-	}
-	echo "</tr><tr>";
-	echo "<td>měřící bod</td>";
-	foreach($mspan as $val) {
-	    echo "<td style=\"vertical-align:top;\" colspan=\"".$val[0]."\">";
-	    if($val[2]) echo "<a href=\"".root()."image/".$val[2]."\" target=\"_blank\"><img style=\"margin:2px;\" src=\"".root()."image/".$val[2]."/max/100/100\" /></a><br />";
-	    echo $val[1];
-	    echo "</td>";
-	}
-	echo "</tr><tr>";
-	echo "<td>veličina</td>";
+	
+	echo "<br /><table class=\"graphtable\">";
+	echo "<tr><th>město</th><th>budova</th><th>&nbsp;</th><th>místnost</th><th>&nbsp;</th>";
+	echo "<th>měřící bod</th><th>&nbsp;</th><th>veličina</th>";
+	echo "<th>jednotka</th><th>průměr</th><th>min.</th><th>max.</th>";
+	echo "<th>období od</th><th>období do</th><th>vzorků</th>";
+	echo "<th>sm. odch.</th><th>integ. (*hod)</th>";
+	echo "<th>min_date</th>";
+	echo "<th>max_date</th><th>poslední hodnota</th>";
+	echo "\n<!-- noprint_{ -->\n";
+	echo "<th>data</th>";
+	if($showalarms) echo "<th>alarm data</th>";
+	echo "\n<!-- noprint_} -->\n";
+	echo "</tr>";
+
 	foreach($tdata as $dat) {
-	    echo "<td style=\"text-align:center;\">".htmlspecialchars($dat['varname']);
-	    if($dat['lastrawtime']!=false) {
-		if($dat['lastrawtime']+$_MAXDATAAGE*60>=$current) echo "<br /><b style=\"color:#0f0\">online</b>";
-		else echo "<br /><b style=\"color:#f00\">offline</b>";
-	    }
-	    echo "</td>";
-	}
-	echo "</tr><tr>";
-	echo "<td>průměr</td>";
-	foreach($tdata as $dat) {
-	    if($dat['datalines']) echo "<td><nobr>".sprintf("%.1f %s",$dat['avg'],$dat['varunit'])."</nobr></td>";
-	    else echo "<td rowspan=\"11\"><nobr>žádná data</nobr></td>";
-	}
-	echo "</tr><tr>";
-	echo "<td>max.</td>";
-	foreach($tdata as $dat) {
-	    if($dat['datalines']) echo "<td><nobr>".sprintf("%.1f %s",$dat['max'][0],$dat['varunit'])."</nobr></td>";
-	}
-	echo "</tr><tr>";
-	echo "<td>max.datum</td>";
-	foreach($tdata as $dat) {
-	    if($dat['datalines']) echo "<td>".showtime2($dat['max'][1])."</td>";
-	}
-	echo "</tr><tr>";
-	echo "<td>min.</td>";
-	foreach($tdata as $dat) {
-	    if($dat['datalines']) echo "<td><nobr>".sprintf("%.1f %s",$dat['min'][0],$dat['varunit'])."</nobr></td>";
-	}
-	echo "</tr><tr>";
-	echo "<td>min.datum</td>";
-	foreach($tdata as $dat) {
-	    if($dat['datalines']) echo "<td>".showtime2($dat['min'][1])."</td>";
-	}
-	echo "</tr><tr>";
-	echo "<td>sm. odch.</td>";
-	foreach($tdata as $dat) {
-	    if($dat['datalines']) echo "<td><nobr>".sprintf("%.1f",$dat['sigma'])."</nobr></td>";
-	}
-	echo "</tr><tr>";
-	echo "<td>medián</td>";
-	foreach($tdata as $dat) {
-	    if($dat['datalines']) echo "<td><nobr>".sprintf("%.1f",$dat['median'])."</nobr></td>";
-	}
-	echo "</tr><tr>";
-	echo "<td>integrál (*hod)";
-	$havelight=false;
-	foreach($tdata as $dat) {
-	    if($dat['varcode']=="light") {
-		$havelight=true;
-		echo "<br />roční predikce";
-		break;
-	    }
-	}
-	echo "</td>";
-	foreach($tdata as $dat) {
+	    $dbd=$dat['dbdata'];
+	    echo "<tr>";
+	    echo "<td>".htmlspecialchars($dbd->b_city)."</td>";
+	    echo "<td>".htmlspecialchars($dbd->b_name)."</td>";
+	    if($dbd->b_img) echo "<td><a href=\"".root()."image/".$dbd->b_img."\" target=\"_blank\"><img style=\"margin:2px;\" src=\"".root()."image/".$dbd->b_img."/max/100/100\" /></a></td>";
+	    else echo "<td>&nbsp;</td>";
+	    echo "<td>".htmlspecialchars($dbd->r_desc." ".$dbd->r_floor)."</td>";
+	    if($dbd->r_img) echo "<td><a href=\"".root()."image/".$dbd->r_img."\" target=\"_blank\"><img style=\"margin:2px;\" src=\"".root()."image/".$dbd->r_img."/max/100/100\" /></a></td>";
+	    else echo "<td>&nbsp;</td>";
+	    echo "<td>".htmlspecialchars($dbd->m_desc)."</td>";
+	    if($dbd->m_img) echo "<td><a href=\"".root()."image/".$dbd->m_img."\" target=\"_blank\"><img style=\"margin:2px;\" src=\"".root()."image/".$dbd->m_img."/max/100/100\" /></a></td>";
+	    else echo "<td>&nbsp;</td>";
+	    echo "<td>".htmlspecialchars($dat['varname'])."</td>";
+	    echo "<td>".htmlspecialchars($dat['varunit'])."</td>";
+	    
 	    if($dat['datalines']) {
-		echo "<td><nobr>".sprintf("%.1f",$dat['integration']);
-		if($havelight) {
-		    echo "<br />";
-		    if($dat['varcode']=="light" && $dat['firsttime']<$dat['lasttime']) echo sprintf("%.1f",$dat['integration']/(($dat['lasttime']-$dat['firsttime'])/3600.0)*8765.81);
-		    else echo "&nbsp;";
-		}
-		echo "</nobr></td>";
+		echo "<td>".dotdouble($dat['avg'])."</td>";
+		echo "<td>".dotdouble($dat['min'][0])."</td>";
+		echo "<td>".dotdouble($dat['max'][0])."</td>";
+	    
+		echo "<td>".showtime3($dat['firsttime'])."</td>";
+		echo "<td>".showtime3($dat['lasttime'])."</td>";
+	    
+		echo "<td>".$dat['datalines']."</td>";
+		echo "<td>".dotdouble($dat['sigma'])."</td>";
+	    
+	    // if($dat['varcode']=="light" && $dat['firsttime']<$dat['lasttime']) echo sprintf("%.1f",$dat['integration']/(($dat['lasttime']-$dat['firsttime'])/3600.0)*8765.81);
+		echo "<td>".dotdouble($dat['integration'])."</td>";
+
+		echo "<td>".showtime3($dat['min'][1])."</td>";
+		echo "<td>".showtime3($dat['max'][1])."</td>";
+	    
+		echo "<td>".dotdouble($dat['lastrawval'])."</td>";
+
+		echo "\n<!-- noprint_{ -->\n";
+		echo "<td><a href=\"".root()."getplotcsv/".basename($dat['csv']).".csv\">csv data</a></td>";
+		$_SESSION->csv_outputs[basename($dat['csv'])]=time(); // weak security
+		
+		if($showalarms && $dat['csva']) {
+		    echo "<td><a href=\"".root()."getplotcsva/".basename($dat['csva']).".csv\">alarmy</a></td>";
+		    $_SESSION->csv_outputs[basename($dat['csva'])]=time();
+		} else echo "<td>&nbsp;</td>";
+		echo "\n<!-- noprint_} -->\n";
+	    } else {
+		echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
+		echo "<td>&nbsp;</td><td>0</td><td>&nbsp;</td><td>&nbsp;</td>";
+		echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
+		echo "\n<!-- noprint_{ -->\n";
+		echo" <td>&nbsp;</td>";
+		if($showalarms) echo "<td>&nbsp;</td>";
+		echo "\n<!-- noprint_} -->\n";
 	    }
+	    
+	    echo "</tr>";
 	}
-	echo "</tr><tr>";
-	echo "<td>data od</td>";
-	foreach($tdata as $dat) {
-	    if($dat['datalines']) echo "<td><nobr>".showtime2($dat['firsttime'])."</nobr></td>";
-	}
-	echo "</tr><tr>";
-	echo "<td>data do</td>";
-	foreach($tdata as $dat) {
-	    if($dat['datalines']) echo "<td><nobr>".showtime2($dat['lasttime'])."</nobr></td>";
-	}
-	echo "</tr><tr>";
-	echo "<td>vzorků</td>";
-	foreach($tdata as $dat) {
-	    if($dat['datalines']) echo "<td><nobr>".$dat['datalines']."</nobr></td>";
-	}
-	echo "</tr><tr>";
-	echo "<td>posl.raw</td>";
-	foreach($tdata as $dat) {
-	    if($dat['datalines']) echo "<td><nobr>".$dat['lastrawval']."</nobr></td>";
-	}
-	echo "</tr><tr>";
-	echo "<td colspan=\"".(count($tdata)+1)."\">";
+	echo "</table>";
+	
+	echo "\n<!-- noprint_{ -->\n";
+	echo "<table class=\"graphtable\"><tr><td>";
 	if($totcnt) {
+	    $_SESSION->plot_outputs[basename($fn)]=time();
+	    echo "\n<!-- noprint_} -->\n";
+	    echo "<a href=\"".root()."getplotpng/".basename($plotpng).".png\" target=\"_blank\"><img src=\"".root()."getplotpng/".basename($plotpng).".png\" width=\"800\" /></a>";
+	    echo "\n<!-- noprint_{ -->\n";
+	    echo "<br /><a target=\"_blank\" href=\"".$getref1d."\">graf 1D</a><br /><a target=\"_blank\" href=\"".$getref7d."\">graf 7D</a><br />";
 	    echo "<a href=\"".root()."getplotpng/".basename($plotpng).".png\" target=\"_blank\">Plná velikost</a><br />";
 	    echo "<a href=\"".root()."getplotsvg/".basename($plotsvg).".svg\" target=\"_blank\">Jako SVG</a><br />";
 	    echo "<a href=\"".root()."getplotjs/".basename($plotjs).".html\" target=\"_blank\">Interaktivní graf</a></br />";
-	    echo "<br />Data jako CSV:<br />";
-	    foreach($tdata as $dat) {
-		    if(!$dat['datalines']) continue;
-		    echo "<a href=\"".root()."getplotcsv/".basename($dat['csv']).".csv\">".htmlspecialchars($dat['desc'])."</a>";
-		    if($showalarms && $dat['csva']) {
-			echo " - <a href=\"".root()."getplotcsv/".basename($dat['csva']).".csv\">alarmy</a>";
-			$_SESSION->csv_outputs[basename($dat['csva'])]=time();
-		    }
-		    echo "<br />";
-		    $_SESSION->csv_outputs[basename($dat['csv'])]=time(); // weak security
-	    }
-	    $_SESSION->plot_outputs[basename($fn)]=time();
 	    echo "<br />Gnuplot <a href=\"".root()."getplotplot/".basename($fn).".plot\" target=\"_blank\">skript</a><br />";
-	} else echo "&nbsp;";
+	} else {
+	    echo "\n<!-- noprint_{ -->\n";
+	    echo "žádná data";
+	    echo "\n<!-- noprint_} -->\n";
+	}
+
+	echo "</td></tr></table>";
+	echo "\n<!-- noprint_} -->\n";
+	
+//	print_read($tdata);
 	
 //	@unlink($fn);
 	echo "</td></tr></table>";
@@ -758,34 +717,60 @@ function plotbin($mv,$from,$to) {
 		}
 	    }
 	}
+	
+	echo "<br /><table class=\"graphtable\">";
+	echo "<tr><th>město</th><th>budova</th><th>&nbsp;</th><th>místnost</th><th>&nbsp;</th>";
+	echo "<th>měřící bod</th><th>&nbsp;</th><th>veličina</th>";
+	echo "<th>jednotka</th>";
+	echo "<th>období od</th><th>období do</th><th>vzorků</th></tr>";
+	
+	echo "<tr>";
+	echo "<td>".htmlspecialchars($meas->b_city)."</td>";
+	echo "<td>".htmlspecialchars($meas->b_name)."</td>";
+	if($meas->b_img) echo "<td><a href=\"".root()."image/".$meas->b_img."\" target=\"_blank\"><img style=\"margin:2px;\" src=\"".root()."image/".$meas->b_img."/max/100/100\" /></a></td>";
+	else echo "<td>&nbsp;</td>";
+	echo "<td>".htmlspecialchars($meas->r_desc." ".$meas->r_floor)."</td>";
+	if($meas->r_img) echo "<td><a href=\"".root()."image/".$meas->r_img."\" target=\"_blank\"><img style=\"margin:2px;\" src=\"".root()."image/".$meas->r_img."/max/100/100\" /></a></td>";
+	else echo "<td>&nbsp;</td>";
+	echo "<td>".htmlspecialchars($meas->m_desc)."</td>";
+	if($meas->m_img) echo "<td><a href=\"".root()."image/".$meas->m_img."\" target=\"_blank\"><img style=\"margin:2px;\" src=\"".root()."image/".$meas->m_img."/max/100/100\" /></a></td>";
+	else echo "<td>&nbsp;</td>";
+	echo "<td>".htmlspecialchars($var->var_desc)."</td>";
+	echo "<td>".htmlspecialchars($var->var_unit)."</td>";
+	
+	if(count($opts)) echo "<td>".$opts[0]."</td>";
+	else echo "<td>&nbsp;</td>";
+	if(count($opts)) echo "<td>".$opts[count($opts)-1]."</td>";
+	else echo "<td>&nbsp;</td>";
+	
+	echo "<td>".count($opts)."</td>";
+	
+	echo "</tr>";
+	echo "</table>";
+	
+//	print_read($meas);
+//	print_read($var);
+	
+	echo "\n<!-- noprint_{ -->\n";
 	echo "<table class=\"graphtable\">";
 	echo "<tr>";
-	echo "<td rowspan=\"5\" style=\"vertical-align:top;\">";
+	echo "<td style=\"vertical-align:top;\">";
+	echo "\n<!-- noprint_} -->\n";
 	if(count($opts)) {
 	    echo "<img".($iwidth?" width=\"".$iwidth."\"":"").($iheight?" height=\"".$iheight."\"":"")." id=\"imgview_".$mv[0]."_".$mv[1]."\" src=\"".root()."getplotbin/".basename($plotbase)."/".$slider[count($opts)-1]."\" />";
 	}
 	else echo "žádná data";
+	echo "\n<!-- noprint_{ -->\n";
 	echo "</td>";
-	echo "<td style=\"vertical-align:top;\">";
-	if($meas->b_img) echo "<a href=\"".root()."image/".$meas->b_img."\" target=\"_blank\"><img style=\"margin:2px;\" src=\"".root()."image/".$meas->b_img."/max/100/100\" /></a><br />";
-	echo htmlspecialchars($meas->b_name);
-	echo "</td>";
-	echo "</tr>";
-	echo "<tr><td style=\"vertical-align:top;\">";
-	if($meas->r_img) echo "<a href=\"".root()."image/".$meas->r_img."\" target=\"_blank\"><img style=\"margin:2px;\" src=\"".root()."image/".$meas->r_img."/max/100/100\" /></a><br />";
-	echo htmlspecialchars($meas->r_desc." ".$meas->r_floor);
-	echo "</td></tr><tr><td style=\"vertical-align:top;\">";
-	if($meas->m_img) echo "<a href=\"".root()."image/".$meas->m_img."\" target=\"_blank\"><img style=\"margin:2px;\" src=\"".root()."image/".$meas->m_img."/max/100/100\" /></a><br />";
-	echo htmlspecialchars($meas->m_desc);
-	echo "</td></tr><tr><td style=\"text-align:center;\">".htmlspecialchars($var->var_desc)."</td></tr>";
-	
 	if(count($opts)) {
-	    echo "<tr><td>Data od: ".$opts[0]."<br />Data do: ".$opts[count($opts)-1]."<br />".input_select("imgsel_".$mv[0]."_".$mv[1],$opts,count($opts)-1);
-	//    echo "<br />Hodnota: <span id=\"imgval_".$mv[0]."_".$mv[1]."\">".trim($jsarr[count($opts)-1],"\"")."</span>";
+	    echo "<td>";
+	    echo input_select("imgsel_".$mv[0]."_".$mv[1],$opts,count($opts)-1);
+	    echo "<br />Hodnota: <span id=\"imgval_".$mv[0]."_".$mv[1]."\">".trim($jsarr[count($opts)-1],"\"")."</span>";
 	    echo "<br /><br /><a href=\"".root()."getplotbin/".basename($plotbase)."\" target=\"_blank\">Všechny snímky</a>";
 	    echo "</td></tr>";
-	    echo "<tr><td colspan=\"2\"><div style=\"margin:6px 10px 6px 10px\"><div id=\"imgslid_".$mv[0]."_".$mv[1]."\"></div></div></td></tr>";
-	} else echo "<tr><td>&nbsp;</td></tr>";
+	    echo "<tr><td colspan=\"2\"><div style=\"margin:6px 10px 6px 10px\"><div id=\"imgslid_".$mv[0]."_".$mv[1]."\"></div></div></td>";
+	}
+	echo "</tr>";
 	echo "</table>";
 
     if(count($opts)) {
@@ -818,6 +803,7 @@ makebins_".$mv[0]."_".$mv[1]."();
 	if(!is_array($_SESSION->imgsliders)) $_SESSION->imgsliders=array();
 	$_SESSION->imgsliders[basename($plotbase)]=array("age"=>time(),"mid"=>$mv[0],"vid"=>$mv[1],"from"=>$from,"to"=>$to);
     }
+    echo "\n<!-- noprint_} -->\n";
 //    print_read($_SESSION->imgsliders);
 }
 
@@ -883,7 +869,7 @@ function dograph() {
 
 	$vars=array();
 	foreach($_SESSION->mainform as $key=>$val) {
-	    if(preg_match("/^000_main_vargr_(\\d+)$/",$key,$mch) && $val=='Y') {
+	    if(preg_match('/^000_main_vargr_(\d+)$/',$key,$mch) && $val=='Y') {
 		$qe=$SQL->query("select * from variable left join varcodes on vc_text=var_code where var_id=".$mch[1]);
 		$fe=$qe->obj();
 		if(!$fe) {
@@ -1121,6 +1107,9 @@ function genhidden($force=false) {
 	
 	$_SESSION->maingraph['graph']="Obnovte zobrazení grafu";
 	ob_start();
+	echo "\n<!-- noprint_{ -->\n";
+	echo "<a href=\"".root()."main_print\" target=\"_blank\">Verze pro tisk</a><br />";
+	echo "\n<!-- noprint_} -->\n";
 	$_IGNOREDST=true;
 	dograph();
 	$_IGNOREDST=false;
@@ -1162,13 +1151,15 @@ function profileremove() {
     global $SQL;
     header("Content-type: application/json");
     
-    $prf=hex2bin(get_ind($_POST,"main_uprfsel"));
     $profs=$_SESSION->getprofiles();
-    if(get_ind($profs,$prf)) {
-	unset($profs[$prf]);
-	if(!is_array($_SESSION->mainform)) $_SESSION->mainform=array();
-	$_SESSION->mainform['main_uprfsel']=false;
-	$_SESSION->setprofiles($profs);
+    if(strlen(get_ind($_POST,"main_uprfsel"))>1) {
+	$prf=my_hex2bin(get_ind($_POST,"main_uprfsel"));
+	if(get_ind($profs,$prf)) {
+	    unset($profs[$prf]);
+	    if(!is_array($_SESSION->mainform)) $_SESSION->mainform=array();
+	    $_SESSION->mainform['main_uprfsel']=false;
+	    $_SESSION->setprofiles($profs);
+	}
     }
     
     $sarr=array(0=>"(žádný)");
@@ -1198,7 +1189,7 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
 		header("Content-type: application/json");
 		genhidden(true);
 		genchecks();
-		$_SESSION->updateprofile();
+		$_SESSION->updatedefprofile();
 		echo json_encode($_SESSION->maingraph);
 		break;
 	    case "prfcreate":
@@ -1207,23 +1198,32 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
 	    case "prfremove":
 		profileremove();
 		break;
+	    case "prfsave":
+		$_SESSION->updateprofile();
+		break;
 	    case "prfchange":
-		$curr=hex2bin(get_ind($_POST,"main_uprfsel"));// get current profile from $_SESSION not $_POST
-		$prf=$_SESSION->getprofiles();
-		$cp=get_ind($prf,$curr);
+		if(strlen(get_ind($_POST,"main_uprfsel"))<2) $cp=0;
+		else {
+		    $curr=my_hex2bin(get_ind($_POST,"main_uprfsel"));
+		    $prf=$_SESSION->getprofiles();
+		    $cp=get_ind($prf,$curr);
+		}
 		if($cp) {
 		    $_SESSION->datatogen_mids=$cp['mids'];
 		    genhidden(true);
 		    genchecks();
 		}
-		$_SESSION->updateprofile(); // dont restore from no profile
+		$_SESSION->updatedefprofile(); // dont restore from no profile
 		header("Content-type: application/json");
 		echo json_encode($_SESSION->maingraph);
 		break;
 	    case "gettree":
-		$curr=hex2bin(get_ind($_POST,"main_uprfsel"));// gets current profile from $_SESSION not $_POST
-		$prf=$_SESSION->getprofiles();
-		$cp=get_ind($prf,$curr);
+		if(strlen(get_ind($_POST,"main_uprfsel"))<2) $cp=0;
+		else {
+		    $curr=my_hex2bin(get_ind($_POST,"main_uprfsel"));
+		    $prf=$_SESSION->getprofiles();
+		    $cp=get_ind($prf,$curr);
+		}
 		if($cp) $_SESSION->datatogen_mids=$cp['mids'];
 		else { // try default
 		    $cp=$_SESSION->getdefaultprofile();
@@ -1232,41 +1232,34 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
 		header("Content-type: application/json");
 		genhidden(!$_SESSION->somegraphdone); // maybe not with true
 		genchecks();
-		$_SESSION->updateprofile();
+		$_SESSION->updatedefprofile();
 		$_SESSION->somegraphdone=true;
+		echo json_encode($_SESSION->maingraph);
+		break;
+	    case "settree":
+// permission check should be here
+		$mids=array();
+		foreach($_POST as $key=>$val) {
+		    if(preg_match('/^mid_(\d+)$/',$key,$mch) && $val=='Y') {
+			$mids[]=$mch[1];
+		    }
+		}
+		if(count($mids)) {
+		    $qe=$SQL->query("select m_id from measuring where m_id in (".implode(",",$mids).")");
+		    $mids=array();
+		    while($fe=$qe->obj()) $mids[]=$fe->m_id;
+		}
+		$_SESSION->datatogen_mids=$mids;
+	    
+		header("Content-type: application/json");
+		genhidden(true);
+		genchecks();
+		$_SESSION->updatedefprofile();
 		echo json_encode($_SESSION->maingraph);
 		break;
 	    default:
 		header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
 	    }
-	    break;
-	case 2:
-	    switch(get_ind($ARGV,0)) {
-	    case "add":
-// permission check should be here
-		if(!preg_match("/^mid_(\\d+)$/",get_ind($ARGV,1),$mch)) break;
-		$mid=$mch[1];
-		$qe=$SQL->query("select * from measuring where m_id=".$mid);
-		if(!$qe->rowcount()) break;
-		$has=false;
-		foreach($_SESSION->datatogen_mids as $val) if($val==$mid) { $has=true; break; }
-		if(!$has) $_SESSION->datatogen_mids[]=$mid;
-		break;
-	    case "rem":
-		if(!preg_match("/^mid_(\\d+)$/",get_ind($ARGV,1),$mch)) break;
-		$mid=$mch[1];
-		$mids=array();
-		foreach($_SESSION->datatogen_mids as $val) {
-		    if($val!=$mid) $mids[]=$val;
-		}
-		$_SESSION->datatogen_mids=$mids;
-		break;
-	    }
-	    header("Content-type: application/json");
-	    genhidden(true);
-	    genchecks();
-	    $_SESSION->updateprofile();
-	    echo json_encode($_SESSION->maingraph);
 	    break;
 	default:
 	    header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found");
@@ -1281,7 +1274,7 @@ case 2:
 	header("Content-type: application/json");
 	genhidden();
 	genchecks();
-	$_SESSION->updateprofile();
+	$_SESSION->updatedefprofile();
 	echo json_encode($_SESSION->maingraph);
 	break;
     case "treeshowdea":
@@ -1289,7 +1282,7 @@ case 2:
 	header("Content-type: application/json");
 	genhidden();
 	genchecks();
-	$_SESSION->updateprofile();
+	$_SESSION->updatedefprofile();
 	echo json_encode($_SESSION->maingraph);
 	break;
     default:

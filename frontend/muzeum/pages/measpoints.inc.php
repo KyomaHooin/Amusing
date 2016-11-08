@@ -7,6 +7,7 @@ showerror();
 
 ajaxsess();
 
+$makecsv=false;
 switch($ARGC) {
 case 2:
     switch($ARGV[0]) {
@@ -19,6 +20,12 @@ case 2:
 	redir();
     }
     break;
+case 1:
+    switch($ARGV[0]) {
+    case "csv":
+	$makecsv=true;
+	break;
+    }
 }
 
 $ord=array();
@@ -100,6 +107,7 @@ if($_SESSION->measpoint_filterenable) {
     echo "<tr><td>Místnost:&nbsp;</td><td><span id=\"measroomc\">".input_select("001_ajax_room",$opts,get_ind($_SESSION->measpoint_filter,"001_ajax_room"))."</span></td></tr>";
     echo "<tr><td>Oddělení:&nbsp;</td><td>".input_text("000_meas_filter_depart",get_ind($_SESSION->measpoint_filter,"000_meas_filter_depart"),"finput")."</td></tr>";
     echo "<tr><td>Popis:&nbsp;</td><td>".input_text("000_meas_filter_desc",get_ind($_SESSION->measpoint_filter,"000_meas_filter_desc"),"finput")."</td></tr>";
+    echo "<tr><td>Jen aktivní:&nbsp;</td><td>".input_check("000_meas_filter_act",'Y',get_ind($_SESSION->measpoint_filter,"000_meas_filter_act")=='Y')."</td></tr>";
     echo "</table>";
 
     echo input_button("meas_fapply","Použít")." ".input_button("meas_fall","Zobrazit vše");
@@ -115,6 +123,8 @@ if($_SESSION->measpoint_filterenable) {
     if($fb) $whr[]="r_id=\"".$SQL->escape($fb)."\"";
     $ftmp=get_ind($_SESSION->measpoint_filter,"000_meas_filter_city");
     if($ftmp) $whr[]="b_city=\"".$SQL->escape(my_hex2bin($ftmp))."\"";
+    $ftmp=get_ind($_SESSION->measpoint_filter,"000_meas_filter_act");
+    if($ftmp=='Y') $whr[]="m_active='Y'";
 
     echo "<script type=\"text/javascript\">
 // <![CDATA[
@@ -139,12 +149,51 @@ function buildsub() {
 
 }
 
+$m_col=getcolumns("measuring");
+$r_col=getcolumns("room");
+$b_col=getcolumns("building");
+$s_col=getcolumns("sensor");
+$st_col=getcolumns("sensortype");
+
+$gen_cols=implode(",",$m_col).",".implode(",",$r_col).",".implode(",",$b_col).",".implode(",",$s_col).",".implode(",",$st_col);
+
+if($makecsv) {
+    ob_clean();
+    $_NOHEAD=true;
+//    header("Content-type: text/plain");
+    header("Content-type: text/x-csv");
+    header("Content-Disposition: attachment; filename=".$PAGE.".csv");
+    
+    ob_start();
+    echo csvline(array("#","Město","Budova","Místnost","Patro","Oddělení","Popis","Senzor","Platný od","Platný do","Čas posl. hod.","akt."));
+
+    switch(urole()) {
+    case 'A':
+    case 'D':
+	$qe=$SQL->query("select ".$gen_cols.",max(vmc_lastrawtime) as maxt from measuring left join room on m_rid=r_id left join building on r_bid=b_id left join sensor on m_id=s_mid left join sensortype on s_type=st_id left join varmeascache on m_id=vmc_mid ".(count($whr)?"where ".implode(" && ",$whr):"")." group by m_id order by ".implode(",",$ord));
+	break;
+    default:
+	$p_col=getcolumns("permission");
+	$whr[]="(pe_uid=0 || pe_uid=".uid().")";
+	$qe=$SQL->query("select ".$gen_cols.",".implode(",",$p_col).",max(vmc_lastrawtime) as maxt from measuring left join room on m_rid=r_id left join building on r_bid=b_id left join sensor on m_id=s_mid left join sensortype on s_type=st_id left join varmeascache on m_id=vmc_mid left join permission on m_id=pe_mid ".(count($whr)?"where ".implode(" && ",$whr):"")." group by m_id order by ".implode(",",$ord));
+    }
+    while($fe=$qe->obj()) {
+	echo csvline(array($fe->m_id,$fe->b_city,$fe->b_name,$fe->r_desc,$fe->r_floor,$fe->m_depart,$fe->m_desc,$fe->s_serial,showdate($fe->m_validfrom),showdate($fe->m_validto),showtime($fe->maxt),$fe->m_active=='Y'?"ano":"ne"));
+    }
+    $csv=ob_get_contents();
+    ob_end_clean();
+    echo csvoutput($csv);
+    
+    exit();
+}
+
 ob_start();
 $offset=(int)($_SESSION->measpoint_currpage*$_PERPAGE);
 $limit=(int)$_PERPAGE;
 
 echo "<table id=\"measpointstab\">";
 sortlocalref(array(
+    array('n'=>"#",'a'=>false),
     array('n'=>"&nbsp;",'a'=>false),
     array('n'=>"Město",'a'=>"city"),
     array('n'=>"Budova",'a'=>"build"),
@@ -162,14 +211,6 @@ sortlocalref(array(
     array('n'=>input_button("meas_filter","Filtr"),'a'=>false)
 ),$_SESSION->measpoint_sort,$_SESSION->measpoint_sortmode);
 
-$m_col=getcolumns("measuring");
-$r_col=getcolumns("room");
-$b_col=getcolumns("building");
-$s_col=getcolumns("sensor");
-$st_col=getcolumns("sensortype");
-
-$gen_cols=implode(",",$m_col).",".implode(",",$r_col).",".implode(",",$b_col).",".implode(",",$s_col).",".implode(",",$st_col);
-
 switch(urole()) {
 case 'A':
 case 'D':
@@ -185,7 +226,7 @@ $fe=$qer->obj();
 $totalrows=$fe->rows;
 
 while($fe=$qe->obj()) {
-    echo "<tr><td>".input_check("meas_id[".$fe->m_id."]").input_hidden("meas_hid[]",$fe->m_id)."</td>
+    echo "<tr><td>".$fe->m_id."</td><td>".input_check("meas_id[".$fe->m_id."]").input_hidden("meas_hid[]",$fe->m_id)."</td>
 	<td>".htmlspecialchars($fe->b_city)."</td>
 	<td>".htmlspecialchars($fe->b_name)."</td>
 	<td>".htmlspecialchars($fe->r_desc)."</td>
@@ -266,6 +307,8 @@ echo $tbl;
 if($totalrows) pages($totalrows,$_SESSION->measpoint_currpage,"<a href=\"".root().$PAGE."/page/%d\">%d</a>");
 
 echo input_button("meas_permsel","Oprávnění pro vybrané")." ".input_button("meas_permall","Oprávnění pro zobrazené");
+
+echo "<br /><a href=\"".root().$PAGE."/csv\">Uložit jako csv</a>";
 
 echo "<style>
 .ui-tooltip {

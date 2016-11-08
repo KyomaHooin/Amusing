@@ -210,7 +210,13 @@ span.treehigh {
 
 .graphtable td {
     border:1px solid black;
-    white-space:nowrap;
+/*    white-space:nowrap;*/
+}
+.graphtable th {
+    border:1px solid black;
+/*    white-space:nowrap;*/
+    background-color:#ddd;
+    color:black;
 }
 
 #treeenv {
@@ -245,8 +251,12 @@ button {
 }
 
 .mainuprf {
-    width:10em;
+    width:6em
 }
 
 .pagep {
+}
+
+.lihid {
+    display:none;
 }

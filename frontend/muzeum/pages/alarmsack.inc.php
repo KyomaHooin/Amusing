@@ -7,6 +7,7 @@ showerror();
 
 ajaxsess();
 
+$makecsv=false;
 switch($ARGC) {
 case 2:
     switch($ARGV[0]) {
@@ -17,6 +18,12 @@ case 2:
 	break;
     case "page":
 	$_SESSION->alarmsack_currpage=(int)$ARGV[1];
+	break;
+    }
+case 1:
+    switch($ARGV[0]) {
+    case "csv":
+	$makecsv=true;
 	break;
     }
 }
@@ -56,10 +63,20 @@ case "dateack":
 default:
     $_SESSION->alarmsack_sort="date";
 }
-$ord[]="ac_dategen ".($_SESSION->alarmsack_sortmode?"asc":"desc");
+$ord[]="ac_dategen ".($_SESSION->alarmsack_sortmode?"desc":"asc");
 
-echo "<form action=\"".root().$PAGE."\" method=\"post\">";
+echo "<form id=\"aackform\" action=\"".root().$PAGE."\" method=\"post\">";
 $whr=array();
+switch(urole()) {
+case 'A':
+case 'D':
+    $limitacc=false;
+    break;
+default:
+    $whr[]="u_id=".uid();
+    $limitacc=false;
+}
+
 if($_SESSION->alarmsack_filterenable) { // using same filter variables
     echo "<fieldset><legend>Filtr</legend>";
     echo "<table class=\"nobr\">";
@@ -159,6 +176,27 @@ function buildsub() {
     $_JQUERY[]="buildsub();";
 }
 
+if($makecsv) {
+    ob_clean();
+    $_NOHEAD=true;
+//    header("Content-type: text/plain");
+    header("Content-type: text/x-csv");
+    header("Content-Disposition: attachment; filename=".$PAGE.".csv");
+    
+    ob_start();
+    echo csvline(array("Datum vzniku","Město","Budova","Místnost","Patro","Měřící bod","Veličina","Uživatel","Alarm","Text","Potvrzeno","Datum potvrzeni"));
+    $qe=$SQL->query("select * from alarmack left join variable on ac_vid=var_id left join measuring on ac_mid=m_id left join room on m_rid=r_id left join building on r_bid=b_id left join user on ac_uid=u_id ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord));
+    while($fe=$qe->obj()) {
+	$acked=($fe->ac_state=='Y');
+	echo csvline(array($fe->ac_dategen,$fe->b_city,$fe->b_name,$fe->r_desc,$fe->r_floor,$fe->m_desc,$fe->var_desc." ".$fe->var_unit,$fe->u_fullname,$fe->ac_atext,$fe->ac_text,
+	    $acked?"Ano":"Ne",$acked?$fe->ac_dateack:"-"));
+    }
+    $csv=ob_get_contents();
+    ob_end_clean();
+    echo csvoutput($csv);
+    
+    exit();
+}
 
 $offset=(int)($_SESSION->alarmsack_currpage*$_PERPAGE);
 $limit=(int)$_PERPAGE;
@@ -182,7 +220,8 @@ sortlocalref(array(
     array('n'=>input_button("aack_filter","Filtr"),'a'=>false)
 ),$_SESSION->alarmsack_sort,$_SESSION->alarmsack_sortmode);
 
-$acl=array();
+$nack=0;
+$nackid=array();
 while($fe=$qe->obj()) {
     $acked=($fe->ac_state=='Y');
     echo "<tr><td>".htmlspecialchars($fe->ac_dategen)."</td>
@@ -196,10 +235,17 @@ while($fe=$qe->obj()) {
 	<td>".htmlspecialchars($fe->ac_atext)."</td>
 	<td>".htmlspecialchars($fe->ac_text)."</td>
 	<td>".($acked?"Ano":"Ne")."</td>
-	<td>".($acked?htmlspecialchars($fe->ac_dateack):"-")."</td>
-	<td>".($acked?"&nbsp;":input_button("aack_ack[".$fe->ac_id."]","Potvrdit"))."</td></tr>";
+	<td>".($acked?htmlspecialchars($fe->ac_dateack):"-")."</td>";
+	if($acked) echo "<td>&nbsp;</td>";
+	else {
+	    $nackid[]=$fe->ac_id;
+	    echo "<td>".input_button("aack_ack[".$fe->ac_id."]","Potvrdit")."</td>";
+	    $nack++;
+	}
+	echo "</tr>";
 }
 
+if($nack) echo "<tr><td colspan=\"12\">&nbsp;</td><td>".input_button("aack_hackall","Potvrdit vše")."</td></tr>";
 echo "</table>";
 $tbl=ob_get_clean();
 
@@ -210,23 +256,67 @@ if($totalrows) pages($totalrows,$_SESSION->alarmsack_currpage,"<a href=\"".root(
 echo $tbl;
 if($totalrows) pages($totalrows,$_SESSION->alarmsack_currpage,"<a href=\"".root().$PAGE."/page/%d\">%d</a>");
 
+echo "<br /><a href=\"".root().$PAGE."/csv\">Uložit jako csv</a>";
+
+echo "</form>";
+
 echo "<script type=\"text/javascript\">
 // <![CDATA[
+var surp=false;
 function alarmsgui() {
     $(\"button\").button();
     $(\".pagep a\").button();
-    $(\".pagep b\").button({disabled:true});
+    $(\".pagep b\").button({disabled:true});";
+
+if($nack) {
+    echo "
+    $(\"#aackform\").submit(function() {
+	if(surp) {
+	    surp=false;
+	    return false;
+	}
+    });
+    $(\"#aack_hackall\").click(function() {
+	surp=true;
+	$(\"#aack_hackt\").dialog(\"open\");
+    });
+    $(\"#aack_hackt\").dialog({
+	resizable: false,
+	height: \"auto\",
+	width: \"auto\",
+	modal: true,
+	autoOpen: false,
+	buttons: {
+	    \"Potvrdit\":function() {
+		$(\"#aackdlgfrm\").submit();
+	    },
+	    \"Zpět\":function() {
+		$(this).dialog(\"close\");
+	    }
+	}
+    });
+    ";
+}
+echo "
 }
 // ]]>
 </script>";
     $_JQUERY[]="alarmsgui();";
 
-echo "</form>";
+if($nack) {
+    echo "<div id=\"aack_hackt\" title=\"Potvrdit vše\">
+<form id=\"aackdlgfrm\" action=\"".root().$PAGE."\" method=\"post\">
+<table><tr><td>Text potvrzení:&nbsp;</td><td>".input_area("000_aack_hacktext",false,"farea")."</td></tr></table>";
+    echo input_hidden("aack_hackallh","1");
+    foreach($nackid as $val) echo input_hidden("aack_hack[]",$val);
+    echo "</form>
+</div>";
+}
 
 if($_SERVER['REQUEST_METHOD']=="POST") {
     $_SESSION->invalid=false;
     $_SESSION->temp_form=false;
-
+    
     if(get_ind($_POST,"aack_filter")) {
 	$_SESSION->alarmsack_filterenable=!$_SESSION->alarmsack_filterenable;
 	if($_SESSION->alarmsack_filterenable) $_SESSION->alarmsack_currpage=0;
@@ -247,6 +337,24 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
 	if(is_array($ks)) {
 	    $ks=key($ks);
 	    redir(root()."alarmacktab/m/".$ks);
+	}
+	redir();
+    }
+    if(get_ind($_POST,"aack_hackallh")) {
+	$vl=get_ind($_POST,"aack_hack");
+	if(is_array($vl)) {
+	    $qry=array();
+	    
+	    foreach($vl as $val) $qry[]="\"".$SQL->escape($val)."\"";
+	    if(count($qry)) {
+		$txt=$SQL->escape(trim(get_ind($_POST,"000_aack_hacktext")));
+		if($limitacc) $qe=$SQL->query("select * from alarmack left join variable on ac_vid=var_id left join alarm on ac_id=a_ackid left join measuring on ac_mid=m_id left join room on m_rid=r_id left join building on r_bid=b_id left join user on ac_uid=u_id where ac_id in (".implode(",",$qry).") && u_id=".uid());
+		else $qe=$SQL->query("select * from alarmack left join variable on ac_vid=var_id left join alarm on ac_id=a_ackid left join measuring on ac_mid=m_id left join room on m_rid=r_id left join building on r_bid=b_id left join user on ac_uid=u_id where ac_id in (".implode(",",$qry).")");
+		while($ack=$qe->obj()) {
+		    $SQL->query("update alarmack set ac_state='Y',ac_text=\"".$txt."\",ac_dateack=now() where ac_id=\"".$SQL->escape($ack->ac_id)."\" && ac_state!='Y'");
+		    $SQL->query("update alarm set a_ackid=\"\",a_alarmed='N' where a_id=\"".$SQL->escape($ack->ac_aid)."\"");
+		}
+	    }
 	}
 	redir();
     }

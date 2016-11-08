@@ -7,6 +7,7 @@ showerror();
 
 ajaxsess();
 
+$makecsv=false;
 switch($ARGC) {
 case 2:
     switch($ARGV[0]) {
@@ -16,6 +17,12 @@ case 2:
 	redir();
     }
     break;
+case 1:
+    switch($ARGV[0]) {
+    case "csv":
+	$makecsv=true;
+	break;
+    }
 }
 
 echo "<form action=\"".root().$PAGE."\" method=\"post\">";
@@ -63,8 +70,41 @@ default:
 }
 $ord[]="u_uname ".($_SESSION->user_sortmode?"desc":"asc");
 
+function role2string($r) {
+    switch($r) {
+    case 'A':
+	return "admin";
+    case 'D':
+	return "poweruser";
+    case 'U':
+	return "user";
+    }
+    return "error";
+}
+
+if($makecsv) {
+    ob_clean();
+    $_NOHEAD=true;
+//    header("Content-type: text/plain");
+    header("Content-type: text/x-csv");
+    header("Content-Disposition: attachment; filename=".$PAGE.".csv");
+    
+    ob_start();
+    echo csvline(array("#","Uživatelské jméno","Jméno","Email","Role","Povolen"));
+    $qe=$SQL->query("select * from user ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord));
+    while($fe=$qe->obj()) {
+	echo csvline(array($fe->u_id,$fe->u_uname,$fe->u_fullname,$fe->u_email,role2string($fe->u_role),$fe->u_state=='Y'?"ano":"ne"));
+    }
+    $csv=ob_get_contents();
+    ob_end_clean();
+    echo csvoutput($csv);
+    
+    exit();
+}
+
 echo "<table>";
 sortlocalref(array(
+    array('n'=>"#",'a'=>false),
     array('n'=>"Uživatelské jméno",'a'=>"uname"),
     array('n'=>"Jméno",'a'=>"sname"),
     array('n'=>"Email",'a'=>"email"),
@@ -76,27 +116,17 @@ sortlocalref(array(
 $qe=$SQL->query("select * from user ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord));
 while($fe=$qe->obj()) {
 // mark deactivated with style
-    echo "<tr><td>".htmlspecialchars($fe->u_uname)."</td>
+    echo "<tr><td>".$fe->u_id."</td><td>".htmlspecialchars($fe->u_uname)."</td>
 	<td>".htmlspecialchars($fe->u_fullname)."</td>
 	<td>".htmlspecialchars($fe->u_email)."</td>
 	<td>";
-    switch($fe->u_role) {
-    case 'A':
-	echo "admin";
-	break;
-    case 'D':
-	echo "poweruser";
-	break;
-    case 'U':
-	echo "user";
-	break;
-    default:
-	echo "error";
-    }
+    echo role2string($fe->u_role);
     echo "</td><td>".input_check("user_av[".$fe->u_id."]",'Y',$fe->u_state=='Y',false,true)."</td><td>".input_button("user_edit[".$fe->u_id."]","Editovat")."</td></tr>";
 }
 
 echo "</table>";
+
+echo "<br /><a href=\"".root().$PAGE."/csv\">Uložit jako csv</a>";
 
 echo "<script type=\"text/javascript\">
 // <![CDATA[

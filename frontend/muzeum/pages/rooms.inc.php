@@ -7,6 +7,7 @@ showerror();
 
 ajaxsess();
 
+$makecsv=false;
 switch($ARGC) {
 case 2:
     switch($ARGV[0]) {
@@ -19,6 +20,12 @@ case 2:
 	redir();
     }
     break;
+case 1:
+    switch($ARGV[0]) {
+    case "csv":
+	$makecsv=true;
+	break;
+    }
 }
 
 $ord=array();
@@ -95,6 +102,40 @@ if($_SESSION->room_filterenable) {
     if($ftmp) $whr[]="b_city=\"".$SQL->escape(my_hex2bin($ftmp))."\"";
 }
 
+if($makecsv) {
+    ob_clean();
+    $_NOHEAD=true;
+//    header("Content-type: text/plain");
+    header("Content-type: text/x-csv");
+    header("Content-Disposition: attachment; filename=".$PAGE.".csv");
+    
+    ob_start();
+    echo csvline(array("#","Město","Budova","Označení","Patro","Materiály","Popis"));
+
+    if($_SESSION->room_filterenable) {
+	$ms=get_ind($_SESSION->room_filter,"000_room_filter_mat");
+	if(is_array($ms) && count($ms)) {
+	    $wo=array();
+	    foreach($ms as $val) $wo[]="\"".$SQL->escape($val)."\"";
+	    $whr[]="rm_mid in (".implode(",",$wo).")"; // warning cumulation
+	    $qe=$SQL->query("select * from room left join building on r_bid=b_id left join roommat on rm_rid=r_id ".(count($whr)?"where ".implode(" && ",$whr):"")." group by r_id order by ".implode(",",$ord));
+	} else $qe=$SQL->query("select * from room left join building on r_bid=b_id ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord));
+    } else $qe=$SQL->query("select * from room left join building on r_bid=b_id ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord));
+    while($fe=$qe->obj()) {
+	$mats=array();
+	$qe2=$SQL->query("select * from roommat left join material on rm_mid=ma_id where rm_rid=".$fe->r_id);
+	if($qe2->rowcount()) {
+	    while($fe2=$qe2->obj()) $mats[]=$fe2->ma_desc;
+	}
+	echo csvline(array($fe->r_id,$fe->b_city,$fe->b_name,$fe->r_desc,$fe->r_floor,implode(", ",$mats),$fe->r_note));
+    }
+    $csv=ob_get_contents();
+    ob_end_clean();
+    echo csvoutput($csv);
+    
+    exit(); // mandatory
+}
+
 //print_read($_SESSION->room_filter);
 ob_start();
 echo "<table id=\"roomtable\">";
@@ -121,7 +162,7 @@ if($_SESSION->room_filterenable) {
 	$whr[]="rm_mid in (".implode(",",$wo).")";
 	$qe=$SQL->query("select SQL_CALC_FOUND_ROWS * from room left join building on r_bid=b_id left join roommat on rm_rid=r_id ".(count($whr)?"where ".implode(" && ",$whr):"")." group by r_id order by ".implode(",",$ord)." limit ".$offset.",".$limit);
     } else $qe=$SQL->query("select SQL_CALC_FOUND_ROWS * from room left join building on r_bid=b_id ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord)." limit ".$offset.",".$limit);
-} else $qe=$SQL->query("select SQL_CALC_FOUND_ROWS * from room left join building on r_bid=b_id order by ".implode(",",$ord)." limit ".$offset.",".$limit);
+} else $qe=$SQL->query("select SQL_CALC_FOUND_ROWS * from room left join building on r_bid=b_id ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord)." limit ".$offset.",".$limit);
 
 $qer=$SQL->query("select FOUND_ROWS() as rows");
 $fe=$qer->obj();
@@ -131,7 +172,7 @@ while($fe=$qe->obj()) {
     echo "<tr><td>".$fe->r_id."</td>
 	<td>".htmlspecialchars($fe->b_city)."</td>
 	<td>".htmlspecialchars($fe->b_name)."</td>";
-	echo "<td>".htmlspecialchars(strtr($fe->r_desc,"\n","<br />"))."</td>";
+	echo "<td>".htmlspecialchars(strtr($fe->r_desc,array("\n"=>"<br />")))."</td>";
 	echo "<td>".htmlspecialchars($fe->r_floor)."</td>";
 	
 	$qe2=$SQL->query("select * from roommat left join material on rm_mid=ma_id where rm_rid=".$fe->r_id);
@@ -155,6 +196,8 @@ $tbl=ob_get_clean();
 if($totalrows) pages($totalrows,$_SESSION->room_currpage,"<a href=\"".root().$PAGE."/page/%d\">%d</a>");
 echo $tbl;
 if($totalrows) pages($totalrows,$_SESSION->room_currpage,"<a href=\"".root().$PAGE."/page/%d\">%d</a>");
+
+echo "<br /><a href=\"".root().$PAGE."/csv\">Uložit jako csv</a>";
 
 echo "<style>
 .ui-tooltip {

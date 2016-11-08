@@ -38,7 +38,15 @@ foreach($amids as $val) {
     }
     $mt=(int)$val;
     if(in_array($mt,$measpoints)) continue; // already there, not error ?
-    $qe=$SQL->query("select * from measuring left join room on m_rid=r_id left join building on r_bid=b_id where m_id=".$mt);
+    // check permission
+    switch(urole()) {
+    case 'A':
+    case 'D':
+	$qe=$SQL->query("select * from measuring left join room on m_rid=r_id left join building on r_bid=b_id where m_id=".$mt);
+	break;
+    default:
+	$qe=$SQL->query("select * from measuring left join room on m_rid=r_id left join building on r_bid=b_id left join permission on m_id=pe_mid where m_id=".$mt." && (pe_uid=0 || pe_uid=".uid().")");
+    }
     $fe=$qe->obj();
     if(!$fe) {
 	$_SESSION->error_text="Invalidní měřící bod";
@@ -106,11 +114,18 @@ echo "<form action=\"".root().$PAGE."/".implode("/",$ARGV)."\" method=\"post\" e
 	foreach(c_alarm_gen::getalltypes() as $key=>$val) $aopts[$key]=$val;
 	echo "<tr><td colspan=\"2\">Typ alarmu: ".input_select_temp_err("001_alarm_type",$aopts);
 	
-	$qe=$SQL->query("select * from alarm_preset order by ap_desc");
-	if($qe->rowcount()) {
-	    $popts=array(0=>"Zvolte definici");
-	    while($fe=$qe->obj()) $popts[$fe->ap_id]=$fe->ap_desc;
-	    echo " nebo definice: ".input_select_temp_err("001_alarm_def",$popts);
+	$hasadef=false;
+	switch(urole()) {
+	case 'A':
+	case 'D':
+	    $qe=$SQL->query("select * from alarm_preset order by ap_desc");
+	    if($qe->rowcount()) {
+		$popts=array(0=>"Zvolte definici");
+		while($fe=$qe->obj()) $popts[$fe->ap_id]=$fe->ap_desc;
+		echo " nebo definice: ".input_select_temp_err("001_alarm_def",$popts);
+		$hasadef=true;
+	    }
+	    break;
 	}
 	echo "</td></tr></table>";
 	echo "<hr />";
@@ -129,15 +144,24 @@ function getatype(at) {
 function alarmtype() {
     getatype($(\"#001_alarm_type\").val());
     $(\"#001_alarm_type\").change(function() {
-	$(\"#001_alarm_def\").val(0);
-	getatype($(this).val());
-    });
-    $(\"#001_alarm_def\").change(function() {
+	getatype($(this).val());";
+
+    if($hasadef) {
+	echo "$(\"#001_alarm_def\").val(0);
+	$(\"#000_alarm_email\").prop(\"disabled\",$(\"#001_alarm_def\").val()!=0);";
+    }
+    echo "
+    });";
+    if($hasadef) {
+	echo "$(\"#001_alarm_def\").change(function() {
 	$(\"#001_alarm_type\").val(0);
 	getatype(0);
 	$(\"#000_alarm_email\").prop(\"disabled\",$(this).val()!=0);
     });
     $(\"#000_alarm_email\").prop(\"disabled\",$(\"#001_alarm_def\").val()!=0);
+    ";
+    }
+    echo "
 
     $(\"button\").button();
 }

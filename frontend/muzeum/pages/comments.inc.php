@@ -9,6 +9,7 @@ ajaxsess();
 
 $_SESSION->prevpage=false;
 
+$makecsv=false;
 switch($ARGC) {
 case 2:
     switch($ARGV[0]) {
@@ -19,6 +20,12 @@ case 2:
 	break;
     case "page":
 	$_SESSION->comments_currpage=(int)$ARGV[1];
+	break;
+    }
+case 1:
+    switch($ARGV[0]) {
+    case "csv":
+	$makecsv=true;
 	break;
     }
 }
@@ -56,6 +63,18 @@ echo "<form id=\"commform\" action=\"".root().$PAGE."\" method=\"post\">";
 echo input_button("comm_new","Přidat komentář","newbutton");
 
 $whr=array();
+
+//limit comments in case of non admin
+switch(urole()) {
+case 'A':
+case 'D':
+    $limitacc=false;
+    break;
+default:
+    $limitacc=true;
+    $whr[]="u_id=".uid();
+}
+
 if($_SESSION->comments_filterenable) { // using same filter variables
     echo "<fieldset><legend>Filtr</legend>";
     echo "<table class=\"nobr\">";
@@ -97,10 +116,12 @@ if($_SESSION->comments_filterenable) { // using same filter variables
     }
     echo "<tr><td>Měřící bod:&nbsp;</td><td><span id=\"commmeasc\">".input_select("001_ajax_meas",$opts,get_ind($_SESSION->comments_filter,"001_ajax_meas"))."</span></td></tr>";
     
-    $opts=array(0=>"Všichni uživatelé");
-    $qe=$SQL->query("select * from user order by u_fullname");
-    while($fe=$qe->obj()) $opts[$fe->u_id]=$fe->u_fullname;
-    echo "<tr><td>Uřivatel:&nbsp;</td><td>".input_select("001_comm_user",$opts,get_ind($_SESSION->comments_filter,"001_comm_user"))."</td></tr>";
+    if(!$limitacc) {
+	$opts=array(0=>"Všichni uživatelé");
+	$qe=$SQL->query("select * from user order by u_fullname");
+	while($fe=$qe->obj()) $opts[$fe->u_id]=$fe->u_fullname;
+	echo "<tr><td>Uřivatel:&nbsp;</td><td>".input_select("001_comm_user",$opts,get_ind($_SESSION->comments_filter,"001_comm_user"))."</td></tr>";
+    }
     
     echo "</table>";
 
@@ -113,8 +134,12 @@ if($_SESSION->comments_filterenable) { // using same filter variables
     if($fb) $whr[]="r_id=\"".$SQL->escape($fb)."\"";
     $fb=get_ind($_SESSION->comments_filter,"001_ajax_meas");
     if($fb) $whr[]="m_id=\"".$SQL->escape($fb)."\"";
-    $fb=get_ind($_SESSION->comments_filter,"001_comm_user");
-    if($fb) $whr[]="u_id=\"".$SQL->escape($fb)."\"";
+    
+    if(!$limitacc) {
+	$fb=get_ind($_SESSION->comments_filter,"001_comm_user");
+	if($fb) $whr[]="u_id=\"".$SQL->escape($fb)."\"";
+    }
+    
     $ftmp=get_ind($_SESSION->comments_filter,"000_comm_filter_city");
     if($ftmp) $whr[]="b_city=\"".$SQL->escape(my_hex2bin($ftmp))."\"";
 
@@ -148,7 +173,25 @@ function buildsub() {
     $_JQUERY[]="buildsub();";
 }
 
-//print_read($whr);
+if($makecsv) {
+    ob_clean();
+    $_NOHEAD=true;
+//    header("Content-type: text/plain");
+    header("Content-type: text/x-csv");
+    header("Content-Disposition: attachment; filename=".$PAGE.".csv");
+    
+    ob_start();
+    echo csvline(array("#","Datum","Město","Budova","Místnost","Patro","Měřící bod","Uživatel","Text"));
+    $qe=$SQL->query("select * from comment left join measuring on cm_mid=m_id left join room on m_rid=r_id left join building on r_bid=b_id left join user on cm_uid=u_id ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord));
+    while($fe=$qe->obj()) {
+	echo csvline(array($fe->cm_id,showtime($fe->cm_date),$fe->b_city,$fe->b_name,$fe->r_desc,$fe->r_floor,$fe->m_desc,$fe->u_fullname,$fe->cm_text));
+    }
+    $csv=ob_get_contents();
+    ob_end_clean();
+    echo csvoutput($csv);
+    
+    exit();
+}
 
 $offset=(int)($_SESSION->comments_currpage*$_PERPAGE);
 $limit=(int)$_PERPAGE;
@@ -157,6 +200,7 @@ $qe=$SQL->query("select SQL_CALC_FOUND_ROWS * from comment left join measuring o
 ob_start();
 echo "<table>";
 sortlocalref(array(
+    array('n'=>"#",'a'=>false),
     array('n'=>"&nbsp;",'a'=>false),
     array('n'=>"Datum",'a'=>"date"),
     array('n'=>"Město",'a'=>"city"),
@@ -176,7 +220,7 @@ function formattext($str) {
 }
 
 while($fe=$qe->obj()) {
-    echo "<tr><td>".input_check("comm_chk[".$fe->cm_id."]").input_hidden("comm_hid[]",$fe->cm_id)."</td>
+    echo "<tr><td>".$fe->cm_id."</td><td>".input_check("comm_chk[".$fe->cm_id."]").input_hidden("comm_hid[]",$fe->cm_id)."</td>
 	<td>".showtime($fe->cm_date)."</td>
 	<td>".htmlspecialchars($fe->b_city)."</td>
 	<td>".htmlspecialchars($fe->b_name)."</td>
@@ -200,6 +244,8 @@ if($totalrows) {
     pages($totalrows,$_SESSION->comments_currpage,"<a href=\"".root().$PAGE."/page/%d\">%d</a>");
     echo input_button("comm_rem","Smazat vybrané")." ".input_button("comm_remall","Smazat zobrazené");
 }
+
+echo "<br /><a href=\"".root().$PAGE."/csv\">Uložit jako csv</a>";
 
 echo "<script type=\"text/javascript\">
 // <![CDATA[
@@ -269,7 +315,8 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
 	$key=$_POST['comm_edit'];
 	if(is_array($key)) {
 	    $key=(int)key($key);
-	    $qe=$SQL->query("select * from comment left join measuring on cm_mid=m_id left join room on m_rid=r_id left join building on r_bid=b_id left join user on cm_uid=u_id where cm_id=".$key);
+	    if($limitacc) $qe=$SQL->query("select * from comment left join measuring on cm_mid=m_id left join room on m_rid=r_id left join building on r_bid=b_id left join user on cm_uid=u_id where cm_id=".$key." && cm_uid=".uid());
+	    else $qe=$SQL->query("select * from comment left join measuring on cm_mid=m_id left join room on m_rid=r_id left join building on r_bid=b_id left join user on cm_uid=u_id where cm_id=".$key);
 	    $fe=$qe->obj();
 	    if($fe) {
 		$_SESSION->temp_form=array(
@@ -291,7 +338,8 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
 	$key=$_POST['comm_del'];
 	if(is_array($key)) {
 	    $key=(int)key($key);
-	    $SQL->query("delete from comment where cm_id=".$key);
+	    if($limitacc) $SQL->query("delete from comment where cm_id=".$key." && cm_uid=".uid());
+	    else $SQL->query("delete from comment where cm_id=".$key);
 	    $_SESSION->error_text="Komentář smazán";
 	}
 	redir();
@@ -304,7 +352,8 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
 		if($val=='Y') $cids[]="\"".$SQL->escape($key)."\"";
 	    }
 	    if(count($cids)) {
-		$SQL->query("delete from comment where cm_id in (".implode(",",$cids).")");
+		if($limitacc) $SQL->query("delete from comment where cm_id in (".implode(",",$cids).") && cm_uid=".uid());
+		else $SQL->query("delete from comment where cm_id in (".implode(",",$cids).")");
 		if(count($cids)>1) $_SESSION->error_text="Komentáře smazány";
 		else $_SESSION->error_text="Komentář smazán";
 	    }
@@ -317,7 +366,8 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
 	    $cids=array();
 	    foreach($ids as $val) $cids[]="\"".$SQL->escape($val)."\"";
 	    if(count($cids)) {
-		$SQL->query("delete from comment where cm_id in (".implode(",",$cids).")");
+		if($limitacc) $SQL->query("delete from comment where cm_id in (".implode(",",$cids).") && cm_uid=".uid());
+		else $SQL->query("delete from comment where cm_id in (".implode(",",$cids).")");
 		if(count($cids)>1) $_SESSION->error_text="Komentáře smazány";
 		else $_SESSION->error_text="Komentář smazán";
 	    }

@@ -7,6 +7,7 @@ showerror();
 
 ajaxsess();
 
+$makecsv=false;
 switch($ARGC) {
 case 2:
     switch($ARGV[0]) {
@@ -19,6 +20,12 @@ case 2:
 	redir();
     }
     break;
+case 1:
+    switch($ARGV[0]) {
+    case "csv":
+	$makecsv=true;
+	break;
+    }
 }
 
 $ord=array();
@@ -127,11 +134,60 @@ function buildsub() {
 
 }
 
+if($makecsv) {
+    ob_clean();
+    $_NOHEAD=true;
+//    header("Content-type: text/plain");
+    header("Content-type: text/x-csv");
+    header("Content-Disposition: attachment; filename=".$PAGE.".csv");
+    
+    $ord[]="a_desc";
+    ob_start();
+    echo csvline(array("#","Město","Budova","Místnost","Patro","Popis","Senzor","akt.","#","charakter","popis","veličina","uživatel","email","typ"));
+
+    switch(urole()) {
+    case 'A':
+	$grp=false;
+	$qpref="select *,if(isnull(ap_desc),\"\",ap_desc) as apdesc from alarm left join alarm_preset on a_preset=ap_id left join variable on a_vid=var_id left join user on u_id=a_uid left join  measuring on a_mid=m_id left join room on m_rid=r_id left join building on r_bid=b_id left join sensor on m_id=s_mid left join sensortype on s_type=st_id";
+	break;
+    case 'D':
+	$grp=false;
+	$whr[]="a_uid=".uid();
+	$qpref="select *,if(isnull(ap_desc),\"\",ap_desc) as apdesc from alarm left join alarm_preset on a_preset=ap_id left join variable on a_vid=var_id left join user on u_id=a_uid left join  measuring on a_mid=m_id left join room on m_rid=r_id left join building on r_bid=b_id left join sensor on m_id=s_mid left join sensortype on s_type=st_id";
+	break;
+    default:
+	$grp="a_id";
+	$whr[]="(pe_uid=0 || pe_uid=".uid().")";
+	$whr[]="a_uid=".uid();
+	$qpref="select *,if(isnull(ap_desc),\"\",ap_desc) as apdesc from alarm left join alarm_preset on a_preset=ap_id left join variable on a_vid=var_id left join user on u_id=a_uid left join  measuring on a_mid=m_id left join room on m_rid=r_id left join building on r_bid=b_id left join sensor on m_id=s_mid left join sensortype on s_type=st_id left join permission on m_id=pe_mid";
+    }
+    if($_SESSION->alarms_filterenable) {
+	$ms=get_ind($_SESSION->alarms_filter,"000_alarm_filter_mat");
+	if(is_array($ms) && count($ms)) {
+	    $wo=array();
+	    foreach($ms as $val) $wo[]="\"".$SQL->escape($val)."\"";
+	    $whr[]="rm_mid in (".implode(",",$wo).")";
+	    $qe=$SQL->query($qpref." left join roommat on rm_rid=r_id ".(count($whr)?"where ".implode(" && ",$whr):"")." group by a_id order by ".implode(",",$ord));
+	} else $qe=$SQL->query($qpref." ".(count($whr)?"where ".implode(" && ",$whr):"").($grp?" group by ".$grp:"")." order by ".implode(",",$ord));
+    } else $qe=$SQL->query($qpref." ".(count($whr)?"where ".implode(" && ",$whr):"").($grp?" group by ".$grp:"")." order by ".implode(",",$ord));
+    while($fe=$qe->obj()) {
+	$alrm=c_alarm_gen::getalarmbyname($fe->a_class);
+	echo csvline(array($fe->m_id,$fe->b_city,$fe->b_name,$fe->r_desc,$fe->r_floor,$fe->m_desc,$fe->s_serial,$fe->m_active=='Y'?"ano":"ne",
+	    $fe->a_id,$fe->a_crit=='Y'?"Kritický":"Varování",$fe->a_desc,$fe->var_desc,$fe->u_fullname,$fe->a_email,$alrm->desc($fe->a_data)));
+    }
+    $csv=ob_get_contents();
+    ob_end_clean();
+    echo csvoutput($csv);
+
+    exit();
+}
+
 ob_start();
 $offset=(int)($_SESSION->alarms_currpage*$_PERPAGE);
 $limit=(int)$_PERPAGE;
 echo "<table>";
 sortlocalref(array(
+    array('n'=>"#",'a'=>false),
     array('n'=>"&nbsp;",'a'=>false),
     array('n'=>"Město",'a'=>"city"),
     array('n'=>"Budova",'a'=>"build"),
@@ -143,22 +199,33 @@ sortlocalref(array(
     array('n'=>input_button("alarm_filter","Filtr"),'a'=>false)
 ),$_SESSION->alarms_sort,$_SESSION->alarms_sortmode);
 
-$qpref="select SQL_CALC_FOUND_ROWS * from measuring left join room on m_rid=r_id left join building on r_bid=b_id left join sensor on m_id=s_mid left join sensortype on s_type=st_id";
+switch(urole()) {
+case 'A':
+case 'D':
+    $grp=false;
+    $qpref="select SQL_CALC_FOUND_ROWS * from measuring left join room on m_rid=r_id left join building on r_bid=b_id left join sensor on m_id=s_mid left join sensortype on s_type=st_id";
+    break;
+default:
+    $grp="m_id";
+    $whr[]="(pe_uid=0 || pe_uid=".uid().")";
+    $qpref="select SQL_CALC_FOUND_ROWS * from measuring left join room on m_rid=r_id left join building on r_bid=b_id left join sensor on m_id=s_mid left join sensortype on s_type=st_id left join permission on m_id=pe_mid";
+}
+
 if($_SESSION->alarms_filterenable) {
     $ms=get_ind($_SESSION->alarms_filter,"000_alarm_filter_mat");
     if(is_array($ms) && count($ms)) {
 	$wo=array();
 	foreach($ms as $val) $wo[]="\"".$SQL->escape($val)."\"";
 	$whr[]="rm_mid in (".implode(",",$wo).")";
-	$qe=$SQL->query($qpref." left join roommat on rm_rid=r_id ".(count($whr)?"where ".implode(" && ",$whr):"")." group by r_id order by ".implode(",",$ord)." limit ".$offset.",".$limit);
-    } else $qe=$SQL->query($qpref." ".(count($whr)?"where ".implode(" && ",$whr):"")." order by ".implode(",",$ord)." limit ".$offset.",".$limit);
-} else $qe=$SQL->query($qpref." order by ".implode(",",$ord)." limit ".$offset.",".$limit);
+	$qe=$SQL->query($qpref." left join roommat on rm_rid=r_id ".(count($whr)?"where ".implode(" && ",$whr):"")." group by m_id order by ".implode(",",$ord)." limit ".$offset.",".$limit);
+    } else $qe=$SQL->query($qpref." ".(count($whr)?"where ".implode(" && ",$whr):"").($grp?" group by ".$grp:"")." order by ".implode(",",$ord)." limit ".$offset.",".$limit);
+} else $qe=$SQL->query($qpref." ".(count($whr)?"where ".implode(" && ",$whr):"").($grp?" group by ".$grp:"")." order by ".implode(",",$ord)." limit ".$offset.",".$limit);
 $qer=$SQL->query("select FOUND_ROWS() as rows");
 $fe=$qer->obj();
 $totalrows=$fe->rows;
 
 while($fe=$qe->obj()) {
-    echo "<tr><td>".input_check("meas_id[".$fe->m_id."]").input_hidden("meas_hid[]",$fe->m_id)."</td>
+    echo "<tr><td>".$fe->m_id."</td><td>".input_check("meas_id[".$fe->m_id."]").input_hidden("meas_hid[]",$fe->m_id)."</td>
 	<td>".htmlspecialchars($fe->b_city)."</td>
 	<td>".htmlspecialchars($fe->b_name)."</td>
 	<td>".htmlspecialchars($fe->r_desc)."</td>
@@ -173,7 +240,16 @@ while($fe=$qe->obj()) {
 	$stt=new $fe->st_class();
 	$stt->fe=$fe;
     }
-    if($fe->s_id && $stt && $stt->canimport()) echo input_button("meas_import[".$fe->s_id."]","Importovat data"); else echo "&nbsp;";
+    if($fe->s_id && $stt && $stt->canimport()) {
+	switch(urole()) {
+	case 'A':
+	case 'D':
+	    echo input_button("meas_import[".$fe->s_id."]","Importovat data");
+	    break;
+	default:
+	    echo "&nbsp;";
+	}
+    } else echo "&nbsp;";
     echo "</td></tr>";
 // next line about alarms
     echo "<tr><td colspan=\"8\">";
@@ -187,7 +263,7 @@ while($fe=$qe->obj()) {
 	    if(!$alrm) {
 		echo "<li>invalidni alarm: ".htmlspecialchars($fe2->a_class)."</li>";
 	    } else {
-		echo "<li>".input_check("000_alarm_id[".$fe2->a_id."]")." ";
+		echo "<li>".$fe2->a_id."&nbsp;".input_check("000_alarm_id[".$fe2->a_id."]")." ";
 		if($fe2->a_crit=='Y') echo "<b>Kritický</b><br />";
 		else echo "Varování<br />";
 		if(strlen($fe2->apdesc)) echo "<b>".htmlspecialchars("def: ".$fe2->apdesc)."</b> ";
@@ -198,7 +274,7 @@ while($fe=$qe->obj()) {
 	}
 	echo "</ul>";
     }
-    echo "</td><td>".input_button("alarm_new[".$fe->m_id."]","Nový alarm")."</td></tr>";
+    echo "</td><td>".input_button("alarm_new[".$fe->m_id."]","Nový alarm")."</td><td>&nbsp;</td></tr>";
 }
 
 echo "</table>";
@@ -208,6 +284,8 @@ echo $tbl;
 if($totalrows) pages($totalrows,$_SESSION->alarms_currpage,"<a href=\"".root().$PAGE."/page/%d\">%d</a>");
 
 echo input_button("alarm_rem","Smazat vybrané")." ".input_button("alarm_remall","Smazat zobrazené")." ".input_button("alarm_multinew","Nový alarm pro vybrané")." ".input_button("alarm_allnew","Nový alarm pro zobrazené");
+
+echo "<br /><a href=\"".root().$PAGE."/csv\">Uložit jako csv</a>";
 
 echo "<script type=\"text/javascript\">
 // <![CDATA[

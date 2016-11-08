@@ -1,18 +1,23 @@
 <?php
 
 pageperm();
+
 showmenu();
 
 showerror();
 
 ajaxsess();
 
-function treespan($id,$txt,$pt=false,$cl=false) {
+function treespan($id,$txt,$pt=false,$cl=false,$lbl=false) {
     if($pt) $pt=" style=\"cursor:pointer;\"";
     else $pt="";
     if($cl) $cl=" class=\"".$cl."\"";
     else $cl="";
-    return "<span".$cl." id=\"".htmlspecialchars($id)."\"".$pt.">".htmlspecialchars($txt)."</span>";
+    $ret="<span".$cl." id=\"".htmlspecialchars($id)."\"".$pt.">";
+    if($lbl) $ret.="<label for=\"".htmlspecialchars($lbl)."\">";
+    $ret.=htmlspecialchars($txt);
+    if($lbl) $ret.="</label>";
+    return $ret."</span>";
 }
 
 function generatetree() {
@@ -45,7 +50,7 @@ function generatetree() {
     while($cfe=$cqe->obj()) {
 	$checkcnt=0;
 	ob_start();
-	echo "<li style=\"padding-left:0px;\">".treespan(bin2hex($cfe->b_city),$cfe->b_city,true);
+	echo "<li style=\"padding-left:0px;\">".input_check("cid_".bin2hex($cfe->b_city)).treespan(bin2hex($cfe->b_city),$cfe->b_city,true);
 	$bqe=$SQL->query("select * from building where b_city=\"".$SQL->escape($cfe->b_city)."\" order by b_name");
 	echo "<ul style=\"display:none\">";
 	while($bfe=$bqe->obj()) {
@@ -53,7 +58,7 @@ function generatetree() {
 	    ob_start();
 	    $rqe=$SQL->query("select * from room where r_bid=".$bfe->b_id." order by r_desc");
 	    if($rqe->rowcount()) {
-		echo "<li>".treespan("bid_".$bfe->b_id,$bfe->b_name,true);
+		echo "<li>".input_check("bid_".$bfe->b_id).treespan("bid_".$bfe->b_id,$bfe->b_name,true);
 		echo "<ul style=\"display:none\">";
 		while($rfe=$rqe->obj()) {
 		    $rchecks=$checkcnt;
@@ -67,20 +72,17 @@ function generatetree() {
 			$mqe=$SQL->query("select * from measuring left join permission on m_id=pe_mid where (pe_uid=0 || pe_uid=".uid().") && m_rid=".$rfe->r_id." group by m_id order by m_desc");
 		    }
 		    if($mqe->rowcount()) {
-		//	echo "<li>".treespan("rid_".$rfe->r_id,$rfe->r_desc." ".$rfe->r_floor,false,"notg");
-		//	echo "<li>".treespan("rid_".$rfe->r_id,$rfe->r_desc,false,"notg");
-		//	echo "<ul class=\"notg\">";
+			echo "<li>".input_check("rid_".$rfe->r_id).treespan("rid_".$rfe->r_id,$rfe->r_desc." ".$rfe->r_floor,false,"notg","rid_".$rfe->r_id);
+			echo "<ul class=\"notg\">";
 			while($mfe=$mqe->obj()) {
 			    $checkcnt++;
-		//	    echo "<li>".input_check("mid_".$mfe->m_id,'Y',get_ind($checks,$mfe->m_id))."<label for=\"mid_".$mfe->m_id."\" style=\"cursor:pointer;\">".htmlspecialchars($mfe->m_desc." ".$mfe->m_depart)."</label></li>";
-		//	    echo "<li>".$rfe->r_desc." ".input_check("mid_".$mfe->m_id,'Y',get_ind($checks,$mfe->m_id))."<label for=\"mid_".$mfe->m_id."\" style=\"cursor:pointer;\">".htmlspecialchars($mfe->m_desc)."</label></li>";
-			    echo "<li>".input_check("mid_".$mfe->m_id,'Y',get_ind($checks,$mfe->m_id)).$rfe->r_desc." "."<label for=\"mid_".$mfe->m_id."\" style=\"cursor:pointer;\">".htmlspecialchars($mfe->m_desc)."</label></li>";
+			    echo "<li>".input_check("mid_".$mfe->m_id,'Y',get_ind($checks,$mfe->m_id))."<label for=\"mid_".$mfe->m_id."\" style=\"cursor:pointer;\">".htmlspecialchars($mfe->m_desc." ".$mfe->m_depart)."</label></li>";
 			}
-		//	echo "</ul>";
+			echo "</ul>";
 		    } else {
-			echo "<li>".treespan("rid_".$rfe->r_id,$rfe->r_desc." ".$rfe->r_floor)."</li>";
+			echo "<li>".treespan("rid_".$rfe->r_id,$rfe->r_desc." ".$rfe->r_floor);
 		    }
-		    //echo "</li>";
+		    echo "</li>";
 		    if($rchecks==$checkcnt) ob_end_clean();
 		    else ob_end_flush();
 		}
@@ -99,10 +101,64 @@ function generatetree() {
     echo "</ul>";
     echo "</div>";
 
+//$(this).prop(\"indeterminate\", true);
+
     echo "<script type=\"text/javascript\">
 // <![CDATA[
+var wantdunnos=true;
 var lasth=[];
 var lastc=[];
+function setdunnorek(ulitem) {
+    var glyes=0;
+    var glno=0;
+    var glinter=false;
+    ulitem.children('li:not(.lihid)').each(function() {
+	$(this).children('input').each(function() {
+	    var ulyes=0;
+	    var ulno=0;
+	    var ulinter=$(this).prop('indeterminate');
+	    var ulcheck=$(this).prop('checked');
+	    $(this).siblings('ul').each(function() {
+		switch(setdunnorek($(this))) {
+		case -1:
+		    ulinter=true;
+		    break;
+		case 1:
+		    ulyes++;
+		    break;
+		default:
+		    ulno++;
+		    break;
+		}
+	    });
+	    if(!ulinter) {
+		if(ulyes) {
+		    ulcheck=true;
+		    if(ulno) ulinter=true;
+		} else if(ulno) ulcheck=false;
+	    }
+	    if(ulinter) {
+		glinter=true;
+		ulcheck=true;
+	    }
+	    if(ulcheck) glyes++;
+	    else glno++;
+	    $(this).prop('checked',ulcheck).prop('indeterminate',ulinter);
+	    if(ulcheck) $(this).siblings('span').addClass('treehigh');
+	});
+    });
+    if(glinter) return -1;
+    if(glyes) {
+	if(glno) return -1;
+	return 1;
+    }
+    return 0;
+}
+function setdunnos() {
+    $('#maintree').find('span').removeClass('treehigh');
+    $('#maintree').find('input').prop('indeterminate',false);
+    setdunnorek($('#maintree'));
+}
 function showgraph(data) {
     $(\"#mainresult\").html(data.graph);
     $(\"#mvarscheck span\").css(\"text-decoration\",\"none\");
@@ -112,9 +168,6 @@ function showgraph(data) {
     for(i=0,l=data.checks.length;i<l;i++) {
 	var cn=data.checks[i];
 	$(cn).prop('checked',true);
-	$(cn).parent().parent().siblings('span').addClass('treehigh');
-	$(cn).parent().parent().parent().parent().siblings('span').addClass('treehigh');
-	$(cn).parent().parent().parent().parent().parent().parent().siblings('span').addClass('treehigh');
 	$(cn).parent().parent().show();
 	$(cn).parent().parent().parent().parent().show();
 	$(cn).parent().parent().parent().parent().parent().parent().show();
@@ -122,24 +175,17 @@ function showgraph(data) {
     for(i=0,l=lastc.length;i<l;i++) {
 	if(data.checks.indexOf(lastc[i])<0) {
 	    $(lastc[i]).prop('checked',false);
-	    $(lastc[i]).parents('li').each(function() {
-		if(!$(this).find(':checked').length) {
-		    $(this).children('span').removeClass('treehigh');
-		    return true;
-		}
-		return false;
-	    });
 	}
     }
     lastc=data.checks;
     
 // later do some array intersection
     for(i=0,l=lasth.length;i<l;i++) {
-	if(data.tohid.indexOf(lasth[i])<0) $(lasth[i]).parent().show();
+	if(data.tohid.indexOf(lasth[i])<0) $(lasth[i]).parent().removeClass('lihid');
     }
     lasth=data.tohid;
     for(i=0,l=lasth.length;i<l;i++) {
-	$(lasth[i]).parent().hide();
+	$(lasth[i]).parent().addClass('lihid');
     }
     
 // range set
@@ -151,6 +197,10 @@ function showgraph(data) {
 	$('#001_main_to_h').val(data.rangeto[1]);
 	$('#001_main_to_m').val(data.rangeto[2]);
     }
+    if(wantdunnos) {
+	wantdunnos=false;
+	setdunnos();
+    }
 }
 function guienable(en) {
     var e=en?'enable':'disable';
@@ -161,6 +211,7 @@ function guienable(en) {
     $(\"#maintree_showdea\").prop('disabled',!en);
     $(\"#maintree_depsel\").prop('disabled',!en);
     $(\"#main_uprfsel\").prop('disabled',!en);
+    $(\"#main_uprfsave\").button(e);
     $(\"#main_uprfrem\").button(e);
     $(\"#main_uprfcrt\").button(e);
 }
@@ -200,10 +251,12 @@ function synctree(uri) {
 }
 function depsel() {
     var sel=$(this).val();
+    wantdunnos=true;
     synctree('/treedep/'+sel);
 }
 function deacheck() {
     var s=$(this).is(':checked');
+    wantdunnos=true;
     synctree('/treeshowdea/'+(s?'Y':'N'));
 }
 function profileop(op) {
@@ -232,6 +285,67 @@ function profileop(op) {
 	guienable(true);
     });
 }
+function profilesave() {
+    if(working) {
+	alert('Server je zaneprázdněn');
+	return;
+    }
+    working=true;
+    var serdata=$(\"#main_form\").serializeArray();
+    guienable(false);
+    $.post(\"".root()."ajaxmain/prfsave\",serdata,function(data) {
+    }).fail(function(jqXHR,textStatus,errorThrown) {
+	alert('error !!! '+textStatus);
+    }).always(function() {
+	working=false;
+	guienable(true);
+    });
+}
+function setchecks(chk,dunno) {
+    var nochk=0;
+    var yeschk=0;
+    
+    if(!dunno) {
+	chk.siblings('ul').children('li:not(.lihid)').children('input').each(function() {
+	    if($(this).prop('checked')) yeschk++;
+	    else nochk++;
+	});
+	if(yeschk) {
+	    if(nochk) {
+		dunno=true;
+		chk.prop('checked',true);
+		chk.siblings('span').addClass('treehigh');
+		chk.prop('indeterminate',true);
+	    } else {
+		chk.prop('checked',true);
+		chk.siblings('span').addClass('treehigh');
+		chk.prop('indeterminate',false);
+	    }
+	} else {
+	    chk.prop('checked',false);
+	    chk.siblings('span').removeClass('treehigh');
+	    chk.prop('indeterminate',false);
+	}
+    } else {
+	chk.prop('checked',true);
+	chk.siblings('span').addClass('treehigh');
+	chk.prop('indeterminate',true);
+    }
+    
+    chk.parent().parent().siblings('input').each(function() {
+	setchecks($(this),dunno);
+    });
+}
+function setsubcheck(chul,st) {
+    if(st) chul.siblings('span').addClass('treehigh');
+    else chul.siblings('span').removeClass('treehigh');
+    chul.children('li:not(.lihid)').each(function() {
+	$(this).children('input').prop('checked',st);
+	$(this).children('ul').each(function() {
+	    setsubcheck($(this),st);
+	});
+    });
+}
 var prfdial;
 function treegui() {
     $(\"#maintree_showdea\").change(deacheck);
@@ -240,21 +354,16 @@ function treegui() {
 	$(this).siblings(\"ul\").toggle();
     });
     $(\"#maintree input\").click(function() {
-	    var ppath;
-	    if($(this).is(':checked')) {
-		ppath='add/'+$(this).attr('id');
-		$(this).parents('li').children('span').addClass('treehigh');
-	    } else {
-		ppath='rem/'+$(this).attr('id');
-		$(this).parents('li').each(function() {
-		    if(!$(this).find(':checked').length) {
-			$(this).children('span').removeClass('treehigh');
-			return true;
-		    }
-		    return false;
-		});
-	    }
-	    postgraph('/'+ppath);
+	$(this).prop('indeterminate',false);
+	$(this).parent().parent().siblings('input').each(function() {
+	    setchecks($(this),false);
+	});
+	$(this).parent().find('input').prop('indeterminate',false);
+	var toch=$(this).prop('checked');
+	$(this).siblings('ul').each(function() {
+	    setsubcheck($(this),toch);
+	});
+	postgraph('/settree');
     });
     $(\"#main_form\").submit(function() {
 	return false;
@@ -276,16 +385,41 @@ function treegui() {
     }).click(function() {
 	prfdial.dialog('open');
     });
+    $(\"#prfremconfirm\").dialog({
+	resizable: false,
+	height: \"auto\",
+	width: 400,
+	modal: true,
+	autoOpen: false,
+	buttons: {
+	    \"Smazat\":function() {
+		$(this).dialog(\"close\");
+		profileop('prfremove');
+	    },
+	    \"Zpět\":function() {
+		$(this).dialog(\"close\");
+	    }
+	}
+    });
+    $(\"#main_uprfsave\").button({
+	icons: {
+	    primary: \"ui-icon-disk\"
+	},
+	text: false
+    }).click(function() {
+	profilesave();
+    });
     $(\"#main_uprfrem\").button({
 	icons: {
 	    primary: \"ui-icon-trash\"
 	},
 	text: false
     }).click(function() {
-	profileop('prfremove');
+	$(\"#prfremconfirm\").dialog(\"open\");
     });
     $(\"#main_uprfsel\").change(function() {
 	$(\"#maintree_depsel\").val('0');
+	wantdunnos=true;
 	postgraph('/prfchange');
     });
     $(\"#tree_collapse\").button({
@@ -294,9 +428,6 @@ function treegui() {
 	},
 	text: false
     }).click(function() {
-//	$(\"#treeenv ul:not(.notg)\").each(function() { // not work in chrome
-//	    if($(this).attr('id')!='maintree') $(this).hide();
-//	});
 	$(\"#maintree\").children(\"li\").each(function() {
 	    $(this).children(\"ul\").each(function() {
 		$(this).children(\"li\").each(function() {
@@ -312,9 +443,6 @@ function treegui() {
 	},
 	text: false
     }).click(function() {
-//	$(\"#treeenv ul:not(.notg)\").each(function() {
-//	    if($(this).attr('id')!='maintree') $(this).show();
-//	});
 	$(\"#maintree\").children(\"li\").each(function() {
 	    $(this).children(\"ul\").each(function() {
 		$(this).children(\"li\").each(function() {
@@ -330,10 +458,8 @@ function treegui() {
 	},
 	text: false
     }).click(function() {
-	if(postgraph('/clear')) {
-	    $(\"#treeenv input\").prop('checked',false);
-	    $(\"#treeenv span\").removeClass('treehigh');
-	}
+	wantdunnos=true;
+	postgraph('/clear');
     });
     prfdial=$(\"#main_newuprf\").dialog({
 	autoOpen: false,
@@ -360,7 +486,10 @@ function treegui() {
     $_JQUERY[]="treegui();";
 }
 
-echo "<form id=\"main_form\" action=\"\" method=\"post\">";
+// dialog
+echo "<div id=\"prfremconfirm\" title=\"Opravdu smazat ?\"><p>Smazat profil</p></div>";
+
+echo "<form id=\"main_form\" action=\"\" method=\"post\" enctype=\"multipart/form-data\">";
 
 if(!is_array($_SESSION->mainform)) $_SESSION->mainform=array();
 $_SESSION->temp_form=$_SESSION->mainform;
@@ -371,7 +500,7 @@ foreach($_SESSION->getprofiles() as $key=>$val) {
     $opts[bin2hex($key)]=$key;
 }
 echo "<table class=\"nobr\">";
-echo "<tr><td>".input_select_temp("main_uprfsel",$opts,false,"mainuprf")."</td><td>".input_button("main_uprfrem","Smazat profil")." ".input_button("main_uprfcrt","Vytvořit profil")."</td></tr>";
+echo "<tr><td>".input_select_temp("main_uprfsel",$opts,false,"mainuprf")."</td><td style=\"white-space:nowrap;\">".input_button("main_uprfsave","Uložit profil").input_button("main_uprfrem","Smazat profil").input_button("main_uprfcrt","Vytvořit profil")."</td></tr>";
 echo "</table>";
 
 echo input_hidden("main_uprfname","","main_uprfname");

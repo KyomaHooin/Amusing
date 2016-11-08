@@ -12,7 +12,14 @@ if($ARGV[0]!="m") redir(root()."alarmsack");
 
 $acid=get_ind($ARGV,1);
 
-$qe=$SQL->query("select * from alarmack left join variable on ac_vid=var_id left join alarm on ac_id=a_ackid left join measuring on ac_mid=m_id left join room on m_rid=r_id left join building on r_bid=b_id left join user on ac_uid=u_id where ac_id=\"".$SQL->escape($acid)."\"");
+switch(urole()) {
+case 'A':
+case 'D':
+    $qe=$SQL->query("select * from alarmack left join variable on ac_vid=var_id left join alarm on ac_id=a_ackid left join measuring on ac_mid=m_id left join room on m_rid=r_id left join building on r_bid=b_id left join user on ac_uid=u_id where ac_id=\"".$SQL->escape($acid)."\"");
+    break;
+default:
+    $qe=$SQL->query("select * from alarmack left join variable on ac_vid=var_id left join alarm on ac_id=a_ackid left join measuring on ac_mid=m_id left join room on m_rid=r_id left join building on r_bid=b_id left join user on ac_uid=u_id where ac_id=\"".$SQL->escape($acid)."\" && u_id=".uid());
+}
 $ack=$qe->obj();
 
 do {

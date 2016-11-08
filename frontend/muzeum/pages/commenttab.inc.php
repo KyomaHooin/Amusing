@@ -17,7 +17,14 @@ if($ARGC!=2) backredir();
 if($ARGV[0]!="edit" || !is_numeric($ARGV[1])) backredir();
 $commedit=(int)$ARGV[1];
 if($commedit) {
-    $qe=$SQL->query("select * from comment where cm_id=".$commedit);
+    switch(urole()) {
+    case 'A':
+    case 'D':
+	$qe=$SQL->query("select * from comment where cm_id=".$commedit);
+	break;
+    default:
+	$qe=$SQL->query("select * from comment where cm_id=".$commedit." && cm_uid=".uid());
+    }
     $fe=$qe->obj();
     if(!$fe) backredir();
 }
