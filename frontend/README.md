@@ -3,6 +3,10 @@ DESCRIPTION
 
 Amusing PHP frontned (c) 2012-2014 Jan Klaban Peoplefornet a.s. 
 
+RUNLEVEL
+<pre>
+ln -s /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
+</pre>
 APACHE
 <pre>
 a2enmod rewrite ssl headers
