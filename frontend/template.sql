@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.5.49, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: muzeum
+-- Host: localhost    Database: dbname
 -- ------------------------------------------------------
 -- Server version	5.5.49-0+deb8u1
 
