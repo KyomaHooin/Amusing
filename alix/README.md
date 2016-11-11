@@ -1,48 +1,28 @@
 
 DESCRIPTION
 
-Alix USB camera data transport GZIP compressed CSV over HTTP.
+Alix board collect temperature, humidity & camera data and transport GZIP compressed CSV over HTTP.
 
-ALIX
+EXPORT FORMAT
+
 <pre>
-apt-get install bc imagemagick streamer watchdog
-
-mkdir -p /root/amusing/ramdisk
-
-/etc/fstab:
-
-tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
-
-/etc/crontab:
-
-40 23	* * *	root	/root/amusing/cam-amusing.sh > /dev/null 2>&1
-00 *	* * *	root	/usr/sbin/ntpdate -4 tik.cesnet.cz > /dev/null 2>&1
-
-/etc/rc.local:
-
-/usr/sbin/ntpdate -b -4 tik.cesnet.cz > /dev/null 2>&1 &
-ip addr add 192.168.11.x/24 dev eth0 2>/dev/null &
-/root/firewall &
-/root/tunnel &
-
-modrpobe cs5535-gpio
-
-/etc/modules:
-
-cs5535-gpio
-
-/etc/watchdog:
-
-watchdog-device = /dev/watchdog
-interval = 15
+alix-[UTC ISO][BOX SUFFIX].csv.gz
 </pre>
 
 FILE
-
 <pre>
-cam-amusing.sh - Main script.
-      firewall - Simple firewall.
+     pocernice/ - Local mod.
+      kinskych/ - Local mod.
+      umichala/ - Local mod.
+
+      firewall - Simple restrictive firewall.
+        tunnel - Reverse autossh tunnel.
 </pre>
+
+CONTACT
+
+Author: richard_bruna@nm.cz<br>
+Source: https://github.com/KyomaHooin/Amusing
 
 CONTACT
 
