@@ -13,23 +13,6 @@ mkdir -p /root/amusing/ramdisk
 
 tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 
-/etc/services:
-
-pocernice	8889/tcp			# prenos dat z Pocernic
-
-/etc/xinet.d/pocernice:
-
-service pocernice
-{
-        flags           = REUSE
-        socket_type     = stream
-        wait            = no
-        user            = root
-        server          = /usr/local/bin/getvalues8
-        log_on_failure  += USERID
-        disable         = no
-}
-
 /etc/crontab:
 
 00 *	* * *	root	/usr/sbin/ntpdate -4 tik.cesnet.cz > /dev/null 2>&1
