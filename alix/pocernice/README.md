@@ -32,7 +32,7 @@ service pocernice
 
 /etc/crontab:
 
-00 *	* * *	root	/usr/sbin/ntpdate -4 tik.cesnet.cz > /dev/null 2>&1
+*/5 *	* * *	root	/usr/sbin/ntpdate -4 tik.cesnet.cz > /dev/null 2>&1
 
 /etc/rc.local:
 
