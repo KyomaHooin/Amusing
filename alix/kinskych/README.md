@@ -9,6 +9,10 @@ apt-get install watchdog autossh
 
 mkdir -p /root/amusing/ramdisk
 
+/etc/inittab:
+
+T0:3:respawn:/sbin/getty -L ttyS0 38400
+
 /etc/fstab:
 
 tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
@@ -20,6 +24,7 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 /etc/rc.local:
 
 /usr/sbin/ntpdate -b -4 tik.cesnet.cz > /dev/null 2>&1 &
+/root/amusing/alix-amusing.py &
 /root/firewall &
 /root/tunnel &
 
