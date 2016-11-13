@@ -40,7 +40,7 @@ try:
 			cmd = os.system(U3)# LABJACK
 			if cmd == 0:# shell return value
 				try:
-				data = open('/tmp/u3','r').readlines()
+					data = open('/tmp/u3','r').readlines()
 					for line in data:
 						pattern = re.compile('^.*=.(\d).(\d\d\d)$')
 						if re.match(pattern,line):# rubbish..
