@@ -29,7 +29,7 @@ try:
 		os.mkdir(RAMDISK + 'http')
 	except OSError: pass
 	try:	# LOG
-		LOG = open(RAMDISK + 'rpi-amusing.log','a',0)# non-buffering
+		LOG = open(RAMDISK + 'alix-amusing.log','a',0)# non-buffering
 		LOG.write('Program start: ' + time.strftime("%d.%m.%Y %H:%M") + '\n')
 	except IOError:
 		print 'Failed to create log file.'
