@@ -46,10 +46,11 @@ update-rc.d watchdog enable
 FILE
 
 <pre>
-rpi-amusing.py - DHT program.
-cam-amusing.sh - USB camera program.
-      getDHT.c - DHT22 source by Dom & Gert.
-        getDHT - Precompiled ARM binary.
+     rpi-amusing.py - DHT program.
+     cam-amusing.sh - USB camera program.
+           getDHT.c - DHT22 source by Dom & Gert.
+             getDHT - Precompiled ARM binary.
+bcm2835-1.36.tar.gz - BCM2835 library.
 </pre>
 
 CONTACT
