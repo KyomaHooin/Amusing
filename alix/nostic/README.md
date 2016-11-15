@@ -21,6 +21,18 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 
 */5 *	* * *	root	/usr/sbin/ntpdate -4 tik.cesnet.cz > /dev/null 2>&1
 
+/etc/modules:
+
+lm90
+w83627hf
+scx200_acb
+geodewdt
+led-class
+leds-wrap
+ledtrig-heartbeat
+ledtrig-timer
+ledtrig-netdev
+
 /etc/rc.local:
 
 /usr/sbin/ntpdate -b -4 tik.cesnet.cz > /dev/null 2>&1 &
