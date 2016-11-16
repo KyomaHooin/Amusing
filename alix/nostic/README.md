@@ -5,7 +5,7 @@ Alix RS232 connected AVR 868MHz DH11 sensor data transport GZIP compressed CSV o
 
 WRAP
 <pre>
-apt-get install wget vim locales autossh ntpdate python
+apt-get install wget vim locales autossh ntpdate python python-serial
 
 mkdir -p /root/amusing/ramdisk
 
