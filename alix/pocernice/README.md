@@ -1,8 +1,14 @@
 
 DESCRIPTION
 
-Alix data transport GZIP compressed CSV over HTTP.
+Data transport GZIP compressed CSV over HTTP.
 
+SENSOR
+<pre>
+- 5 x Comet T0210
+- 8 x AIN 0-10V
+- 12bit resolution
+</pre>
 ALIX
 <pre>
 apt-get install watchdog xinetd autossh
