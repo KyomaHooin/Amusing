@@ -1,11 +1,11 @@
 
 DESCRIPTION
 
-Alix data transport GZIP compressed CSV over HTTP.
+Alix RS232 connected AVR 868MHz DH11 sensor data transport GZIP compressed CSV over HTTP.
 
-ALIX
+WRAP
 <pre>
-apt-get install watchdog autossh
+apt-get install wget vim locales autossh ntpdate python
 
 mkdir -p /root/amusing/ramdisk
 
@@ -21,29 +21,12 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 
 */5 *	* * *	root	/usr/sbin/ntpdate -4 tik.cesnet.cz > /dev/null 2>&1
 
-/etc/modules:
-
-lm90
-w83627hf
-scx200_acb
-geodewdt
-led-class
-leds-wrap
-ledtrig-heartbeat
-ledtrig-timer
-ledtrig-netdev
-
 /etc/rc.local:
 
 /usr/sbin/ntpdate -b -4 tik.cesnet.cz > /dev/null 2>&1 &
 /root/amusing/alix-amusing.py &
 /root/firewall &
 /root/tunnel &
-
-/etc/watchdog:
-
-watchdog-device = /dev/watchdog
-interval = 15
 </pre>
 
 FILE
