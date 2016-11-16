@@ -8,6 +8,12 @@ SENSOR
 - 5 x Comet T0210
 - 8 x AIN 0-10V
 - 12bit resolution
+
+pocernice_07 - H: CH01 T: CH03
+pocernice_08 - H: CH07
+pocernice_09 - H: CH02 T: CH08
+pocernice_10 - H: CH05
+pocernice_11 - H: CH06 T: CH04
 </pre>
 ALIX
 <pre>
