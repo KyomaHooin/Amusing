@@ -18,12 +18,6 @@ FILE
       firewall - Simple restrictive firewall.
         tunnel - Reverse autossh tunnel.
 </pre>
-
-CONTACT
-
-Author: richard_bruna@nm.cz<br>
-Source: https://github.com/KyomaHooin/Amusing
-
 CONTACT
 
 Author: richard_bruna@nm.cz<br>
