@@ -12,8 +12,8 @@ alix-[UTC ISO][BOX SUFFIX].csv.gz
 FILE
 <pre>
      pocernice/ - Local mod.
-      kinskych/ - Local mod.
       umichala/ - Local mod.
+        nostic/ - Local mod.
 
       firewall - Simple restrictive firewall.
         tunnel - Reverse autossh tunnel.
