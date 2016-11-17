@@ -2,26 +2,23 @@
 #
 # LabJack U3 USB ADC 8 channel
 #
-# DATA: CH01 value = 0.793
+# DATA: 0.79364542
 #
 
-import httplib,socket,time,gzip,sys,os,re
+import httplib,socket,time,gzip,u3,sys,os,re
 
 PAYLOAD=''
 RAMDISK='/root/amusing/ramdisk/'
-U3='/usr/local/bin/getvalues8 > /tmp/u3 2>/dev/null'
-CHAN={	'01':'pocernice_07;humidity',
-	'02':'pocernice_09;humidity',
-	'03':'pocernice_07;temperature',
-	'04':'pocernice_11;temperature',
-	'05':'pocernice_10;humidity',
-	'06':'pocernice_11;humidity',
-	'07':'pocernice_08;humidity',
-	'08':'pocernice_09;temperature'}
+CHANNEL={8:'pocernice_07;humidity;',
+	 9:'pocernice_09;humidity;',
+	10:'pocernice_07;temperature;',
+	11:'pocernice_11;temperature;',
+	12:'pocernice_10;humidity;',
+	13:'pocernice_11;humidity;',
+	14:'pocernice_08;humidity;',
+	15:'pocernice_09;temperature;'}
 TOKEN=True
 CALL=True
-
-#
 
 try:
 	try:	# DIR
@@ -37,18 +34,13 @@ try:
 	while 1:
 		if int(time.strftime("%M")) % 5 == 0 and TOKEN:# 5 min data interval..
 			TOKEN=False
-			cmd = os.system(U3)# LABJACK
-			if cmd == 0:# shell return value
-				try:
-					data = open('/tmp/u3','r').readlines()
-					for line in data:
-						pattern = re.compile('^.*=.(\d).(\d\d\d)$')
-						if re.match(pattern,line):# rubbish..
-							PAYLOAD+=(re.sub(pattern,CHAN[re.sub('^CH(\d\d) .*\n$',"\\1",line)]
-								+ ";\\1.\\2;"
-								+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()),line))
-				except IOError:
-					LOG.write('Failed to read U3 data file.' + '\n')
+			jack = u3.U3()# LABJACK
+			try:
+				for ch in CHANNEL.keys():
+					PAYLOAD+=(CHANNEL[ch] + str(jack.getAIN(ch)) + ';'
+						+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()) + '\n')
+			except IOError:
+				LOG.write('Failed to read U3 data.\n')
 		if int(time.strftime("%M")) % 15 == 0 and CALL: # 15 min interval..
 			CALL=False
 			try:	# GZIP + PAYLOAD
