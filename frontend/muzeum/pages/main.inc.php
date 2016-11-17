@@ -511,34 +511,9 @@ Název: ".input_text("main_dialprfname",false,"mainuprf")."
 
 echo "<hr />";
 generatetree();
-echo "</td><td style=\"vertical-align:top; padding-top:8px; border-right:1px solid black; height:140px; width:330px;\">";
-
-echo "<table class=\"nobr\"><tr><td style=\"vertical-align:top\">";
-	
-echo "<div id=\"mvarscheck\">";
-$qe=$SQL->query("select * from variable order by var_desc");
-while($fe=$qe->obj()) {
-    $key="000_main_vargr_".$fe->var_id;
-    echo input_check_temp($key)." <span id=\"mcheck_".$fe->var_id."\">".label($key,htmlspecialchars($fe->var_desc." ".$fe->var_unit))."</span><br />";
-}
-echo "</div>";
-echo "</td><td style=\"vertical-align:top; border-left:1px solid black\">";
-echo input_check_temp("main_scales")." ".label("main_scales","Použít zadané rozsahy")."<br />";
-echo input_check_temp("main_extremealarms")." ".label("main_extremealarms","Zobrazit hranice alarmu")."<br />";
-echo input_check_temp("main_showalarms")." ".label("main_showalarms","Zobrazit alarmy")."<br />";
-echo input_check_temp("main_setcolors")." ".label("main_setcolors","Aplikovat barvy")."<br />";
-echo input_check_temp("main_derivate")." ".label("main_derivate","Derivovat")."<br />";
-echo input_check_temp("main_groupvars")." ".label("main_groupvars","Slučovat veličiny")."<br />";
-echo input_check_temp("main_groupmeas")." ".label("main_groupmeas","Slučovat měřící body")."<br />";
-echo input_check_temp("main_connectdots")." ".label("main_connectdots","Spojovat body")."<br />";
-echo input_check_temp("main_comments")." ".label("main_comments","Zobrazit komentáře")."<br />";
-echo "</td></tr>";
-echo "<tr><td style=\"text-align:center\" colspan=\"2\">".input_button("main_apply","Použít")."</td>";
-echo "</table>";
-
-
 echo "</td>";
-echo "<td style=\"vertical-align:top; padding-top:8px; width:420px;\">";
+
+echo "<td style=\"vertical-align:top; padding-left:8px; padding-top:8px; width:420px;\">";
     if(!get_ind($_SESSION->temp_form,"001_main_from")) $_SESSION->temp_form['001_main_from']=sprintf("%d%s",date("Y")-1,date("-m-d"));
     if(!get_ind($_SESSION->temp_form,"001_main_to")) $_SESSION->temp_form['001_main_to']=date("Y-m-d");
     if(!get_ind($_SESSION->temp_form,"main_time")) $_SESSION->temp_form['main_time']="7";
@@ -559,9 +534,35 @@ echo "<td style=\"vertical-align:top; padding-top:8px; width:420px;\">";
     echo input_radio_temp("main_time","7").label("main_time_val7","7D");
     echo input_radio_temp("main_time","8").label("main_time_val8","1D");
     echo "</div><br />".input_check_temp("main_lastrawto")." ".label("main_lastrawto","čas relativně od posledního data")."</td></tr>";
+    echo "<tr><td style=\"text-align:center\" colspan=\"2\"><br />".input_button("main_apply","Použít")."</td></tr>";
     echo "</table>";
-echo "</td><td>&nbsp;</td></tr>";
+echo "</td>";
 
+echo "<td style=\"vertical-align:top; padding-top:8px; border-left:1px solid black; height:140px; width:330px;\">";
+echo "<table class=\"nobr\"><tr><td style=\"vertical-align:top\">";	
+echo "<div id=\"mvarscheck\">";
+$qe=$SQL->query("select * from variable order by var_desc");
+while($fe=$qe->obj()) {
+    $key="000_main_vargr_".$fe->var_id;
+    echo input_check_temp($key)." <span id=\"mcheck_".$fe->var_id."\">".label($key,htmlspecialchars($fe->var_desc." ".$fe->var_unit))."</span><br />";
+}
+echo "</div>";
+echo "</td><td style=\"vertical-align:top; border-left:1px solid black\">";
+echo input_check_temp("main_scales")." ".label("main_scales","Použít zadané rozsahy")."<br />";
+echo input_check_temp("main_extremealarms")." ".label("main_extremealarms","Zobrazit hranice alarmu")."<br />";
+echo input_check_temp("main_showalarms")." ".label("main_showalarms","Zobrazit alarmy")."<br />";
+echo input_check_temp("main_setcolors")." ".label("main_setcolors","Aplikovat barvy")."<br />";
+echo input_check_temp("main_derivate")." ".label("main_derivate","Derivovat")."<br />";
+echo input_check_temp("main_groupvars")." ".label("main_groupvars","Slučovat veličiny")."<br />";
+echo input_check_temp("main_groupmeas")." ".label("main_groupmeas","Slučovat měřící body")."<br />";
+echo input_check_temp("main_connectdots")." ".label("main_connectdots","Spojovat body")."<br />";
+echo input_check_temp("main_comments")." ".label("main_comments","Zobrazit komentáře")."<br />";
+echo "</td></tr>";
+//echo "<tr><td style=\"text-align:center\" colspan=\"2\">".input_button("main_apply","Použít")."</td></tr>";
+echo "</table>";
+echo "</td>";
+
+echo "<td>&nbsp;</td></tr>";
 echo "<tr><td id=\"mainresult\" colspan=\"3\" style=\"border-top:1px solid black; vertical-align:top;\">";
 echo "&nbsp;";
 echo "</td></tr>";
