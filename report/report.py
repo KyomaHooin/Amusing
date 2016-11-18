@@ -72,7 +72,8 @@ for email in report.keys():
 			'amusing-report-' + \
 			report[email][0] + \
 			'-' + \
-			time.strftime("%d_%m_%Y_%H_%M") + \
+			time.strftime("%d_%m_%Y",time.gmtime(time.time()-86400*31)) + \
+			time.strftime("-%d_%m_%Y") + \
 			'.pdf"'
 		
 		msg.attach(att)
@@ -85,4 +86,5 @@ for email in report.keys():
 		sys.exit(1)
 fbuff.close()
 ibuff.close()
+log.close()
 
