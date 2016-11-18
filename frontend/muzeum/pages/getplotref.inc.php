@@ -358,7 +358,7 @@ function plotgraph($togen,$from,$to,$usescales=true,$showextremes=true,$showalar
 	}
 	
 	fwrite($pipes[0],ob_get_clean());
-	fwrite($pipes[0],$tostdin);
+	//fwrite($pipes[0],$tostdin);
 	fclose($pipes[0]);
 	
 	$res=stream_get_contents($pipes[1]);
@@ -391,6 +391,10 @@ $current=$newest;
 $uphour=floor($current/3600);
 $uphour=($uphour+1)*3600;
 switch($ARGV[1]) {
+case "1M":
+    $to=$uphour;
+    $from=$to-(86400*31);
+    break;
 case "7D":
     $to=$uphour;
     $from=$to-(86400*7);
