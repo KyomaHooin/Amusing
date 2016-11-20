@@ -188,7 +188,8 @@ function plotgraph($togen,$from,$to,$usescales=true,$showextremes=true,$showalar
 
 	$timezone=3600;
 	ob_start();
-	echo "set terminal png size ".$_PLOTW.",".$_PLOTH."\n";
+	//echo "set terminal png size ".$_PLOTW.",".$_PLOTH."\n";
+	echo "set terminal png size 1754,1240\n";
 	
 	echo "set datafile missing \"NaN\"\n";
 	echo "set grid front\n";
