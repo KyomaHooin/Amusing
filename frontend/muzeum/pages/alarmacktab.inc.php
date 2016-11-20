@@ -28,9 +28,9 @@ do {
 	    $_SESSION->error_text="Neexistující potvrzení";
 	    redir(root()."alarmsack");
 	}
-	//echo "Neexistující potvrzení";
-	echo "Pro potvrzení je vyžadováno přihlásení.";
-	break;
+	redir(root()."login");
+	//echo "Pro potvrzení je vyžadováno přihlásení.";
+	//break;
     }
 
 echo "<form action=\"".root().$PAGE."/".implode("/",$ARGV)."\" method=\"post\" enctype=\"multipart/form-data\">";
