@@ -31,7 +31,7 @@ except:
 for email in report.keys():
 	try:# GRAPH
 		conn = httplib.HTTPSConnection('[removed]','443',timeout=15)
-		conn.request('GET','/muzeum/getplotref/' + report[email][1] + '/1D/1/0/0/0/0')
+		conn.request('GET','/muzeum/getplotref/' + report[email][1] + '/1M/1/0/0/0/0')
 		r = conn.getresponse()
 		if r.status == 200:
 			ibuff.write(r.read())
