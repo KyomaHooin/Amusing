@@ -7,20 +7,33 @@
 # -drop CSV
 #
 
-import poplib,email
+import poplib,email,time,sys
+
+runtime = time.strftime("%d.%m.%Y %H:%M")
+logfile = '/var/log/logger.log'
 
 #
-
-try:# POP3
-	s = poplib.POP3('[removed]',timeout=10)
-	s.user('[removed]')
-	s.pass_('[removed]')
-
-	m = s.retr(s.stat()[0])#get last message
-	msg = email.message_from_string('\n'.join(m[1]))# parse it..
-
-	s.quit()
+try:# MAIN
+        log = open(logfile,'a')
 except:
-	print "Failed to fetch mail."
+        print('Failed to open log file.')
+        sys.exit(4)
+try:# POP3
+	sess = poplib.POP3('[removed]',timeout=10)
+	sess.user('[removed]')
+	sess.pass_('[removed]')
 
-print msg['Subject']
+	msgs = sess.stat()[0]# get last message
+
+	if msgs == 0:
+		log.write('Nothing to parse. ' + runtime + '\n')
+	else:
+		for m in range(1,msgs + 1):
+			popmsg = sess.retr(msgs)
+			msg = email.message_from_string('\n'.join(popmsg[1]))# email parser
+			print msg['Subject']
+	sess.quit()
+except:
+	log.write('Failed to fetch mail. ' + runtime + '\n')
+	sys.exit(1)
+log.close()
