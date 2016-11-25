@@ -148,8 +148,14 @@ func xml()
 				continueloop
 			endif
 			$timestamp = get_timestamp($data[$k][4]); RT to UTC
-			FileWriteLine($csv, $type[0] & ';' & $type[1] & ';' & $data[$k][2] & ';' & $timestamp)
-			if ubound($type) = 3 then FileWriteLine($csv, $type[0] & ';' & $type[2] & ';' & $data[$k][3] & ';' & $timestamp)
+			if $data[$k][2] then; check empty
+				FileWriteLine($csv, $type[0] & ';' & $type[1] & ';' & $data[$k][2] & ';' & $timestamp)
+			endif
+			if ubound($type) = 3 then
+				if $data[$k][3] then; check empty
+					FileWriteLine($csv, $type[0] & ';' & $type[2] & ';' & $data[$k][3] & ';' & $timestamp)
+				endif
+			endif
 		endif
 	next
 	FileClose($csv)
