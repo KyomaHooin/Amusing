@@ -131,7 +131,7 @@ func xml()
 	endif
 	local $data[$cnt][5]
 	for $i = 1 to $cnt
-		for $j = 0 to ubound($child)-1
+		for $j = 0 to ubound($child) - 1
 			$data[$i-1][$j] = _XMLGetValue('/LiveSensorData/Sensor[' & $i & ']/' & $child[$j])[1]
 			if @error then
 				logger("Failed to get XML value.")
@@ -183,7 +183,7 @@ endFunc
 func get_sensor_type($id,$map)
 	for $i=0 to Ubound($map) - 1
 		$line = StringSplit($map[$i], ';', 2)
-		if  $id == $line[0] then
+		if $id == $line[0] then
 			_ArrayDelete($line,0)
 			return $line
 		endif
