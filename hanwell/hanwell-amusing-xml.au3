@@ -122,7 +122,6 @@ func xml()
 	_XMLFileOpen($xml)
 	if @error then
 		logger("Failed to create XML instance.")
-		MsgBox(Default,"xml", "Failed to create XML instance.")
 		return
 	endif
 	$cnt = _XMLGetNodeCount('/LiveSensorData/Sensor')
