@@ -1,7 +1,7 @@
 
 DESCRIPTION
 
-Parse "Hanwell RadioLog 8.5.9" temperature/humidity sensor data from proprietary RL8 binary file into CSV file and transport compressed GZ archives over HTTP.
+Parse "Hanwell RadioLog 8.5.9" temperature/humidity sensor data from XML/RL8 binary into CSV file and transport compressed GZ archives over HTTP.
 
 <pre>
 RL8
@@ -38,11 +38,14 @@ S = Value sequence 4bit (0 - first 1 - second..)
 FILE
 
 <pre>
-  hanwell-amusing.au3 - Main program.
-   hanwell-sensor.txt - Sensor plain list.
-          hanwell.ico - Program icon.
-             ZLIB.au3 - De/compression library by "Ward".
-              RL8.au3 - RadioLog 8 parser.
+hanwell-amusing-xml.au3 - Main program XML version.
+    hanwell-amusing.au3 - Main program RL8 version.
+ hanwell-sensor-xml.txt - Sensor plain list XML version.
+     hanwell-sensor.txt - Sensor plain list RL8 version.
+            hanwell.ico - Program icon.
+     _XMLDomWrapper.au3 - XML library by Stephen Podhajecki.
+               ZLIB.au3 - Compression library by "Ward".
+                RL8.au3 - RadioLog 8 parser.
 </pre>
 
 CONTACT
