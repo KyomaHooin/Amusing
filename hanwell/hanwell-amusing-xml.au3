@@ -39,7 +39,7 @@ DirCreate(@scriptdir & '\http')
 $logfile = FileOpen(@scriptdir & '\' & $location & '-amusing.log', 1); 1 = append
 if @error then exit; silent exit..
 logger(@CRLF & "Program start: " & $runtime)
-xml(); Parse data from binary
+xml(); Parse data from XML
 main(); Pack and transport data over HTTP
 archive(); Archive logrotate
 logger("Program end.")
@@ -100,13 +100,13 @@ func xml()
 
 	$xmlfile = FileOpen($xml,258); UTF-8 & overwrite
 	if @error then
-			logger("Failed to open XML file.")
-			return
+		logger("Failed to open XML file.")
+		return
 	endif
 	FileWrite($xmlfile,FileRead($hanwell)); iso-8859-1 => utf-8
 	if @error then
-			logger("Failed to write XML file.")
-			return
+		logger("Failed to write XML file.")
+		return
 	endif
 	FileClose($xmlfile)
 	_FileReadToArray($map, $mapping, 0); 0 based..
@@ -127,8 +127,8 @@ func xml()
 	endif
 	$cnt = _XMLGetNodeCount('/LiveSensorData/Sensor')
 	if @error then
-			logger("No XML data.")
-			return
+		logger("No XML data.")
+		return
 	endif
 	local $data[$cnt][5]
 	for $i = 1 to $cnt
@@ -149,7 +149,7 @@ func xml()
 			endif
 			$timestamp = get_timestamp($data[$k][4]); RT to UTC
 			FileWriteLine($csv, $type[0] & ';' & $type[1] & ';' & $data[$k][2] & ';' & $timestamp)
-			if ubound($type) = 3 then FileWriteLine($csv, $type[0] & ';' & $type[2] & ';'& $data[$k][3] & ';' & $timestamp)
+			if ubound($type) = 3 then FileWriteLine($csv, $type[0] & ';' & $type[2] & ';' & $data[$k][3] & ';' & $timestamp)
 		endif
 	next
 	FileClose($csv)
