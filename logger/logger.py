@@ -29,10 +29,20 @@ pracom = {'Data1':'pracom1',
 
 # FUNC
 
-def csv_parse(buff,name):
-	b = open('/root/data/' + str(name) + '.csv','w')
-	b.write(buff.decode('utf-16').encode('utf-8'))
 
+def csv_parse(buff,name):
+	csv = open('/root/data/pracom-' + time.strftime("%Y%m%dT%H%M$S") + '.csv.tmp','a')
+	for line in buff.decode('utf-16').encode('utf-8').splitlines()[1:]:
+		l = line.split(',')
+		t = time.strftime("%Y%m%dT%H%M%S",time.strptime(l[1],"%d.%m.%Y %H:%M:%S"))
+		if len(l) == 5:
+			csv.write(str(name) + ';temperature;' + l[2] + '.' + l[3] + ';' + t + '\n')
+			csv.write(str(name) + ';humidity;' + l[4] + ';' + t + '\n')
+		if len(l) == 4:
+			csv.write(str(name) + ';temperature;' + l[2] + ';' + t + '\n')
+			csv.write(str(name) + ';humidity;' + l[3] + ';' + t + '\n')
+	csv.close()
+	#os.rename('/var/www/sensors/data/ + tmp,'/var/www/sensors/data/' + csv)
 # MAIN
 
 try:# MAIN
@@ -58,10 +68,10 @@ try:# POP3
 					print "Got CSV.", fn
 					csv_parse(msg.get_payload(part).get_payload(decode=True),part)
 					#csv_parse(msg.get_payload(part).get_payload(decode=True),fn)
-				elif re.match('.*(xls)$',fn):
-					print "Got XLS.", fn
-				elif re.match('.*(xlsx)$',fn):
-					print "Got XLSX.", fn
+				#elif re.match('.*(xls)$',fn):
+				#	print "Got XLS.", fn
+				#elif re.match('.*(xlsx)$',fn):
+				#	print "Got XLSX.", fn
 	sess.quit()
 except Exception as e:
 	print e
