@@ -3,6 +3,10 @@ DESCRIPTION
 
 Amusing automatic fetchmail parser for manual export. 
 
+INSTALL
+<pre>
+apt-get install python-xlrd
+</pre>
 FILE
 <pre>
 	fetchlogger.py - Auto-fetchmail parsingscript.
