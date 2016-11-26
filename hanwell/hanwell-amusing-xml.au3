@@ -95,9 +95,7 @@ func main()
 endfunc
 
 func xml()
-	local $mapping
-	local $child[5] = ['ID','InService','Data0','Data1','LastSignalTime']
-
+	local $mapping,$child[5] = ['ID','InService','Data0','Data1','LastSignalTime']
 	$xmlfile = FileOpen($xml,258); UTF-8 & overwrite
 	if @error then
 		logger("Failed to open XML file.")
@@ -175,9 +173,9 @@ func archive()
 endfunc
 
 func get_timestamp($time)
-	$rtime = StringRegExpReplace($time, "^(\d{2})(\d{2})(\d{4}) (\d{2}):(\d{2}):(\d{2})$", "$3/$2/$1 $4:$5:$6")
+	$rtime = StringRegExpReplace($time, "^(\d\d)(\d\d)(\d{4}) (\d\d):(\d\d):(\d\d)$", "$3/$2/$1 $4:$5:$6")
 	$utc_time = _DateAdd('h', -1 + _Date_Time_GetTimeZoneInformation()[1]/60, $rtime)
-	return StringRegexpReplace($utc_time, "^(\d{4})/(\d{2})/(\d{2}) (\d{2}):(\d{2}):(\d{2})$", "$1$2$3T$4$5$6Z")
+	return StringRegexpReplace($utc_time, "^(\d{4})/(\d\d)/(\d\d) (\d\d):(\d\d):(\d\d)$", "$1$2$3T$4$5$6Z")
 endFunc
 
 func get_sensor_type($id,$map)
