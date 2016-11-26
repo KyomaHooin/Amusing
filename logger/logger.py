@@ -1,5 +1,7 @@
 #!/usr/bin/python
 #
+# Datalogger fetchmail and attachment processsing.
+#
 # TODO:
 #
 #  CSV: Little-endian UTF-16 Unicode text -> Prumstav DS100
@@ -7,7 +9,7 @@
 # XLSX:
 # 
 
-import poplib,email,time,sys,re
+import poplib,email,time,xlrd,sys,re
 
 runtime = time.strftime("%d.%m.%Y %H:%M")
 logfile = '/var/log/logger.log'
@@ -29,20 +31,43 @@ pracom = {'Data1':'pracom1',
 
 # FUNC
 
-
-def csv_parse(buff,name):
-	csv = open('/root/data/pracom-' + time.strftime("%Y%m%dT%H%M$S") + '.csv.tmp','a')
-	for line in buff.decode('utf-16').encode('utf-8').splitlines()[1:]:
-		l = line.split(',')
-		t = time.strftime("%Y%m%dT%H%M%S",time.strptime(l[1],"%d.%m.%Y %H:%M:%S"))
-		if len(l) == 5:
-			csv.write(str(name) + ';temperature;' + l[2] + '.' + l[3] + ';' + t + '\n')
-			csv.write(str(name) + ';humidity;' + l[4] + ';' + t + '\n')
-		if len(l) == 4:
-			csv.write(str(name) + ';temperature;' + l[2] + ';' + t + '\n')
-			csv.write(str(name) + ';humidity;' + l[3] + ';' + t + '\n')
-	csv.close()
-	#os.rename('/var/www/sensors/data/ + tmp,'/var/www/sensors/data/' + csv)
+def csv_parse(buff,sid):
+	try:
+		csv = open('/root/data/pracom-' + time.strftime("%Y%m%dT%H%M$S") + '.csv.tmp','a')
+		for line in buff.decode('utf-16').encode('utf-8').splitlines()[1:]:
+			ln = line.split(',')
+			stamp = time.strftime("%Y%m%dT%H%M%S",time.strptime(ln[1],"%d.%m.%Y %H:%M:%S"))
+			if len(ln) == 5:
+				csv.write(str(sid) + ';temperature;' + ln[2] + '.' + ln[3] + ';' + stamp + '\n')
+				csv.write(str(sid) + ';humidity;' + ln[4] + ';' + stamp + '\n')
+			if len(l) == 4:
+				csv.write(str(sid) + ';temperature;' + ln[2] + ';' + stamp + '\n')
+				csv.write(str(sid) + ';humidity;' + ln[3] + ';' + stamp + '\n')
+		csv.close()
+	except:
+		log.write('Failed to parse CSV file.' + runtime + '\n')
+	
+def xls_parse(buff,sid,row):
+#	try:
+	if sid == 1:
+		#xls = open('/root/data/' + str(sid) + '.xls','w')
+		#xls.write(buff)
+		#xls.close()
+		book = xlrd.open_workbook(file_contents=buff)
+		sheet = book.sheet_by_index(0)
+		#sheet.row_values(row_index)[0]
+		#for row in range(4,10):
+		#	print sheet.row_values(row)[0]
+		#for row_index in range(4,sheet.nrows):
+		#time_in=sheet.row_values(row_index)[0]
+		#ti = datetime.datetime.strptime(time_in, "%d-%m-%Y %H:%M:%S")
+       	        #time_out = ti.strftime("%Y%m%dT%H%M%S")
+               	#tsv_data_row=[time_out]+sheet.row_values(row_index)[1:3]
+		#print(tsv_data_row)
+		#csv_writer.writerow(tsv_data_row)
+#	except:
+#		log.write('Failed to parse XLS file.' + runtime + '\n')
+		
 # MAIN
 
 try:# MAIN
@@ -64,17 +89,18 @@ try:# POP3
 		if msg.is_multipart():
 			for part in range(1,len(msg.get_payload())):# only attachments
 				fn = email.Header.decode_header(msg.get_payload(part).get_filename())[0][0]# filename
-				if re.match('.*(csv)$',fn):
-					print "Got CSV.", fn
-					csv_parse(msg.get_payload(part).get_payload(decode=True),part)
-					#csv_parse(msg.get_payload(part).get_payload(decode=True),fn)
-				#elif re.match('.*(xls)$',fn):
+				#if re.match('.*(csv)$',fn):
+				#	print "Got CSV.", fn
+				#	csv_parse(msg.get_payload(part).get_payload(decode=True),part)
+				if re.match('.*(xls)$',fn):
 				#	print "Got XLS.", fn
+					xls_parse(msg.get_payload(part).get_payload(decode=True),part,5)
 				#elif re.match('.*(xlsx)$',fn):
 				#	print "Got XLSX.", fn
+				#	xls_parse(msg.get_payload(part).get_payload(decode=True),part,6)
 	sess.quit()
 except Exception as e:
-	print e
+	#print e
 	log.write('Failed to fetch mail. ' + runtime + '\n')
 	sys.exit(1)
 log.close()
