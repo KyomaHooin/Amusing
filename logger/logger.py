@@ -36,8 +36,7 @@ pracom = {'Data1':'pracom1',
 	  'Data7':'pracom7',
 	  'Data8':'pracom8'}
 
-merlin = {'?':'merlin1',
-	  '?':'merlin2'}
+merlin = {'chabry':'merlin2'}
 
 #------------------------------------
 
@@ -72,7 +71,7 @@ def xls_parse(buff,sid):
 
 def xlsx_parse(buff,sid):
 	try:
-		csv = open('/tmp/merlin-' +runtime + '.csv','a')
+		csv = open('/tmp/merlin-' + runtime + '.csv','a')
 		book = xlrd.open_workbook(file_contents=buff)
 		sheet = book.sheet_by_index(0)
 		for i in range(5,sheet.nrows):
@@ -101,30 +100,32 @@ try:# POP3
 	for m in range(1,msgs + 1):
 		popmsg = sess.retr(m)
 		msg = email.message_from_string('\n'.join(popmsg[1]))# email parser
-		print msg['From']
+		#print msg['From']
 		if msg.is_multipart():
 			for part in range(1,len(msg.get_payload())):# only attachments
 				fn = email.Header.decode_header(msg.get_payload(part).get_filename())[0][0]# filename
-				if re.match('^\d+ .*csv$',fn):
-					sid = prumstav[re.sub('^(\d+) .*','\\1',fn)]
+				#print fn
+				#if re.match('^\d+ .*csv$',fn):
+				#	sid = prumstav[re.sub('^(\d+) .*','\\1',fn)]
 				#	csv_parse(msg.get_payload(part).get_payload(decode=True),sid)
-				if re.match('^.*- \d+ -.*$',fn):
-					sid = prumstav[re.sub('^.*- (\d+) -.*$','\\1',fn)]
+				#elif re.match('^.*- \d+ -.*$',fn):
+				#	sid = prumstav[re.sub('^.*- (\d+) -.*$','\\1',fn)]
 				#	csv_parse(msg.get_payload(part).get_payload(decode=True),sid)
-				elif re.match('Data_?\d.*xls$',fn):
-					sid = pracom[re.sub('^Data_?(\d).*','Data\\1',fn)]
+				#elif re.match('Data_?\d.*xls$',fn):
+				#	sid = pracom[re.sub('^Data_?(\d).*','Data\\1',fn)]
 				#	xls_parse(msg.get_payload(part).get_payload(decode=True),sid)
-				elif re.match('.*xlsx$',fn):
-					pass
-					#xlsx_parse(msg.get_payload(part).get_payload(decode=True),sid)
+				#elif re.match('.*_chabry_.*xlsx$',fn):
+				#	sid = merlin['chabry']
+				#	xlsx_parse(msg.get_payload(part).get_payload(decode=True),sid)
 	sess.quit()
 except:
 	log.write('Failed to fetch mail. ' + runtime + '\n')
 	sys.exit(2)
-try:# CHOWN & MOVE
-	for model in location:
+
+for model in location:
+	try:# CHOWN & MOVE
 		os.chown('/tmp/' + model + '-' + runtime + '.csv',33,33)# www-data:www-data
 		os.rename('/tmp/' + model + '-' + runtime + '.csv', '/root/data/' + model + '-' + runtime + '.csv')
-except: pass
+	except pass
 
 log.close()
