@@ -8,14 +8,18 @@
 #
 # TODO:
 #
-# SID
-# CSF tmp -> /data + own -> www-data:www-data
-# 
+# mail drop
+# miss notification
+#
 
-import poplib,email,time,xlrd,sys,re
+import poplib,email,time,xlrd,sys,os,re
+
+location = ('prumstav','pracom','merlin')
 
 runtime = time.strftime("%Y%m%dT%H%M%S")
+
 logfile = '/var/log/logger.log'
+data = '/var/www/sensors/data/'
 
 prumstav = {'185':'prumstav1',
 	    '170':'prumstav2',
@@ -32,14 +36,14 @@ pracom = {'Data1':'pracom1',
 	  'Data7':'pracom7',
 	  'Data8':'pracom8'}
 
-merlin = {'foo':'merlin1',
-	  'bar':'merlin2'}
+merlin = {'?':'merlin1',
+	  '?':'merlin2'}
 
-# FUNC
+#------------------------------------
 
 def csv_parse(buff,sid):
 	try:
-		csv = open('/root/data/prumstav-' + runtime + '.csv.tmp','a')
+		csv = open('/tmp/prumstav-' + runtime + '.csv','a')
 		for line in buff.decode('utf-16').encode('utf-8').splitlines()[1:]:
 			ln = line.split(',')
 			stamp = time.strftime("%Y%m%dT%H%M%SZ",time.strptime(ln[1],"%d.%m.%Y %H:%M:%S"))
@@ -55,7 +59,7 @@ def csv_parse(buff,sid):
 	
 def xls_parse(buff,sid):
 	try:
-		csv = open('/root/data/pracom-' +runtime + '.csv.tmp','a')
+		csv = open('/tmp/pracom-' + runtime + '.csv','a')
 		book = xlrd.open_workbook(file_contents=buff)
 		sheet = book.sheet_by_index(0)
 		for i in range(4,sheet.nrows):
@@ -68,7 +72,7 @@ def xls_parse(buff,sid):
 
 def xlsx_parse(buff,sid):
 	try:
-		csv = open('/root/data/merlin-' +runtime + '.csv.tmp','a')
+		csv = open('/tmp/merlin-' +runtime + '.csv','a')
 		book = xlrd.open_workbook(file_contents=buff)
 		sheet = book.sheet_by_index(0)
 		for i in range(5,sheet.nrows):
@@ -82,9 +86,9 @@ def xlsx_parse(buff,sid):
 	except:
 		log.write('Failed to parse XLSX file.' + runtime + '\n')
 
-# MAIN
+#------------------------------------
 
-try:# MAIN
+try:# LOG
         log = open(logfile,'a')
 except:
         print('Failed to open log file.')
@@ -97,20 +101,30 @@ try:# POP3
 	for m in range(1,msgs + 1):
 		popmsg = sess.retr(m)
 		msg = email.message_from_string('\n'.join(popmsg[1]))# email parser
+		print msg['From']
 		if msg.is_multipart():
 			for part in range(1,len(msg.get_payload())):# only attachments
 				fn = email.Header.decode_header(msg.get_payload(part).get_filename())[0][0]# filename
-				if re.match('^\d+.*csv$',fn):
-					id = prumstav[re.sub('^(\d+).*','\\1',fn)]
-					csv_parse(msg.get_payload(part).get_payload(decode=True),id)
+				if re.match('^\d+ .*csv$',fn):
+					sid = prumstav[re.sub('^(\d+) .*','\\1',fn)]
+				#	csv_parse(msg.get_payload(part).get_payload(decode=True),sid)
+				if re.match('^.*- \d+ -.*$',fn):
+					sid = prumstav[re.sub('^.*- (\d+) -.*$','\\1',fn)]
+				#	csv_parse(msg.get_payload(part).get_payload(decode=True),sid)
 				elif re.match('Data_?\d.*xls$',fn):
-					id = pracom[re.sub('^Data_?(\d).*','Data\\1',fn)]
-					xls_parse(msg.get_payload(part).get_payload(decode=True),id)
+					sid = pracom[re.sub('^Data_?(\d).*','Data\\1',fn)]
+				#	xls_parse(msg.get_payload(part).get_payload(decode=True),sid)
 				elif re.match('.*xlsx$',fn):
-					xlsx_parse(msg.get_payload(part).get_payload(decode=True),part)
+					pass
+					#xlsx_parse(msg.get_payload(part).get_payload(decode=True),sid)
 	sess.quit()
-except Exception as e:
-	print e
+except:
 	log.write('Failed to fetch mail. ' + runtime + '\n')
-log.close()
+	sys.exit(2)
+try:# CHOWN & MOVE
+	for model in location:
+		os.chown('/tmp/' + model + '-' + runtime + '.csv',33,33)# www-data:www-data
+		os.rename('/tmp/' + model + '-' + runtime + '.csv', '/root/data/' + model + '-' + runtime + '.csv')
+except: pass
 
+log.close()
