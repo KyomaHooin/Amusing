@@ -39,7 +39,7 @@ merlin = {'foo':'merlin1',
 
 def csv_parse(buff,sid):
 	try:
-		csv = open('/root/data/pracom-' + runtime + '.csv.tmp','a')
+		csv = open('/root/data/prumstav-' + runtime + '.csv.tmp','a')
 		for line in buff.decode('utf-16').encode('utf-8').splitlines()[1:]:
 			ln = line.split(',')
 			stamp = time.strftime("%Y%m%dT%H%M%SZ",time.strptime(ln[1],"%d.%m.%Y %H:%M:%S"))
@@ -55,7 +55,7 @@ def csv_parse(buff,sid):
 	
 def xls_parse(buff,sid):
 	try:
-		csv = open('/root/data/prumstav-' +runtime + '.csv.tmp','a')
+		csv = open('/root/data/pracom-' +runtime + '.csv.tmp','a')
 		book = xlrd.open_workbook(file_contents=buff)
 		sheet = book.sheet_by_index(0)
 		for i in range(4,sheet.nrows):
@@ -100,15 +100,17 @@ try:# POP3
 		if msg.is_multipart():
 			for part in range(1,len(msg.get_payload())):# only attachments
 				fn = email.Header.decode_header(msg.get_payload(part).get_filename())[0][0]# filename
-				if re.match('.*(csv)$',fn):
-					csv_parse(msg.get_payload(part).get_payload(decode=True),part)
-				elif re.match('.*(xls)$',fn):
-					xls_parse(msg.get_payload(part).get_payload(decode=True),part)
-				elif re.match('.*(xlsx)$',fn):
+				if re.match('^\d+.*csv$',fn):
+					id = prumstav[re.sub('^(\d+).*','\\1',fn)]
+					csv_parse(msg.get_payload(part).get_payload(decode=True),id)
+				elif re.match('Data_?\d.*xls$',fn):
+					id = pracom[re.sub('^Data_?(\d).*','Data\\1',fn)]
+					xls_parse(msg.get_payload(part).get_payload(decode=True),id)
+				elif re.match('.*xlsx$',fn):
 					xlsx_parse(msg.get_payload(part).get_payload(decode=True),part)
 	sess.quit()
 except Exception as e:
-	#print e
+	print e
 	log.write('Failed to fetch mail. ' + runtime + '\n')
 log.close()
 
