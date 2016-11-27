@@ -2,16 +2,19 @@
 #
 # Datalogger fetchmail and attachment processsing.
 #
+#  CSV: UTF-16-LE Unicode - Prumstav DS100
+#  XLS: Composite Document File V2 LE - Volcraft DL121-TH
+# XLSX: Microsoft Excel 2007+ - Merlin HM8
+#
 # TODO:
 #
-#  CSV: Little-endian UTF-16 Unicode text -> Prumstav DS100
-#  XLS: (xlrd)
-# XLSX:
+# SID
+# CSF tmp -> /data + own -> www-data:www-data
 # 
 
 import poplib,email,time,xlrd,sys,re
 
-runtime = time.strftime("%d.%m.%Y %H:%M")
+runtime = time.strftime("%Y%m%dT%H%M%S")
 logfile = '/var/log/logger.log'
 
 prumstav = {'185':'prumstav1',
@@ -29,79 +32,83 @@ pracom = {'Data1':'pracom1',
 	  'Data7':'pracom7',
 	  'Data8':'pracom8'}
 
+merlin = {'foo':'merlin1',
+	  'bar':'merlin2'}
+
 # FUNC
 
 def csv_parse(buff,sid):
 	try:
-		csv = open('/root/data/pracom-' + time.strftime("%Y%m%dT%H%M$S") + '.csv.tmp','a')
+		csv = open('/root/data/pracom-' + runtime + '.csv.tmp','a')
 		for line in buff.decode('utf-16').encode('utf-8').splitlines()[1:]:
 			ln = line.split(',')
-			stamp = time.strftime("%Y%m%dT%H%M%S",time.strptime(ln[1],"%d.%m.%Y %H:%M:%S"))
+			stamp = time.strftime("%Y%m%dT%H%M%SZ",time.strptime(ln[1],"%d.%m.%Y %H:%M:%S"))
 			if len(ln) == 5:
 				csv.write(str(sid) + ';temperature;' + ln[2] + '.' + ln[3] + ';' + stamp + '\n')
 				csv.write(str(sid) + ';humidity;' + ln[4] + ';' + stamp + '\n')
-			if len(l) == 4:
+			if len(ln) == 4:
 				csv.write(str(sid) + ';temperature;' + ln[2] + ';' + stamp + '\n')
 				csv.write(str(sid) + ';humidity;' + ln[3] + ';' + stamp + '\n')
 		csv.close()
 	except:
 		log.write('Failed to parse CSV file.' + runtime + '\n')
 	
-def xls_parse(buff,sid,row):
-#	try:
-	if sid == 1:
-		#xls = open('/root/data/' + str(sid) + '.xls','w')
-		#xls.write(buff)
-		#xls.close()
+def xls_parse(buff,sid):
+	try:
+		csv = open('/root/data/prumstav-' +runtime + '.csv.tmp','a')
 		book = xlrd.open_workbook(file_contents=buff)
 		sheet = book.sheet_by_index(0)
-		#sheet.row_values(row_index)[0]
-		#for row in range(4,10):
-		#	print sheet.row_values(row)[0]
-		#for row_index in range(4,sheet.nrows):
-		#time_in=sheet.row_values(row_index)[0]
-		#ti = datetime.datetime.strptime(time_in, "%d-%m-%Y %H:%M:%S")
-       	        #time_out = ti.strftime("%Y%m%dT%H%M%S")
-               	#tsv_data_row=[time_out]+sheet.row_values(row_index)[1:3]
-		#print(tsv_data_row)
-		#csv_writer.writerow(tsv_data_row)
-#	except:
-#		log.write('Failed to parse XLS file.' + runtime + '\n')
-		
+		for i in range(4,sheet.nrows):
+			stamp = time.strftime("%Y%m%dT%H%M%SZ",time.strptime(sheet.row_values(i)[0],"%d-%m-%Y %H:%M:%S"))
+			csv.write(str(sid) + ';temperature;' + str(sheet.row_values(i)[1]) + ';' + stamp + '\n')
+			csv.write(str(sid) + ';humidity;' + str(sheet.row_values(i)[2]) + ';' + stamp + '\n')
+		csv.close()
+	except:
+		log.write('Failed to parse XLS file.' + runtime + '\n')
+
+def xlsx_parse(buff,sid):
+	try:
+		csv = open('/root/data/merlin-' +runtime + '.csv.tmp','a')
+		book = xlrd.open_workbook(file_contents=buff)
+		sheet = book.sheet_by_index(0)
+		for i in range(5,sheet.nrows):
+			date = xlrd.xldate.xldate_as_tuple(sheet.row_values(i)[0],book.datemode)
+			stamp = time.strftime("%Y%m%dT120000Z",time.strptime(str(date[0])
+				+ ' ' + str(date[1])
+				+ ' ' + str(date[2]),"%Y %m %d"))
+			csv.write(str(sid) + ';temperature;' + str(sheet.row_values(i)[2]) + ';' + stamp + '\n')
+			csv.write(str(sid) + ';humidity;' + str(sheet.row_values(i)[1]) + ';' + stamp + '\n')
+		csv.close()
+	except:
+		log.write('Failed to parse XLSX file.' + runtime + '\n')
+
 # MAIN
 
 try:# MAIN
         log = open(logfile,'a')
 except:
         print('Failed to open log file.')
-        sys.exit(4)
+        sys.exit(1)
 try:# POP3
 	sess = poplib.POP3('[removed]',timeout=10)
 	sess.user('[removed]')
 	sess.pass_('[removed]')
 	msgs = sess.stat()[0]# get last message
-	#if msgs == 0:
-	#	log.write('Nothing to parse. ' + runtime + '\n')
-	#else:
 	for m in range(1,msgs + 1):
 		popmsg = sess.retr(m)
 		msg = email.message_from_string('\n'.join(popmsg[1]))# email parser
 		if msg.is_multipart():
 			for part in range(1,len(msg.get_payload())):# only attachments
 				fn = email.Header.decode_header(msg.get_payload(part).get_filename())[0][0]# filename
-				#if re.match('.*(csv)$',fn):
-				#	print "Got CSV.", fn
-				#	csv_parse(msg.get_payload(part).get_payload(decode=True),part)
-				if re.match('.*(xls)$',fn):
-				#	print "Got XLS.", fn
-					xls_parse(msg.get_payload(part).get_payload(decode=True),part,5)
-				#elif re.match('.*(xlsx)$',fn):
-				#	print "Got XLSX.", fn
-				#	xls_parse(msg.get_payload(part).get_payload(decode=True),part,6)
+				if re.match('.*(csv)$',fn):
+					csv_parse(msg.get_payload(part).get_payload(decode=True),part)
+				elif re.match('.*(xls)$',fn):
+					xls_parse(msg.get_payload(part).get_payload(decode=True),part)
+				elif re.match('.*(xlsx)$',fn):
+					xlsx_parse(msg.get_payload(part).get_payload(decode=True),part)
 	sess.quit()
 except Exception as e:
 	#print e
 	log.write('Failed to fetch mail. ' + runtime + '\n')
-	sys.exit(1)
 log.close()
 
