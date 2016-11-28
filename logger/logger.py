@@ -117,7 +117,7 @@ try:# POP3
 					if not xlsx_parse(part.get_payload(decode=True),sid): remove = False
 				elif re.match('^.*(csv|xls|xlsx)$',fn): remove = False # Fallback!
 		if remove:
-			msg.dele(m)
+			sess.dele(m)
 	sess.quit()
 except:
 	log.write('Failed to fetch mailbox. ' + runtime + '\n')
