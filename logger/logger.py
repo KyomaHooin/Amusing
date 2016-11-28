@@ -45,11 +45,11 @@ def csv_parse(buff,sid):
 			ln = line.split(',')
 			stamp = time.strftime("%Y%m%dT%H%M%SZ",time.strptime(ln[1],"%d.%m.%Y %H:%M:%S"))
 			if len(ln) == 5:
-				csv.write(str(sid) + ';temperature;' + ln[2] + '.' + ln[3] + ';' + stamp + '\n')
-				csv.write(str(sid) + ';humidity;' + ln[4] + ';' + stamp + '\n')
+				csv.write(sid + ';temperature;' + ln[2] + '.' + ln[3] + ';' + stamp + '\n')
+				csv.write(sid + ';humidity;' + ln[4] + ';' + stamp + '\n')
 			if len(ln) == 4:
-				csv.write(str(sid) + ';temperature;' + ln[2] + ';' + stamp + '\n')
-				csv.write(str(sid) + ';humidity;' + ln[3] + ';' + stamp + '\n')
+				csv.write(sid + ';temperature;' + ln[2] + ';' + stamp + '\n')
+				csv.write(sid + ';humidity;' + ln[3] + ';' + stamp + '\n')
 		csv.close()
 		return 1
 	except:
@@ -62,8 +62,8 @@ def xls_parse(buff,sid):
 		sheet = book.sheet_by_index(0)
 		for i in range(4,sheet.nrows):
 			stamp = time.strftime("%Y%m%dT%H%M%SZ",time.strptime(sheet.row_values(i)[0],"%d-%m-%Y %H:%M:%S"))
-			csv.write(str(sid) + ';temperature;' + str(sheet.row_values(i)[1]) + ';' + stamp + '\n')
-			csv.write(str(sid) + ';humidity;' + str(sheet.row_values(i)[2]) + ';' + stamp + '\n')
+			csv.write(sid + ';temperature;' + str(sheet.row_values(i)[1]) + ';' + stamp + '\n')
+			csv.write(sid + ';humidity;' + str(sheet.row_values(i)[2]) + ';' + stamp + '\n')
 		csv.close()
 		return 1
 	except:
@@ -79,8 +79,8 @@ def xlsx_parse(buff,sid):
 			stamp = time.strftime("%Y%m%dT120000Z",time.strptime(str(date[0])
 				+ ' ' + str(date[1])
 				+ ' ' + str(date[2]),"%Y %m %d"))
-			csv.write(str(sid) + ';temperature;' + str(sheet.row_values(i)[2]) + ';' + stamp + '\n')
-			csv.write(str(sid) + ';humidity;' + str(sheet.row_values(i)[1]) + ';' + stamp + '\n')
+			csv.write(sid + ';temperature;' + str(sheet.row_values(i)[2]) + ';' + stamp + '\n')
+			csv.write(sid + ';humidity;' + str(sheet.row_values(i)[1]) + ';' + stamp + '\n')
 		csv.close()
 		return 1
 	except:
