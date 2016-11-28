@@ -1,3 +1,4 @@
+![Amusing](https://github.com/KyomaHooin/Amusing/raw/master/frontend/amusing_screen.png "screenshot")
 
 DESCRIPTION
 
@@ -29,9 +30,10 @@ gnuplot gnuplot-nox imagemagick
 </pre>
 FILE
 <pre>
-      muzeum/ - PHP Frontend.
-     sensors/ - Sensor interface.
-templeate.sql - Empty MySQL structure.
+           muzeum/ - PHP Frontend.
+          sensors/ - Sensor interface.
+     templeate.sql - Empty MySQL structure.
+amusing_screen.png - UI screenshot. 
 </pre>
 
 CONTACT
