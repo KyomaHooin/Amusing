@@ -1,3 +1,4 @@
+![Alix](https://github.com/KyomaHooin/Amusing/raw/master/alix/umichala/umichala_screen.png "screenshot")
 
 DESCRIPTION
 
@@ -40,8 +41,9 @@ interval = 15
 FILE
 
 <pre>
-cam-amusing.sh - Main script.
-      firewall - Simple firewall.
+     cam-amusing.sh - Main script.
+           firewall - Simple firewall.
+umichala_screen.png - HW screenshot.
 </pre>
 
 CONTACT
