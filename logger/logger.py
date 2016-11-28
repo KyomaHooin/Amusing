@@ -6,20 +6,14 @@
 #  XLS: Composite Document File V2 LE - Volcraft DL121-TH
 # XLSX: Microsoft Excel 2007+ - Merlin HM8
 #
-# TODO:
-#
-# mail drop
-# miss notification
-#
 
 import poplib,email,time,xlrd,sys,os,re
-
-location = ('prumstav','pracom','merlin')
 
 runtime = time.strftime("%Y%m%dT%H%M%S")
 
 logfile = '/var/log/logger.log'
-data = '/var/www/sensors/data/'
+
+location = ('prumstav','pracom','merlin')
 
 prumstav = {'185':'prumstav1',
 	    '170':'prumstav2',
@@ -38,6 +32,8 @@ pracom = {'Data1':'pracom1',
 
 merlin = {'chabry':'merlin2'}
 
+remove = True
+
 #------------------------------------
 
 def csv_parse(buff,sid):
@@ -53,8 +49,9 @@ def csv_parse(buff,sid):
 				csv.write(str(sid) + ';temperature;' + ln[2] + ';' + stamp + '\n')
 				csv.write(str(sid) + ';humidity;' + ln[3] + ';' + stamp + '\n')
 		csv.close()
+		return 1
 	except:
-		log.write('Failed to parse CSV file.' + runtime + '\n')
+		log.write('Failed to parse CSV file. ' + runtime + '\n')
 	
 def xls_parse(buff,sid):
 	try:
@@ -66,8 +63,9 @@ def xls_parse(buff,sid):
 			csv.write(str(sid) + ';temperature;' + str(sheet.row_values(i)[1]) + ';' + stamp + '\n')
 			csv.write(str(sid) + ';humidity;' + str(sheet.row_values(i)[2]) + ';' + stamp + '\n')
 		csv.close()
+		return 1
 	except:
-		log.write('Failed to parse XLS file.' + runtime + '\n')
+		log.write('Failed to parse XLS file. ' + runtime + '\n')
 
 def xlsx_parse(buff,sid):
 	try:
@@ -82,8 +80,9 @@ def xlsx_parse(buff,sid):
 			csv.write(str(sid) + ';temperature;' + str(sheet.row_values(i)[2]) + ';' + stamp + '\n')
 			csv.write(str(sid) + ';humidity;' + str(sheet.row_values(i)[1]) + ';' + stamp + '\n')
 		csv.close()
+		return 1
 	except:
-		log.write('Failed to parse XLSX file.' + runtime + '\n')
+		log.write('Failed to parse XLSX file. ' + runtime + '\n')
 
 #------------------------------------
 
@@ -98,34 +97,37 @@ try:# POP3
 	sess.pass_('[removed]')
 	msgs = sess.stat()[0]# get last message
 	for m in range(1,msgs + 1):
+		remove = True
 		popmsg = sess.retr(m)
 		msg = email.message_from_string('\n'.join(popmsg[1]))# email parser
-		#print msg['From']
 		if msg.is_multipart():
-			for part in range(1,len(msg.get_payload())):# only attachments
-				fn = email.Header.decode_header(msg.get_payload(part).get_filename())[0][0]# filename
-				#print fn
-				#if re.match('^\d+ .*csv$',fn):
-				#	sid = prumstav[re.sub('^(\d+) .*','\\1',fn)]
-				#	csv_parse(msg.get_payload(part).get_payload(decode=True),sid)
-				#elif re.match('^.*- \d+ -.*$',fn):
-				#	sid = prumstav[re.sub('^.*- (\d+) -.*$','\\1',fn)]
-				#	csv_parse(msg.get_payload(part).get_payload(decode=True),sid)
-				#elif re.match('Data_?\d.*xls$',fn):
-				#	sid = pracom[re.sub('^Data_?(\d).*','Data\\1',fn)]
-				#	xls_parse(msg.get_payload(part).get_payload(decode=True),sid)
-				#elif re.match('.*_chabry_.*xlsx$',fn):
-				#	sid = merlin['chabry']
-				#	xlsx_parse(msg.get_payload(part).get_payload(decode=True),sid)
+			for part in msg.walk():
+				fn = email.Header.decode_header(part.get_filename())[0][0]# filename
+				if re.match('^\d+ ?.*csv$',fn):
+					sid = prumstav[re.sub('^(\d+) ?.*','\\1',fn)]
+					if not csv_parse(part.get_payload(decode=True),sid): remove = False
+				elif re.match('^.*- \d+ -.*$',fn):
+					sid = prumstav[re.sub('^.*- (\d+) -.*$','\\1',fn)]
+					if not csv_parse(part.get_payload(decode=True),sid): remove = False
+				elif re.match('Data_?\d.*xls$',fn):
+					sid = pracom[re.sub('^Data_?(\d).*','Data\\1',fn)]
+					if not xls_parse(part.get_payload(decode=True),sid): remove = False
+				elif re.match('.*_chabry_.*xlsx$',fn):
+					sid = merlin['chabry']
+					if not xlsx_parse(part.get_payload(decode=True),sid): remove = False
+				elif re.match('^.*(csv|xls|xlsx)$',fn): remove = False # Fallback!
+		if remove:
+			msg.dele(m)
 	sess.quit()
 except:
-	log.write('Failed to fetch mail. ' + runtime + '\n')
+	log.write('Failed to fetch mailbox. ' + runtime + '\n')
 	sys.exit(2)
 
 for model in location:
 	try:# CHOWN & MOVE
 		os.chown('/tmp/' + model + '-' + runtime + '.csv',33,33)# www-data:www-data
-		os.rename('/tmp/' + model + '-' + runtime + '.csv', '/root/data/' + model + '-' + runtime + '.csv')
-	except pass
-
+		os.rename('/tmp/' + model + '-' + runtime + '.csv', /var/www/sensors/data/ + model + '-' + runtime + '.csv')
+	except:
+		log.write('Failed to change owner, read only file sytem.' + runtime + '\n')
 log.close()
+
