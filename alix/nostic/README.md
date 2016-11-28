@@ -1,3 +1,4 @@
+![Alix](https://github.com/KyomaHooin/Amusing/raw/master/alix/nostic/nostic_screen.png "screenshot")
 
 DESCRIPTION
 
@@ -35,7 +36,8 @@ FILE
                      firewall - Simple firewall.
               alix-amusing.py - Main data transport.
 Device-SerialPort-1.04.tar.gz - Perl serial library.
-</pre>
+            nostic-screen.png - HW screen.
+<</pre>
 
 CONTACT
 
