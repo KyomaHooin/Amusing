@@ -7,7 +7,9 @@
 # XLSX: Microsoft Excel 2007+ - Merlin HM8
 #
 
-import poplib,email,time,xlrd,sys,os,re
+import smtplib,poplib,email,time,xlrd,sys,os,re
+
+admin = '[removed]'
 
 runtime = time.strftime("%Y%m%dT%H%M%S")
 
@@ -115,7 +117,18 @@ try:# POP3
 				elif re.match('.*_chabry_.*xlsx$',fn):
 					sid = merlin['chabry']
 					if not xlsx_parse(part.get_payload(decode=True),sid): remove = False
-				elif re.match('^.*(csv|xls|xlsx)$',fn): remove = False # Fallback!
+				elif re.match('^.*(csv|xls|xlsx)$',fn):# Fallback!
+					remove = False
+					try:
+						notify = email.mime.Text.MIMEText('Nepodarilo se rozparsovat \
+							datalogger@nm.cz prilohu!','plain','utf-8')
+						notify['From'] = 'Amusing Report <[removed]>'
+						notify['To'] = admin
+						notify['Subject'] = 'Datalogger'
+						mail = smtplib.SMTP('[removed]',timeout=10)
+						mail.sendmail('[removed]', admin, notify.as_string())
+						mail.quit()
+					except: pass				
 		if remove:
 			sess.dele(m)
 	sess.quit()
@@ -126,8 +139,7 @@ except:
 for model in location:
 	try:# CHOWN & MOVE
 		os.chown('/tmp/' + model + '-' + runtime + '.csv',33,33)# www-data:www-data
-		os.rename('/tmp/' + model + '-' + runtime + '.csv', /var/www/sensors/data/ + model + '-' + runtime + '.csv')
-	except:
-		log.write('Failed to change owner, read only file sytem.' + runtime + '\n')
+		os.rename('/tmp/' + model + '-' + runtime + '.csv','/var/www/sensors/data/' + model + '-' + runtime + '.csv')
+	except: pass
 log.close()
 
