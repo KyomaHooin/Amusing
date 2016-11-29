@@ -9,7 +9,7 @@ apt-get install python-xlrd
 </pre>
 FILE
 <pre>
-	fetchlogger.py - Auto-fetchmail parsingscript.
+logger.py - Auto-fetchmail parsingscript.
 </pre>
 
 CONTACT
