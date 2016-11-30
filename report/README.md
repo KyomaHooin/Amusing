@@ -9,7 +9,7 @@ apt-get install python-reportlab
 </pre>
 FILE
 <pre>
-	report.py - Auto-report script.
+report - Auto-report script.
 </pre>
 
 CONTACT
