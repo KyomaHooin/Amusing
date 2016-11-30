@@ -7,9 +7,7 @@
 # XLSX: Microsoft Excel 2007+ - Merlin HM8
 #
 
-import smtplib,poplib,email,time,xlrd,sys,os,re
-
-admin = '[removed]'
+import poplib,email,time,xlrd,sys,os,re
 
 runtime = time.strftime("%Y%m%dT%H%M%S")
 
@@ -119,16 +117,7 @@ try:# POP3
 					if not xlsx_parse(part.get_payload(decode=True),sid): remove = False
 				elif re.match('^.*(csv|xls|xlsx)$',fn):# Fallback!
 					remove = False
-					try:
-						notify = email.mime.Text.MIMEText('Nepodarilo se rozparsovat \
-							datalogger@nm.cz prilohu!','plain','utf-8')
-						notify['From'] = 'Amusing Report <[removed]>'
-						notify['To'] = admin
-						notify['Subject'] = 'Datalogger'
-						mail = smtplib.SMTP('[removed]',timeout=10)
-						mail.sendmail('[removed]', admin, notify.as_string())
-						mail.quit()
-					except: pass				
+					log.write('Failed to parse attachment! ' + runtime + '\n')
 		if remove:
 			sess.dele(m)
 	sess.quit()
