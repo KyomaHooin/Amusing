@@ -1,3 +1,4 @@
+![RPi](https://github.com/KyomaHooin/Amusing/raw/master/raspberry/archa/archa_screen.png "screenshot")
 
 RPI
 
