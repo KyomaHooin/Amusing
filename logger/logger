@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# Datalogger fetchmail and attachment processsing.
+# Datalogger fetchmail and attachment processing.
 #
 #  CSV: UTF-16-LE Unicode - Prumstav DS100
 #  XLS: Composite Document File V2 LE - Volcraft DL121-TH
