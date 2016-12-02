@@ -104,15 +104,15 @@ try:# POP3
 			for part in msg.walk():
 				fn = email.Header.decode_header(part.get_filename())[0][0]# filename
 				if re.match('^\d+ ?.*csv$',fn):
-					sid = prumstav[re.sub('^(\d+) ?.*','\\1',fn)]
+					sid = prumstav[re.sub('^(\d+) ?.*$','\\1',fn)]
 					if not csv_parse(part.get_payload(decode=True),sid): remove = False
-				elif re.match('^.*- \d+ -.*$',fn):
+				elif re.match('^.*- \d+ -.*csv$',fn):
 					sid = prumstav[re.sub('^.*- (\d+) -.*$','\\1',fn)]
 					if not csv_parse(part.get_payload(decode=True),sid): remove = False
-				elif re.match('Data_?\d.*xls$',fn):
-					sid = pracom[re.sub('^Data_?(\d).*','Data\\1',fn)]
+				elif re.match('^Data_?\d.*xls$',fn):
+					sid = pracom[re.sub('^Data_?(\d).*$','Data\\1',fn)]
 					if not xls_parse(part.get_payload(decode=True),sid): remove = False
-				elif re.match('.*_chabry_.*xlsx$',fn):
+				elif re.match('^.*_chabry_.*xlsx$',fn):
 					sid = merlin['chabry']
 					if not xlsx_parse(part.get_payload(decode=True),sid): remove = False
 				elif re.match('^.*(csv|xls|xlsx)$',fn):# Fallback!
