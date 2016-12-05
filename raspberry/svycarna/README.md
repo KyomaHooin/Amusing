@@ -27,6 +27,18 @@ tmpfs	/var/run	tmpfs	defaults,noatime,nosuid,mode=0755,size=2m	0	0
 
 KERNEL=="video*", SUBSYSTEM=="video4linux", KERNELS=="1-1.2", SYMLINK+="video-cam0"
 
+/etc/network/interfaces:
+
+auto eth0
+allow-hotplug eth0
+iface eth0 inet static
+    address 10.14.8.21
+    netmask 255.255.0.0
+    gateway 10.14.0.1
+    network 10.14.0.0
+    broadcast 10.14.255.255
+    dns-nameservers 10.14.9.26
+
 /etc/rc.local:
 
 /root/amusing/rpi-amusing.py &
