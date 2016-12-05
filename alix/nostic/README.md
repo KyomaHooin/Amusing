@@ -37,7 +37,7 @@ FILE
               alix-amusing.py - Main data transport.
 Device-SerialPort-1.04.tar.gz - Perl serial library.
             nostic-screen.png - HW screen.
-<</pre>
+</pre>
 
 CONTACT
 
