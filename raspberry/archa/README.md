@@ -23,11 +23,17 @@ tmpfs	/var/run	tmpfs	defaults,noatime,nosuid,mode=0755,size=2m	0	0
 /etc/rc.local:
 
 echo ds1307 0x68 > /sys/class/i2c-adapter/i2c-1/new_device
-ip addr add 192.168.11.x/24 dev eth0 2>/dev/null &
+ip addr add 192.168.11.11(12)/24 dev eth0 2>/dev/null &
 /root/amusing/rpi-amusing.py &
 /root/firewall &
 
 /etc/network/intefaces:
+
+auto eth0
+allow-hotplug eth0
+iface eth0 inet static
+	address 192.168.11.11(12)
+	netmask 255.255.255.0
 
 iface wlan0 inet dhcp
 	wpa-ssid nm-private
