@@ -26,13 +26,13 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 
 auto eth0
 iface eth0 inet static
-        address 10.0.40.x
+        address 10.0.40.197
 	netmask 255.255.255.0
-        gateway 10.0.40.x
+        gateway 10.0.40.200
 
 /etc/resolv.conf:
 
-nameserver 10.0.40.200
+nameserver 10.0.0.200
 
 /etc/rc.local:
 
