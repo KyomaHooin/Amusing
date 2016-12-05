@@ -22,6 +22,14 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 
 */5 *	* * *	root	/usr/sbin/ntpdate -4 tik.cesnet.cz > /dev/null 2>&1
 
+/etc/network/interfaces.d/eth0.conf:
+
+auto eth0
+iface eth0 inet static
+        address 10.0.40.x
+	netmask 255.255.255.0
+        gateway 10.0.40.x
+
 /etc/rc.local:
 
 /usr/sbin/ntpdate -b -4 tik.cesnet.cz > /dev/null 2>&1 &
@@ -29,7 +37,17 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 /root/firewall &
 /root/tunnel &
 </pre>
+BUG
+<pre>
+1] install
+>>> Created a new DOS disklabel with disk identifier 0x4156d18d.
+Start sector 0 out of range.
+Failed to add partition: Numerical result out of range
 
+2] boot
+fsck: error 2 (No such file or directory) while executing fsck.ext2 for /dev/sda1
+fsck exited with status code 8
+</pre>
 FILE
 <pre>
     alix-amusing.py - Main data transport.
