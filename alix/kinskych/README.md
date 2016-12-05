@@ -29,10 +29,7 @@ iface eth0 inet static
         address 10.0.40.197
 	netmask 255.255.255.0
         gateway 10.0.40.200
-
-/etc/resolv.conf:
-
-nameserver 10.0.0.200
+        dns-nameservers 10.0.0.200
 
 /etc/rc.local:
 
