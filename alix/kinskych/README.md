@@ -51,6 +51,11 @@ Failed to add partition: Numerical result out of range
 2] boot
 fsck: error 2 (No such file or directory) while executing fsck.ext2 for /dev/sda1
 fsck exited with status code 8
+
+3] locales
+
+Generating locales (this might take a while)...
+  en_US.UTF-8...memory exhausted(Killed)
 </pre>
 FILE
 <pre>
