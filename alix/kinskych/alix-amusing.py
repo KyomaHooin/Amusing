@@ -43,7 +43,7 @@ try:
 		if int(time.strftime("%M")) % 15 == 0 and CALL: # 15 min interval..
 			CALL=False
 			try:	# GZIP + PAYLOAD
-				GZIP_FILE=RAMDISK + 'http/alix-' + time.strftime("%Y%m%dT%H%M%S") + '60.csv.gz'
+				GZIP_FILE=RAMDISK + 'http/alix-' + time.strftime("%Y%m%dT%H%M%S") + '70.csv.gz'
 				gzip.open(GZIP_FILE, 'ab').write(PAYLOAD)
 			except IOError:
 				LOG.write('Failed to gzip payload.\n')
