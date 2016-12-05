@@ -30,6 +30,10 @@ iface eth0 inet static
 	netmask 255.255.255.0
         gateway 10.0.40.x
 
+/etc/resolv.conf:
+
+nameserver 10.0.40.200
+
 /etc/rc.local:
 
 /usr/sbin/ntpdate -b -4 tik.cesnet.cz > /dev/null 2>&1 &
