@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #
-# 868Mhz AVR on /tty/S0
+# 868Mhz AVR on ttyS0
 #
 # DATA[5min]: 'Got msg #1 : *ZD#T220H172L594B467'
 #
