@@ -3,5 +3,5 @@
 autossh -M 0 -f -N -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" \
 	-o "StrictHostKeyChecking no" \
 	-i /root/.ssh/amusing-xfr.key \
-	-R 2007:localhost:22 svn@amusing.nm.cz -p 1222
+	-R 2007:localhost:22 xxx@xxx -p xxx
 
