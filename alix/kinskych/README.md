@@ -1,4 +1,4 @@
-![Alix](https://github.com/KyomaHooin/Amusing/raw/master/alix/nostic/kinskych_screen.png "screenshot")
+![Alix](https://github.com/KyomaHooin/Amusing/raw/master/alix/kinskych/kinskych_screen.png "screenshot")
 
 DESCRIPTION
 
