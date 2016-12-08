@@ -72,7 +72,8 @@ function generatetree() {
 			$mqe=$SQL->query("select * from measuring left join permission on m_id=pe_mid where (pe_uid=0 || pe_uid=".uid().") && m_rid=".$rfe->r_id." group by m_id order by m_desc");
 		    }
 		    if($mqe->rowcount()) {
-			echo "<li>".input_check("rid_".$rfe->r_id).treespan("rid_".$rfe->r_id,$rfe->r_desc." ".$rfe->r_floor,false,"notg","rid_".$rfe->r_id);
+		//	echo "<li>".input_check("rid_".$rfe->r_id).treespan("rid_".$rfe->r_id,$rfe->r_desc." ".$rfe->r_floor,false,"notg","rid_".$rfe->r_id);
+			echo "<li>".input_check("rid_".$rfe->r_id).treespan("rid_".$rfe->r_id,$rfe->r_desc,false,"notg","rid_".$rfe->r_id);
 			echo "<ul class=\"notg\">";
 			while($mfe=$mqe->obj()) {
 			    $checkcnt++;
@@ -80,7 +81,8 @@ function generatetree() {
 			}
 			echo "</ul>";
 		    } else {
-			echo "<li>".treespan("rid_".$rfe->r_id,$rfe->r_desc." ".$rfe->r_floor);
+		//	echo "<li>".treespan("rid_".$rfe->r_id,$rfe->r_desc." ".$rfe->r_floor);
+			echo "<li>".treespan("rid_".$rfe->r_id,$rfe->r_desc);
 		    }
 		    echo "</li>";
 		    if($rchecks==$checkcnt) ob_end_clean();
