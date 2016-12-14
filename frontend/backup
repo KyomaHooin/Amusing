@@ -1,0 +1,101 @@
+#!/bin/bash
+#
+# SVN Amusing backup
+#
+
+D="`date +%d`_amusing_backup"
+
+#TEST
+
+[ -d /backup ] || mkdir /backup
+
+#MKDIR
+
+mkdir /root/$D 2>/dev/null
+
+#SQL
+
+mysqldump --no-data -uxxx -pxxx xxx > /root/$D/muzeum_no_data.sql
+
+table="
+alarm
+alarm_preset
+alarmack
+alarmlog
+building
+comment
+cronlock
+image
+locker
+log
+mapping
+material
+measuring
+permission
+plotcache
+room
+roommat
+sensor
+sensormodel
+sensortype
+setup
+user
+values_`date +%Y`
+valuesblob_`date +%Y`
+varcodes
+variable
+varmeascache
+"
+
+for t in ${table[@]}; do
+	mysqldump -uxxx -pxxx xxx $t >> /root/$D/muzeum.sql
+done
+
+gzip /root/$D/muzeum.sql 2>/dev/null
+
+#CONFIG
+
+config="
+/var/www
+/root/ADMIN.txt
+/root/firewall
+/root/backup
+/root/report
+/root/logger
+/etc/aliases
+/etc/crontab
+/etc/rc.local
+/etc/hosts
+/etc/resolv.conf
+/etc/network/interfaces
+/etc/apache2
+/etc/postfix/main.cf
+/etc/ntp.conf
+/etc/ssh/sshd_config
+/etc/php5/apache2/php.ini
+/etc/samba/smb.conf
+"
+
+#BACKUP
+
+for src in ${config[@]}; do
+	cp -Hrp $src /root/$D
+done
+
+rm /root/$D/www/muzeum/plot/* 2>/dev/null
+rm /root/$D/www/muzeum/csv/* 2>/dev/null
+rm /root/$D/www/sensors/data/* 2>/dev/null
+
+tar -pczf /root/$D.tar.gz /root/$D 2>/dev/null
+
+mv /root/$D.tar.gz /backup
+
+#CLEANUP
+
+rm -r /root/$D
+find /backup -mtime +7 -delete
+
+#EXIT
+
+exit 0
+
