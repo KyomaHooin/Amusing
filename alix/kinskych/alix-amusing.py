@@ -55,7 +55,7 @@ try:
 				try:	# HTTP
 					HEADER={'Content-type':'application/octet-stream',
 						'X-Location':re.sub('^(.*)\.csv\.gz$','\\1', PACK)}
-					c=httplib.HTTPConnection('xx.xx.xx.xx', '80', timeout=10)
+					c=httplib.HTTPConnection('amusing.nm.cz', '80', timeout=10)
 					c.request('POST', '[removed]', GZIP, HEADER)
 					r=c.getresponse()
 					if (r.status == 200):

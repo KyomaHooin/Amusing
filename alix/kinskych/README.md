@@ -20,7 +20,7 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 
 /etc/crontab:
 
-*/5 *	* * *	root	/usr/sbin/ntpdate -4 195.113.144.201 > /dev/null 2>&1
+*/5 *	* * *	root	/usr/sbin/ntpdate -4 tik.cesnet.cz > /dev/null 2>&1
 
 /etc/network/interfaces.d/eth0.conf:
 
@@ -29,11 +29,11 @@ iface eth0 inet static
         address 10.0.40.197
 	netmask 255.255.255.0
         gateway 10.0.40.200
-        dns-nameservers 10.0.0.200
+        dns-nameservers	78.41.19.2 78.41.19.3
 
 /etc/rc.local:
 
-/usr/sbin/ntpdate -b -4 195.113.144.201 > /dev/null 2>&1 &
+/usr/sbin/ntpdate -b -4 tik.cesnet.cz > /dev/null 2>&1 &
 /root/amusing/alix-amusing.py &
 /root/firewall &
 /root/tunnel &
