@@ -4,9 +4,11 @@ DESCRIPTION
 
 Amusing PHP frontned (c) 2012-2014 Jan Klaban Peoplefornet a.s. 
 
-RUNLEVEL
+ETC
 <pre>
-ln -s /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
+/etc/rc.local:
+
+/root/firewall &
 </pre>
 CRON
 <pre>
@@ -57,6 +59,10 @@ FILE
 <pre>
            muzeum/ - PHP Frontend.
           sensors/ - Sensor interface.
+            logger - Python logger.
+            report - Python report.
+            backup - Shell backup.
+          firewall - Shell firewall.
      templeate.sql - Empty MySQL structure.
 amusing_screen.png - UI screenshot. 
 </pre>
