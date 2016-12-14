@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# SVN Amusing firewall
+#
+
+IP="10.10.19.44"
+
+#MODE
+
+modprobe ip_conntrack
+
+#FLUSH, ZERO
+
+iptables -F
+iptables -Z
+
+#IFACE
+
+iptables -A INPUT -i lo -j ACCEPT
+
+#POLICY
+
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+
+#ICMP
+
+iptables -A INPUT -p icmp -j ACCEPT
+
+#spiceworks ftw..
+iptables -A INPUT -s 10.10.9.56 -p tcp --destination-port 1222 -j DROP
+
+#TCP
+iptables -A INPUT -d $IP -p tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A INPUT -d $IP -p tcp --destination-port 80 -j ACCEPT
+iptables -A INPUT -d $IP -p tcp --destination-port 443 -j ACCEPT
+iptables -A INPUT -d $IP -p tcp --destination-port 445 -j ACCEPT
+iptables -A INPUT -d $IP -p tcp --destination-port 1222 -j ACCEPT
+
+#UDP
+iptables -A INPUT -d $IP -p udp --source-port 123 -j ACCEPT
+iptables -A INPUT -d $IP -p udp --source-port 53 -j ACCEPT
+
+#OUTPUT
+
+iptables -A OUTPUT -p tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p icmp -j ACCEPT
+iptables -A OUTPUT -j ACCEPT
+
