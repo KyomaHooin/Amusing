@@ -120,7 +120,6 @@ void serialMenu() {
       case 'h':
         printHelp();
         break;     
-
     }
   }
 }
