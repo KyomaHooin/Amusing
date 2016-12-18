@@ -164,12 +164,12 @@ void loop() {
   vw_send((uint8_t *)msg, strlen(msg));
   vw_wait_tx();
   digitalWrite(radioPowerPin,LOW);
-  // Going to sleep ..
+  // Going to sleep..
   sleepCycles = EEPROM.read(11);
   Serial.print("Sleeping for "); Serial.print(sleepCycles); Serial.println("* 8s cycle!");
   Serial.flush(); // flush serial 
   // sleeping with LED flash
-  for (int i = 0; i < sleepCyclesNow; i++) {
+  for (int i = 0; i < sleepCycles; i++) {
     LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
     flash5ms();
   }
