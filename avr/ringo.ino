@@ -118,7 +118,7 @@ void setup() {
   Serial.println("---- Picobeatle RINGO III, ver. 131207b ----");
   Serial.println();
   Serial.print("Radio address: "); Serial.println(EEPROM.read(10));
-  Serial.print("Sleep cycles: "); Serial.println(EEPROM.read(11));
+  Serial.print("Sleep cycles : "); Serial.println(EEPROM.read(11));
   Serial.println();
   Serial.println("Press [s] to enter setup mode.");
   if (establishContact()) { serialMenu(); }
@@ -129,7 +129,7 @@ void setup() {
 // ----------------------------------------------------------------
 
 void loop() {
-  float vSupp, vLight, light, umidity, temperature;
+  float vSupp, vLight, light, humidity, temperature;
   char msg[20], addr, sleepCycles;
   //Sensor & DHT on
   activeDHT();
