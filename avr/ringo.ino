@@ -6,7 +6,7 @@
 #include <DHT.h>
 
 #define ledPin         13      // Status LED 
-//#define radioDataPin   12    // Radio data
+//#define radioDataPin   12      // Radio data
 #define DHTPIN         11      // DHT pin
 #define DHTPowerPin    10      // DHT power pin
 #define radioPowerPin  9       // Radio power
@@ -15,8 +15,6 @@
 #define vSupplyPin     0
 
 DHT dht(DHTPIN,DHT22);// DHT instance
-
-int sleepCycles, sleepCyclesNow;// default count of 8 second seep cycles
 
 // ----------------------------------------------------------------
 
@@ -126,18 +124,16 @@ void setup() {
   if (establishContact()) { serialMenu(); }
   Serial.println();
   Serial.println("Resuming normal operation, power cycle for menu ..."); 
-  sleepCycles = EEPROM.read(11);
 }
 
 // ----------------------------------------------------------------
 
 void loop() {
-  float vSupp, vLight, humidity, temperature;
-  char msg[20];
-  //DHT on
+  float vSupp, vLight, light, umidity, temperature;
+  char msg[20], addr, sleepCycles;
+  //Sensor & DHT on
   activeDHT();
   dht.begin();
-  // Sensor on
   digitalWrite(sensorPowerPin,HIGH);
   // wait for VccH settle
   delay(500);
@@ -150,7 +146,7 @@ void loop() {
   digitalWrite(sensorPowerPin,LOW);
   passiveDHT();
   // light as percentage
-  float light = vLight/vSupp * 100;
+  light = vLight/vSupp * 100;
   // Serial printout
   //Serial.print("Temperature = "); Serial.print(temperature); Serial.println(" *C");
   //Serial.print("Humidity = "); Serial.print(humidity); Serial.println(" %");
@@ -159,7 +155,7 @@ void loop() {
   //Serial.print("Light V = "); Serial.print(vLight); Serial.println(" V");
   flash5ms();
   // create msg string
-  char addr = EEPROM.read(10);// address
+  addr = EEPROM.read(10);//radio address
   sprintf(msg, "*Z%c#T%03dH%03dL%03dB%03d", addr, temperature * 10, humidity * 10 , light * 10, vSupp * 100);   
   Serial.println(msg);
   Serial.println();  
@@ -168,11 +164,9 @@ void loop() {
   vw_send((uint8_t *)msg, strlen(msg));
   vw_wait_tx();
   digitalWrite(radioPowerPin,LOW);
-  // calculate the sleeping parameters
-  sleepCyclesNow = sleepCycles + random(-2,3);
-  Serial.print("Sleeping for ");
-  Serial.print(sleepCyclesNow);
-  Serial.println(" 8-sec periods!");
+  // Going to sleep ..
+  sleepCycles = EEPROM.read(11);
+  Serial.print("Sleeping for "); Serial.print(sleepCycles); Serial.println("* 8s cycle!");
   Serial.flush(); // flush serial 
   // sleeping with LED flash
   for (int i = 0; i < sleepCyclesNow; i++) {
