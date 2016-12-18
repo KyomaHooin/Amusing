@@ -49,7 +49,7 @@ void serialMenu() {
   char c;
   while (c != 'q') {
     Serial.println();   
-    Serial.print("SETUP MENU, [q] for quit >>> ");
+    Serial.print("SETUP MENU, [q] to quit >>> ");
     Serial.println();
     Serial.println(" 'a' - Setup radio address.");
     Serial.println(" 'n' - Setup number of sleep cycles.");
@@ -118,12 +118,12 @@ void setup() {
   Serial.println("---- Picobeatle RINGO III, ver. 131207b ----");
   Serial.println();
   Serial.print("Radio address: "); Serial.println(EEPROM.read(10));
-  Serial.print("Sleep cycles : "); Serial.println(EEPROM.read(11));
+  Serial.print(" Sleep cycles: "); Serial.println(EEPROM.read(11));
   Serial.println();
-  Serial.println("Press [s] to enter setup mode.");
+  Serial.println("Press [s] to enter setup.");
   if (establishContact()) { serialMenu(); }
   Serial.println();
-  Serial.println("Resuming normal operation, power cycle for menu ..."); 
+  Serial.println("Resuming normal operation, power cycle for menu."); 
 }
 
 // ----------------------------------------------------------------
