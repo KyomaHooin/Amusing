@@ -1,7 +1,7 @@
 
 DESCRIPTION
 
-Atmel AVR & Farnell RF 868.35MHz RT by Karel Julis (c) 2012-2014
+Atmel AVR & Farnell RF 868.35MHz RT original code by Karel Julis (c) 2012-2014
 
 FILE
 <pre>
