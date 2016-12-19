@@ -2,7 +2,6 @@
 #include <VirtualWire.h>
 #include <LowPower.h>
 #include <EEPROM.h>
-#include <Wire.h>
 #include <DHT.h>
 
 #define ledPin         13      // Status LED 
