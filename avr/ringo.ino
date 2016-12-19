@@ -43,8 +43,8 @@ void serialMenu() {
   Serial.println("Press 'a' to set radio address.");
   Serial.println("Press 'n' to set sleep cycle.");
   Serial.println("Press 'q' to quit.");
-  Serial.println();
   while (c != 'q') {
+    Serial.println();
     Serial.print("> ");
     while (!(Serial.available()));
     c = Serial.read();
@@ -136,7 +136,6 @@ void loop() {
   addr = EEPROM.read(10);//radio address
   sprintf(msg, "*Z%c#T%03dH%03dL%03dB%03d", addr, temperature * 10, humidity * 10 , light * 10, vSupp * 100);   
   Serial.println(msg);
-  Serial.println();  
   // send out data message
   digitalWrite(radioPowerPin,HIGH);
   vw_send((uint8_t *)msg, strlen(msg));
@@ -144,8 +143,8 @@ void loop() {
   digitalWrite(radioPowerPin,LOW);
   // Going to sleep..
   sleepCycles = EEPROM.read(11);
-  Serial.print("Sleeping for "); Serial.print(sleepCycles); Serial.println("* 8s cycle!");
-  Serial.flush(); // flush serial 
+  Serial.print("Sleeping for "); Serial.print(sleepCycles); Serial.println(" * 8s cycle!");
+  Serial.flush();// flush serial 
   // sleeping with LED flash
   for (int i = 0; i < sleepCycles; i++) {
     LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
