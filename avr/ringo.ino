@@ -55,9 +55,9 @@ void serialMenu() {
 
 void editRadioAddress() {
   char c; 
-  Serial.println();
-  Serial.print("Address [A..Y]: ");
   while (!(c >= 'A' && c <= 'Y')) {
+    Serial.println();
+    Serial.print("Address [A..Y]: ");
     while (!(Serial.available())); 
     c = Serial.read();
   }
@@ -68,9 +68,9 @@ void editRadioAddress() {
 
 void editSleepCycles() {
   byte n; 
-  Serial.println();   
-  Serial.print("Cycle [5..255]: ");
   while (!(n >= 5 && n <= 255)) {
+    Serial.println();   
+    Serial.print("Cycle [5..255]: ");
     while (!(Serial.available())); 
     n = Serial.parseInt();
   }
@@ -100,9 +100,10 @@ void setup() {
   // Menu
   Serial.println("---- Picobeatle RINGO III, ver. 131207b ----");
   Serial.println();
-  Serial.print("Radio address ["); Serial.print(EEPROM.read(10)); Serial.print("] Sleep cycles [");
-  Serial.print(EEPROM.read(11)); Serial.println("]");
-Serial.println();
+  Serial.print("Radio address ["); Serial.print(EEPROM.read(10));
+  Serial.print("] Sleep cycles ["); Serial.print(EEPROM.read(11));
+  Serial.println("]");
+  Serial.println();
   Serial.println("Press 's' for setup.");
   while (millis() < 5000) { if (Serial.read() == 's') { serialMenu(); }}
   Serial.println();
