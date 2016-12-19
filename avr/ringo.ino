@@ -30,70 +30,53 @@ void passiveDHT() {
 }
 
 void flash5ms() {
-  pinMode(ledPin,OUTPUT);
   digitalWrite(13,HIGH);
   delay(5);
   digitalWrite(13,LOW);
 }
 
-boolean establishContact() {
-  byte loopCount = 0;
-  while (loopCount <= 10) {
-    if(Serial.read() == 's') { return 1; } 
-    delay(300);
-    loopCount++;
-  }
-}
-
 void serialMenu() {
   char c;
+  Serial.println();   
+  Serial.print("-- MENU --");
+  Serial.println();
+  Serial.println("Press 'a' to set radio address.");
+  Serial.println("Press 'n' to set sleep cycle.");
+  Serial.println("Press 'q' to quit.");
+  Serial.println();
   while (c != 'q') {
-    Serial.println();   
-    Serial.print("SETUP MENU, [q] to quit >>> ");
-    Serial.println();
-    Serial.println(" 'a' - Setup radio address.");
-    Serial.println(" 'n' - Setup number of sleep cycles.");
+    Serial.print("> ");
     while (!(Serial.available()));
     c = Serial.read();
-    switch (c) {
-      case 'a':
-        editRadioAddress();
-        break;
-      case 'n':
-        editSleepCycles();
-        break;
-    }
+    if ( c == 'a' ) { editRadioAddress(); }
+    if ( c == 'n' ) { editSleepCycles(); }
   }
 }
 
 void editRadioAddress() {
   char c; 
-  Serial.println();   
-  while (c != 'q') {
-    Serial.print("Press a key [A..Y], or [q] to quit >>> ");
+  Serial.println();
+  Serial.print("Address [A..Y]: ");
+  while (!(c >= 'A' && c <= 'Y')) {
     while (!(Serial.available())); 
     c = Serial.read();
-    if ((c >= 'A') && (c <= 'Y')) {
-      EEPROM.write(10,c);
-      Serial.println("New radio address set.");
-      return;
-    } 
   }
+  EEPROM.write(10,c);
+  Serial.println();
+  Serial.println("Done.");
 }
 
 void editSleepCycles() {
   byte n; 
   Serial.println();   
-  while (n != 'q') {
-    Serial.print("Enter a new value [5..255], or [q] to quit >>> ");
+  Serial.print("Cycle [5..255]: ");
+  while (!(n >= 5 && n <= 255)) {
     while (!(Serial.available())); 
     n = Serial.parseInt();
-    if ((n >= 5) && (n <= 255)) {
-      EEPROM.write(11,n);
-      Serial.println("New sleep cycle count set.");
-      return;
-    }
   }
+  EEPROM.write(11,n);
+  Serial.println();
+  Serial.println("Done.");
 }
 
 // ----------------------------------------------------------------
@@ -117,13 +100,13 @@ void setup() {
   // Menu
   Serial.println("---- Picobeatle RINGO III, ver. 131207b ----");
   Serial.println();
-  Serial.print("Radio address: "); Serial.println(EEPROM.read(10));
-  Serial.print(" Sleep cycles: "); Serial.println(EEPROM.read(11));
+  Serial.print("Radio address ["); Serial.print(EEPROM.read(10)); Serial.print("] Sleep cycles [");
+  Serial.print(EEPROM.read(11)); Serial.println("]");
+Serial.println();
+  Serial.println("Press 's' for setup.");
+  while (millis() < 5000) { if (Serial.read() == 's') { serialMenu(); }}
   Serial.println();
-  Serial.println("Press [s] to enter setup.");
-  if (establishContact()) { serialMenu(); }
-  Serial.println();
-  Serial.println("Resuming normal operation, power cycle for menu."); 
+  Serial.println("Resuming normal operation."); 
 }
 
 // ----------------------------------------------------------------
