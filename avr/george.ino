@@ -7,6 +7,8 @@ int n = 0; // message index
 
 //LiquidCrystal lcd(13, 12, 11, 10, 9, 8);// LCD initialize
 
+// ----------------------------------------------------------------
+
 void setup() {
   // Serial setup
   Serial.begin(9600);
@@ -21,8 +23,7 @@ void setup() {
   // LCD setup & greeting
   //lcd.begin(20, 4);
   //lcd.print("PicoBeatle RX");
-  //lcd.print("SENSOR:01 MSG:05DATA:T21.6H52.7 PRENOS:OK");
-  delay(1000);
+  delay(1000);// ?
 }
 
 void loop() {
