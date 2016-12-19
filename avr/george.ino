@@ -3,7 +3,6 @@
 //#include <LiquidCrystal.h>
 
 int ledPin = 13;
-int n = 0; // message index
 
 //LiquidCrystal lcd(13, 12, 11, 10, 9, 8);// LCD initialize
 
@@ -27,6 +26,7 @@ void setup() {
 }
 
 void loop() {
+  int n = 0;// message index
   uint8_t buf[VW_MAX_MESSAGE_LEN];
   uint8_t buflen = VW_MAX_MESSAGE_LEN;
   if (vw_get_message(buf, &buflen)) { // Non-blocking
