@@ -2,7 +2,7 @@
 
 DESCRIPTION
 
-Amusing PHP frontned (c) 2012-2014 Jan Klaban Peoplefornet a.s. 
+Amusing PHP frontned original code by Jan Klaban (c) 2012-2014 Peoplefornet a.s. 
 
 ETC
 <pre>
