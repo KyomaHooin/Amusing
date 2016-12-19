@@ -1,3 +1,4 @@
+![Comet](https://github.com/KyomaHooin/Amusing/raw/master/comet/comet_screen.png "screenshot")
 
 DESCRIPTION
 
@@ -12,6 +13,7 @@ prachatice-amusing.au3 - Main program.
         prachatice.ico - Program icon.
              Xbase.au3 - FoxBase+/dBase III DBF library by A.R.T. Jonkers.
               ZLIB.au3 - ZLIB de/compression library by "Ward".
+      comet_screen.png - MS3+/2+ controller HW screenshot..
 </pre>
 
 CONTACT
