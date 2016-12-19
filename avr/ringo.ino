@@ -105,7 +105,7 @@ void setup() {
   Serial.println("]");
   Serial.println();
   Serial.println("Press 's' for setup.");
-  while (millis() < 5000) { if (Serial.read() == 's') { serialMenu(); }}
+  while (millis() < 3000) { if (Serial.read() == 's') { serialMenu(); }}
   Serial.println();
   Serial.println("Resuming normal operation."); 
 }
@@ -131,12 +131,6 @@ void loop() {
   passiveDHT();
   // light as percentage
   light = vLight/vSupp * 100;
-  // Serial printout
-  //Serial.print("Temperature = "); Serial.print(temperature); Serial.println(" *C");
-  //Serial.print("Humidity = "); Serial.print(humidity); Serial.println(" %");
-  //Serial.print("Light = "); Serial.print(light); Serial.println(" %");
-  //Serial.print("Vcc = "); Serial.print(vSupp); Serial.println(" V");
-  //Serial.print("Light V = "); Serial.print(vLight); Serial.println(" V");
   flash5ms();
   // create msg string
   addr = EEPROM.read(10);//radio address
