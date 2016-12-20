@@ -114,13 +114,13 @@ void setup() {
 void loop() {
   float vSupp, vLight, light, humidity, temperature;
   char msg[20], addr, sleepCycles, sleep;
-  //Sensor & DHT on
+  // Sensor & DHT on
   activeDHT();
   dht.begin();
   digitalWrite(sensorPowerPin,HIGH);
   // wait for VccH settle
   delay(500);
-  // while initializing, read analog
+  // While initializing, read analog
   vSupp = analogRead(vSupplyPin) * 0.00457;
   vLight = analogRead(vLightPin) * 0.00457;
   humidity = dht.readHumidity();
@@ -128,15 +128,15 @@ void loop() {
   // Sensor & DHT off
   digitalWrite(sensorPowerPin,LOW);
   passiveDHT();
-  // light as percentage
+  // Light percentage
   light = vLight/vSupp * 100;
   flash5ms();
-  // create msg string
+  // Create msg string
   addr = EEPROM.read(10);
   if (!addr) { addr = 'A'; }// default
   sprintf(msg, "*Z%c#T%03dH%03dL%03dB%03d", addr, temperature * 10, humidity * 10 , light * 10, vSupp * 100);   
   Serial.println(msg);
-  // send out data message
+  // Send data message
   digitalWrite(radioPowerPin,HIGH);
   vw_send((uint8_t *)msg, strlen(msg));
   vw_wait_tx();
@@ -147,7 +147,6 @@ void loop() {
   sleep = sleepCycles + random(-2,3);// avoid collision
   Serial.print("Sleeping for "); Serial.print(sleep); Serial.println(" * 8s cycle!");
   Serial.flush();// flush serial 
-  // sleeping with LED flash
   for (int i = 0; i < sleep; i++) { LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF); }
 }
 
