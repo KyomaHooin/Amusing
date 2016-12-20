@@ -113,7 +113,7 @@ void setup() {
 
 void loop() {
   float vSupp, vLight, light, humidity, temperature;
-  char msg[20], addr, sleepCycles;
+  char msg[20], addr, sleepCycles, sleep;
   //Sensor & DHT on
   activeDHT();
   dht.begin();
@@ -132,7 +132,8 @@ void loop() {
   light = vLight/vSupp * 100;
   flash5ms();
   // create msg string
-  addr = EEPROM.read(10);//radio address
+  addr = EEPROM.read(10);
+  if (!addr) { addr = 'A'; }// default
   sprintf(msg, "*Z%c#T%03dH%03dL%03dB%03d", addr, temperature * 10, humidity * 10 , light * 10, vSupp * 100);   
   Serial.println(msg);
   // send out data message
@@ -142,12 +143,11 @@ void loop() {
   digitalWrite(radioPowerPin,LOW);
   // Going to sleep..
   sleepCycles = EEPROM.read(11);
-  Serial.print("Sleeping for "); Serial.print(sleepCycles); Serial.println(" * 8s cycle!");
+  if (!sleepCycles) { sleepCycles = 5; }// default
+  sleep = sleepCycles + random(-2,3);// avoid collision
+  Serial.print("Sleeping for "); Serial.print(sleep); Serial.println(" * 8s cycle!");
   Serial.flush();// flush serial 
   // sleeping with LED flash
-  for (int i = 0; i < sleepCycles; i++) {
-    LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);
-    flash5ms();
-  }
+  for (int i = 0; i < sleep; i++) { LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF); }
 }
 
