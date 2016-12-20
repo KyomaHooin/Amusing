@@ -47,8 +47,8 @@ void serialMenu() {
     Serial.print("> ");
     while (!(Serial.available()));
     c = Serial.read();
-    if ( c == 'a' ) { editRadioAddress(); }
-    if ( c == 'n' ) { editSleepCycles(); }
+    if (c == 'a') { editRadioAddress(); }
+    if (c == 'n') { editSleepCycles(); }
   }
 }
 
@@ -81,9 +81,9 @@ void editSleepCycles() {
 // ----------------------------------------------------------------
 
 void setup() {
-  // Serial setup 
+  // Serial 
   Serial.begin(9600);  
-  // Hardware setup
+  // Hardware
   pinMode(radioPowerPin,OUTPUT);
   digitalWrite(radioPowerPin,LOW);
   pinMode(sensorPowerPin,OUTPUT);
@@ -92,7 +92,7 @@ void setup() {
   digitalWrite(DHTPowerPin,LOW);
   pinMode(ledPin,OUTPUT);
   digitalWrite(ledPin,LOW);
-  // Set up VirtualWire radio
+  // VirtualWire
   vw_setup(1000);// Bits per sec
   // AREF
   analogReference(INTERNAL);
