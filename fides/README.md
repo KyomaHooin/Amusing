@@ -1,3 +1,4 @@
+![Fides](https://github.com/KyomaHooin/Amusing/raw/master/fides/801z_screen.png)
 
 DESCRIPTION
 
