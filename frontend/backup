@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# SVN Amusing backup
+# SVN Amusing backup commit
 #
 
 D="`date +%d`_amusing_backup"
