@@ -173,7 +173,7 @@ func archive()
 endfunc
 
 func get_timestamp($time)
-	$rtime = StringRegExpReplace($time, "^(\d\d)(\d\d)(\d{4}) (\d\d):(\d\d):(\d\d)$", "$3/$2/$1 $4:$5:$6")
+	$rtime = StringRegExpReplace($time, "^(\d\d)(\d?\d)(\d{4}) (\d\d):(\d\d):(\d\d)$", "$3/$2/$1 $4:$5:$6")
 	$utc_time = _DateAdd('h', -1 + _Date_Time_GetTimeZoneInformation()[1]/60, $rtime)
 	return StringRegexpReplace($utc_time, "^(\d{4})/(\d\d)/(\d\d) (\d\d):(\d\d):(\d\d)$", "$1$2$3T$4$5$6Z")
 endFunc
