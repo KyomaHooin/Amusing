@@ -106,8 +106,8 @@ try:# POP3
 				if re.match('^\d+ ?.*csv$',fn):
 					sid = prumstav[re.sub('^(\d+) ?.*$','\\1',fn)]
 					if not csv_parse(part.get_payload(decode=True),sid): remove = False
-				elif re.match('^.*-? \d+ -.*csv$',fn):
-					sid = prumstav[re.sub('^.*-? (\d+) -.*$','\\1',fn)]
+				elif re.match('^.*-?[\.| ]\d+ -.*csv$',fn):
+					sid = prumstav[re.sub('^.*-?[\.| ](\d+) -.*$','\\1',fn)]
 					if not csv_parse(part.get_payload(decode=True),sid): remove = False
 				elif re.match('^Data_?\d.*xls$',fn):
 					sid = pracom[re.sub('^Data_?(\d).*$','Data\\1',fn)]
