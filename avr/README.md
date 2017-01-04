@@ -1,3 +1,4 @@
+![AVR](https://github.com/KyomaHooin/Amusing/raw/master/avr/avr_screen.png "screenshot")
 
 DESCRIPTION
 
