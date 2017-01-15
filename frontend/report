@@ -38,7 +38,7 @@ for email in report.keys():
 			ibuff.seek(0)# return goddamnit..
 		conn.close()
 	except:
-		log.write("Failed to get graph. " + runtime + "\n")
+		log.write("Failed to get graph. " + " " + report[email][1] + " " + runtime + "\n")
 		continue
 	try:# PDF
 		pdf = Canvas(fbuff,pagesize=pagesizes.landscape(pagesizes.A4))
@@ -52,7 +52,7 @@ for email in report.keys():
 		pdf.showPage()
 		pdf.save()
 	except:
-		log.write("Failed to create PDF. " + runtime + "\n")
+		log.write("Failed to create PDF. " + " " + report[email][1] + " " + runtime + "\n")
 		continue
 	try:# MAIL
 		text = "\n\nDobrý den,\n\nAutomatický report pro lokalitu: " + \
@@ -81,7 +81,7 @@ for email in report.keys():
 		mail.sendmail('[removed]', email, msg.as_string())
 		mail.quit()
 	except:
-		log.write("Failed to send email." + runtime + "\n")
+		log.write("Failed to send email." + " " + report[email][1] + " " + runtime + "\n")
 		sys.exit(1)
 fbuff.close()
 ibuff.close()
