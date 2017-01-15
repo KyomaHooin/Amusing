@@ -82,7 +82,6 @@ for email in report.keys():
 		mail.quit()
 	except:
 		log.write("Failed to send email." + " " + report[email][1] + " " + runtime + "\n")
-		sys.exit(1)
 fbuff.close()
 ibuff.close()
 log.close()
