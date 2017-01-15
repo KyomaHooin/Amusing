@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 #
 # A4: 595 x 842 PT
+# 
+# /1M/1/0/0/0/0 - /interval/scale/extreme/alarm/color/derivate
 #
 
 import StringIO,smtplib,httplib,time,sys
