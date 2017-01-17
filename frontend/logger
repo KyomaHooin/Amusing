@@ -117,7 +117,7 @@ try:# POP3
 					if not xlsx_parse(part.get_payload(decode=True),sid): remove = False
 				elif re.match('^.*(csv|xls|xlsx)$',fn):# Fallback!
 					remove = False
-					log.write('Failed to parse attachment! ' + runtime + '\n')
+					log.write('Failed to parse attachment! ' + runtime + ' ' + fn + '\n')
 		if remove:
 			sess.dele(m)
 	sess.quit()
