@@ -33,7 +33,7 @@ CRON
 30 8 1 * *	root	/root/report &
 
 #Amusing Datalogger[8:35]
-35 8 * * *	root	/root/logger &
+35 10 * * *	root	/root/logger &
 </pre>
 APACHE
 <pre>
