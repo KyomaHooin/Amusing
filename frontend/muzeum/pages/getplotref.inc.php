@@ -85,10 +85,10 @@ function plotgraph($togen,$from,$to,$usescales=true,$showextremes=true,$showalar
 				    $der=($fe->v_value-$lastval)/(($fe->v_date-$lasttime)/3600);
 				} else $der=0;
 				$lastval=$fe->v_value;
-				if($mainperiod && $lasttime+$mainperiod<$fe->v_date) {
-				    for($lasttime+=$mainperiod;$lasttime<$fe->v_date;$lasttime+=$mainperiod) echo $lasttime.";NaN;NaN\n";
-				    $der="NaN";
-				}
+				//if($mainperiod && $lasttime+$mainperiod<$fe->v_date) {
+				//    for($lasttime+=$mainperiod;$lasttime<$fe->v_date;$lasttime+=$mainperiod) echo $lasttime.";NaN;NaN\n";
+				//    $der="NaN";
+				//}
 				$lasttime=$fe->v_date;
 			    }
 			    $avg+=$fe->v_value;
@@ -112,9 +112,9 @@ function plotgraph($togen,$from,$to,$usescales=true,$showextremes=true,$showalar
 			    } else {
 				if($fe->v_value>$max[0]) $max=array($fe->v_value,$fe->v_date);
 				if($fe->v_value<$min[0]) $min=array($fe->v_value,$fe->v_date);
-				if($mainperiod && $lasttime+$mainperiod<$fe->v_date) {
-				    for($lasttime+=$mainperiod;$lasttime<$fe->v_date;$lasttime+=$mainperiod) echo $lasttime.";NaN\n";
-				}
+				//if($mainperiod && $lasttime+$mainperiod<$fe->v_date) {
+				//    for($lasttime+=$mainperiod;$lasttime<$fe->v_date;$lasttime+=$mainperiod) echo $lasttime.";NaN\n";
+				//}
 				$lasttime=$fe->v_date;
 			    }
 			    $avg+=$fe->v_value;
