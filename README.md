@@ -12,7 +12,7 @@ CLIENT
       alix/ - PC Engines Alix/Wrap.
        avr/ - Atmel AVR RF868. 
      comet/ - Comet SYSTEM MS2/3+.
-datalogger/ - File Offset Electronic, Comet, Volcraft, Merlin.
+datalogger/ - Fine Offset Electronic, Comet, Volcraft, Merlin.
      fides/ - Trade FIDES Asset.
    hanwell/ - Hanwell Radiolog.
  raspberry/ - Raspberry Pi.
