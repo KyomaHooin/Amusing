@@ -22,7 +22,20 @@ fbuff = StringIO.StringIO()
 runtime = time.strftime("%d.%m.%Y %H:%M")
 logfile = '/var/log/report.log'
 
-report= {'[removed]':('archa','42_1-42_2-43_1-43_2-44_1-44_2-45_1-45_2')}
+report= {
+	'[removed]':('archa',42,43,44,45)
+	}
+
+#------------
+
+def get_list(rep):
+        lst = ''
+        for n in range(1,len(rep)):
+                lst += str(rep[n]) + '_1-' + str(rep[n]) + '_2'
+                if n != len(rep) - 1: lst += '-'
+        return lst
+
+#------------
 
 try:# MAIN
 	log = open(logfile,'a')
@@ -33,14 +46,14 @@ except:
 for email in report.keys():
 	try:# GRAPH
 		conn = httplib.HTTPSConnection('[removed]','443',timeout=15)
-		conn.request('GET','/muzeum/getplotref/' + report[email][1] + '/1M/1/0/0/0/0')
+		conn.request('GET','/muzeum/getplotref/' + get_list(report[email]) + '/1M/1/0/1/0/0')
 		r = conn.getresponse()
 		if r.status == 200:
 			ibuff.write(r.read())
 			ibuff.seek(0)# return goddamnit..
 		conn.close()
 	except:
-		log.write("Failed to get graph. " + " " + report[email][1] + " " + runtime + "\n")
+		log.write('Failed to get graph: ' + email + ' ' + runtime + '\n')
 		continue
 	try:# PDF
 		pdf = Canvas(fbuff,pagesize=pagesizes.landscape(pagesizes.A4))
@@ -54,7 +67,7 @@ for email in report.keys():
 		pdf.showPage()
 		pdf.save()
 	except:
-		log.write("Failed to create PDF. " + " " + report[email][1] + " " + runtime + "\n")
+		log.write('Failed to create PDF: ' + email + ' ' + runtime + '\n')
 		continue
 	try:# MAIL
 		text = "\n\nDobrý den,\n\nAutomatický report pro lokalitu: " + \
@@ -83,7 +96,7 @@ for email in report.keys():
 		mail.sendmail('[removed]', email, msg.as_string())
 		mail.quit()
 	except:
-		log.write("Failed to send email." + " " + report[email][1] + " " + runtime + "\n")
+		log.write('Failed to send email: ' + email + ' ' + runtime + '\n')
 fbuff.close()
 ibuff.close()
 log.close()
