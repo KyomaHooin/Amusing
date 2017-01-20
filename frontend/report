@@ -22,7 +22,7 @@ fbuff = StringIO.StringIO()
 runtime = time.strftime("%d.%m.%Y %H:%M")
 logfile = '/var/log/report.log'
 
-report= {
+report= {# m_id list
 	'[removed]':('archa',42,43,44,45)
 	}
 
