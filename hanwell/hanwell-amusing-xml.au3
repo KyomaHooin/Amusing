@@ -88,7 +88,7 @@ func main()
 				continueloop; skip archiving..
 			endif
 			;ARCHIVE
-			FileMove(@scriptdir & '\http\' & $gzlist[$i], @scriptdir & '\archive')
+			FileMove(@scriptdir & '\http\' & $gzlist[$i], @scriptdir & '\archive', 1)
 		next
 	endif
 	$http_error_handler = ""; Unregister COM error handler
