@@ -35,7 +35,11 @@ iface eth0 inet static
 	address 192.168.11.11(12)
 	netmask 255.255.255.0
 
-iface wlan0 inet dhcp
+iface wlan0 inet static
+	address 10.10.8.65(66)
+	netmask 255.255.0.0
+	gateway 10.10.10.43
+	dns-nameservers 10.10.9.26 10.10.9.27
 	wpa-ssid nm-private
 	wpa-psk *******************************************
 
