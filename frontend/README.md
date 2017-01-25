@@ -30,7 +30,9 @@ CRON
 0 2 * * * root /usr/bin/find /var/www/sensors/data -type f -name "*.gz" -mtime +7 -print0 | /usr/bin/xargs -0 /bin/rm -f
 
 #Amusing Report[1st dom at 8:30]
-30 8 1 * *	root	/root/report &
+30 8 1 * *	root	/root/report M &
+30 8 * * 1     root    [ $(expr `date +\%W` \% 2) -eq 0 ] && /root/report W &
+30 8 * * *     root    /root/report D &
 
 #Amusing Datalogger[8:35]
 35 10 * * *	root	/root/logger &
