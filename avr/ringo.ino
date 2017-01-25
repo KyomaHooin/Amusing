@@ -35,7 +35,7 @@ void flash5ms() {
 }
 
 void serialMenu() {
-  char c;
+  char c = '?';
   Serial.println();   
   Serial.print("-- MENU --");
   Serial.println();
@@ -53,7 +53,7 @@ void serialMenu() {
 }
 
 void editRadioAddress() {
-  char c; 
+  char c = '?'; 
   while (!(c >= 'A' && c <= 'Y')) {
     Serial.println();
     Serial.print("Address [A..Y]: ");
@@ -66,7 +66,7 @@ void editRadioAddress() {
 }
 
 void editSleepCycles() {
-  byte n; 
+  byte n = 0; 
   while (!(n >= 5 && n <= 255)) {
     Serial.println();   
     Serial.print("Cycle [5..255]: ");
