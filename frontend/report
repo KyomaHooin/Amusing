@@ -22,6 +22,8 @@ fbuff = StringIO.StringIO()
 runtime = time.strftime("%d.%m.%Y %H:%M")
 logfile = '/var/log/report.log'
 
+interval = {'M':31,'W':14,'D':1}
+
 report = {# m_id list
 	'[removed]':('archa','M',42,43,44,45)
 	}
@@ -95,7 +97,7 @@ for email in report.keys():
 				'amusing-report-' + \
 				report[email][0] + \
 				'-' + \
-				time.strftime("%d_%m_%Y",time.gmtime(time.time()-86400*31)) + \
+				time.strftime("%d_%m_%Y",time.gmtime(time.time() - 86400 * interval[report[email][1]])) + \
 				time.strftime("-%d_%m_%Y") + \
 				'.pdf"'
 		
