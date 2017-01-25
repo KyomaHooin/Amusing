@@ -396,6 +396,10 @@ case "1M":
     $to=$uphour;
     $from=$to-(86400*31);
     break;
+case "1W":
+    $to=$uphour;
+    $from=$to-(86400*14);
+    break;
 case "7D":
     $to=$uphour;
     $from=$to-(86400*7);

@@ -51,7 +51,11 @@ for email in report.keys():
 	if sys.argv[1] == report[email][1]:
 		try:# GRAPH
 			conn = httplib.HTTPSConnection('[removed]','443',timeout=15)
-			conn.request('GET','/muzeum/getplotref/' + get_list(report[email]) + '/1M/1/0/1/0/0')
+			conn.request('GET','/muzeum/getplotref/' + \
+				get_list(report[email]) + \
+				'/1' + \
+				report[email][1] + \
+				'/1/0/1/0/0')
 			r = conn.getresponse()
 			if r.status == 200:
 				ibuff.write(r.read())
