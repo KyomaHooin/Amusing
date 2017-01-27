@@ -96,17 +96,11 @@ endfunc
 
 func xml()
 	local $mapping,$child[5] = ['ID','InService','Data0','Data1','LastSignalTime']
-	$xmlfile = FileOpen($xml,258); UTF-8 & overwrite
+	_XMLLoadXML(FileRead($hanwell))
 	if @error then
-		logger("Failed to open XML file.")
+		logger("Failed to create XML instance.")
 		return
 	endif
-	FileWrite($xmlfile,FileRead($hanwell)); iso-8859-1 => utf-8
-	if @error then
-		logger("Failed to write XML file.")
-		return
-	endif
-	FileClose($xmlfile)
 	_FileReadToArray($map, $mapping, 0); 0 based..
 	if @error then
 		logger("Failed to read mapping file.")
@@ -115,11 +109,6 @@ func xml()
 	$csv = FileOpen(@ScriptDir & '\' & $location & '-' & $runtime & '.csv', 1); append
 	if @error then
 		logger("Failed to create CSV file.")
-		return
-	endif
-	_XMLFileOpen($xml)
-	if @error then
-		logger("Failed to create XML instance.")
 		return
 	endif
 	$cnt = _XMLGetNodeCount('/LiveSensorData/Sensor')
