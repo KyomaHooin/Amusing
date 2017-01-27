@@ -22,10 +22,10 @@ fbuff = StringIO.StringIO()
 runtime = time.strftime("%d.%m.%Y %H:%M")
 logfile = '/var/log/report.log'
 
-interval = {'M':31,'W':14,'D':1}
+interval = {'1M':31,'2W':14,'7D':7,'1D':1}
 
 report = {# m_id list
-	'[removed]':('archa','M',42,43,44,45)
+	'[removed]':('archa','1M',42,43,44,45)
 	}
 
 #------------
@@ -55,7 +55,7 @@ for email in report.keys():
 			conn = httplib.HTTPSConnection('[removed]','443',timeout=15)
 			conn.request('GET','/muzeum/getplotref/' + \
 				get_list(report[email]) + \
-				'/1' + \
+				'/' + \
 				report[email][1] + \
 				'/1/0/1/0/0')
 			r = conn.getresponse()
@@ -68,9 +68,9 @@ for email in report.keys():
 			continue
 		try:# PDF
 			pdf = Canvas(fbuff,pagesize=pagesizes.landscape(pagesizes.A4))
-			pdf.setTitle("Amusing Report 1.3")
+			pdf.setTitle("Amusing Report 1.4")
 			pdf.setFont('Helvetica', 10)
-			pdf.drawString(50,550,"Amusing Report 1.3")
+			pdf.drawString(50,550,"Amusing Report 1.4")
 			pdf.drawString(640,550,"vygenerováno v " + runtime)
 			pdf.line(50,545,790,543)
 			pdf.drawImage(ImageReader(ibuff),70,50,700,470)
