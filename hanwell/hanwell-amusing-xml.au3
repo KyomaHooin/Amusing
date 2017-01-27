@@ -20,7 +20,6 @@ $location='hanwell'
 $hanwell = 'c:\Radiolog8ForMuseums\Local\XML\masterstatus.xml'
 
 $map = @ScriptDir & '\' & $location & '-sensor.txt'
-$xml = @ScriptDir & '\' & 'master.xml'
 
 $runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 
