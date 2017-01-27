@@ -18,7 +18,6 @@ DHT dht(DHTPIN,DHT22);// DHT instance
 // ----------------------------------------------------------------
 
 void activeDHT() {
-  pinMode(DHTPIN, INPUT);
   digitalWrite(DHTPowerPin,HIGH);
 }
 
@@ -99,12 +98,12 @@ void setup() {
   // Menu
   Serial.println("---- Picobeatle RINGO III, ver. 131207b ----");
   Serial.println();
-  Serial.print("Radio address ["); Serial.print(EEPROM.read(10));
+  Serial.print("Radio address ["); Serial.print(char(EEPROM.read(10)));
   Serial.print("] Sleep cycles ["); Serial.print(EEPROM.read(11));
   Serial.println("]");
   Serial.println();
   Serial.println("Press 's' for setup.");
-  while (millis() < 3000) { if (Serial.read() == 's') { serialMenu(); }}
+  while (millis() < 5000) { if (Serial.read() == 's') { serialMenu(); }}
   Serial.println();
   Serial.println("Resuming normal operation."); 
 }
@@ -118,9 +117,7 @@ void loop() {
   activeDHT();
   dht.begin();
   digitalWrite(sensorPowerPin,HIGH);
-  // wait for VccH settle
-  delay(500);
-  // While initializing, read analog
+  delay(1000);// wait for Vcc settle
   vSupp = analogRead(vSupplyPin) * 0.00457;
   vLight = analogRead(vLightPin) * 0.00457;
   humidity = dht.readHumidity();
@@ -133,8 +130,8 @@ void loop() {
   flash5ms();
   // Create msg string
   addr = EEPROM.read(10);
-  if (!addr) { addr = 'A'; }// default
-  sprintf(msg, "*Z%c#T%03dH%03dL%03dB%03d", addr, temperature * 10, humidity * 10 , light * 10, vSupp * 100);   
+  if (!(addr >= 'A' && addr <= 'Y')) { addr = 'A'; }// default
+  sprintf(msg, "*Z%c#T%03dH%03dL%03dB%03d", addr, int(temperature * 10), int(humidity * 10), int(light * 10), int(vSupp * 100));   
   Serial.println(msg);
   // Send data message
   digitalWrite(radioPowerPin,HIGH);
@@ -143,10 +140,10 @@ void loop() {
   digitalWrite(radioPowerPin,LOW);
   // Going to sleep..
   sleepCycles = EEPROM.read(11);
-  if (!sleepCycles) { sleepCycles = 5; }// default
+  if (!(sleepCycles >= 5 && sleepCycles <= 255)) { sleepCycles = 37; }// default
   sleep = sleepCycles + random(-2,3);// avoid collision
-  Serial.print("Sleeping for "); Serial.print(sleep); Serial.println(" * 8s cycle!");
-  Serial.flush();// flush serial 
+  Serial.print("Sleeping for "); Serial.print(int(sleep)); Serial.println(" * 8s cycle!");
+  Serial.flush();// flush serial
   for (int i = 0; i < sleep; i++) { LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF); }
 }
 
