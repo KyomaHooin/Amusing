@@ -67,6 +67,13 @@ watchdog-device = /dev/watchdog
 update-rc.d watchdog enable
 </pre>
 
+BUG
+<pre>
+ioctl[SIOCSIWAP]: Operation not permitted
+ioctl[SIOCSIWENCODEEXT]: Invalid argument
+ioctl[SIOCSIWENCODEEXT]: Invalid argument
+</pre>
+
 FILE
 
 <pre>
