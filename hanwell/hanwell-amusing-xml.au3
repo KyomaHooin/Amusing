@@ -129,7 +129,7 @@ func xml()
 		if $data[$k][1] == 'true' and $data[$k][4] then; active sensor and running
 			$type = get_sensor_type($data[$k][0],$mapping)
 			if $type = '' then
-				logger("No mapping for ID. " & $data[$k][0])
+				logger("No mapping for ID: " & $data[$k][0])
 				continueloop
 			endif
 			$timestamp = get_timestamp($data[$k][4]); RT to UTC
@@ -149,7 +149,7 @@ EndFunc
 func archive()
 	$archlist = _FileListToArray(@scriptdir & '\archive', "*.gz")
 	if ubound($archlist) < 2 then
-		logger("No file to cleanup..")
+		logger("No file to cleanup.")
 	else
 		for $i=1 to UBound($archlist) - 1
 			$ctime = FileGetTime(@ScriptDir & '\archive\' & $archlist[$i], 1); FT_CREATED -> array
