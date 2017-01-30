@@ -11,6 +11,7 @@ mount -t tmpfs -o size=32m tmpfs /root/amusing/ramdisk
 /etc/crontab:
 
 40 23	* * *	root	/root/amusing/cam-amusing.sh > /dev/null 2>&1
+*/10 *  * * *   root    [[ $(/sbin/ip link show wlan0 | /bin/grep DOWN) ]] && /sbin/ifup wlan0 > /dev/null 2>&1
 
 /etc/fstab:
 
@@ -42,6 +43,7 @@ iface wlan0 inet static
 	dns-nameservers 10.10.9.26 10.10.9.27
 	wpa-ssid nm-private
 	wpa-psk *******************************************
+	wireless-power off
 
 /etc/udev/rules.d/23-usb-serial.rules:
 
