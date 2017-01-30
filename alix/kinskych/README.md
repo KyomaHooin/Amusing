@@ -20,7 +20,7 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 
 /etc/crontab:
 
-*/5 *	* * *	root	/usr/sbin/ntpdate -4 tik.cesnet.cz > /dev/null 2>&1
+*/5 *	* * *	root	/usr/sbin/ntpdate -b -4 tik.cesnet.cz > /dev/null 2>&1
 
 /etc/network/interfaces.d/eth0.conf:
 

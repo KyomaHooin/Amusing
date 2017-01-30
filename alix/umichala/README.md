@@ -17,7 +17,7 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 /etc/crontab:
 
 40 23	* * *	root	/root/amusing/cam-amusing.sh > /dev/null 2>&1
-*/5 *	* * *	root	/usr/sbin/ntpdate -4 tik.cesnet.cz > /dev/null 2>&1
+*/5 *	* * *	root	/usr/sbin/ntpdate -b -4 tik.cesnet.cz > /dev/null 2>&1
 
 /etc/rc.local:
 

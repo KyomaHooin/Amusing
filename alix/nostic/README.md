@@ -20,7 +20,7 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 
 /etc/crontab:
 
-*/5 *	* * *	root	/usr/sbin/ntpdate -4 172.16.64.1 > /dev/null 2>&1
+*/5 *	* * *	root	/usr/sbin/ntpdate -b -4 172.16.64.1 > /dev/null 2>&1
 
 /etc/rc.local:
 
