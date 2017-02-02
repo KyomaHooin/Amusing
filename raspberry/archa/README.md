@@ -11,7 +11,7 @@ mount -t tmpfs -o size=32m tmpfs /root/amusing/ramdisk
 /etc/crontab:
 
 40 23	* * *	root	/root/amusing/cam-amusing.sh > /dev/null 2>&1
-*/10 *	* * *	root	(/sbin/ip link show wlan0 | /bin/grep DOWN) > /dev/null 2>&1 && /sbin/ifup wlan0 > /dev/null 2>&1
+*/10 *	* * *	root	(ip link show wlan0 | grep DOWN) > /dev/null 2>&1 && ifup wlan0 > /dev/null 2>&1
 
 /etc/fstab:
 
