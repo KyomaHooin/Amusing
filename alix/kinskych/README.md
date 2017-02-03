@@ -27,7 +27,7 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 auto eth0
 iface eth0 inet static
         address 10.0.40.197
-	netmask 255.255.255.0
+        netmask 255.255.255.0
         gateway 10.0.40.200
         dns-nameservers	78.41.19.2 78.41.19.3
 
