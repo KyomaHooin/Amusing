@@ -35,7 +35,6 @@ FILE
                        tunnel - AutoSSH tunnel.
                      firewall - Simple firewall.
               alix-amusing.py - Main data transport.
-Device-SerialPort-1.04.tar.gz - Perl serial library.
             nostic-screen.png - HW screen.
 </pre>
 
