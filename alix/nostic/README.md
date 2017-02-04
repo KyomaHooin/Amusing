@@ -2,7 +2,7 @@
 
 DESCRIPTION
 
-Alix RS232 connected AVR 868MHz DH11 sensor data transport GZIP compressed CSV over HTTP.
+Alix RS232 connected AVR 868MHz DH22 sensor data transport GZIP compressed CSV over HTTP.
 
 WRAP
 <pre>
