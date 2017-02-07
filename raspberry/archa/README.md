@@ -65,6 +65,7 @@ bcm2708_wdog
 /etc/watchdog.conf:
 
 watchdog-device = /dev/watchdog
+watchdog-timeout = 15
 
 update-rc.d watchdog enable
 </pre>
