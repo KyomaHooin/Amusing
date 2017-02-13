@@ -68,11 +68,9 @@ FILE
 <pre>
                                     tunnel - AutoSSH tunnel.
                                   firewall - Simple firewall.
-                                getvalues8 - LabJack U3 binary.
+                           alix-amusing.py - Main data transport.
                          LabJackPython.zip - LabJack Python library.
 labjack-exodriver-v2.5.1-0-g4a45f5f.tar.gz - LabJack U3 driver.
-               libusb-compat-0.1.4.tar.bz2 - USB compat library.
-                 u3Base-20091125r11.tar.gz - LabJAck U3 C library.
 </pre>
 
 CONTACT
