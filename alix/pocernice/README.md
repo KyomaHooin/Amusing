@@ -66,11 +66,11 @@ interval = 15
 
 FILE
 <pre>
-                                    tunnel - AutoSSH tunnel.
-                                  firewall - Simple firewall.
-                           alix-amusing.py - Main data transport.
-                         LabJackPython.zip - LabJack Python library.
-labjack-exodriver-v2.5.1-0-g4a45f5f.tar.gz - LabJack U3 driver.
+                          tunnel - AutoSSH tunnel.
+                        firewall - Simple firewall.
+                 alix-amusing.py - Main data transport.
+               LabJackPython.zip - LabJack Python library by LabJack (c) 2015
+labjack-exodriver-4a45f5f.tar.gz - LabJack U3 driver v2.5.1-0-g by LabJack (c) 2009.
 </pre>
 
 CONTACT
