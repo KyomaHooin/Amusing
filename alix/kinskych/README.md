@@ -59,6 +59,11 @@ fsck exited with status code 8
 
 Generating locales (this might take a while)...
   en_US.UTF-8...memory exhausted(Killed)
+
+4] watchdog
+
+watchdog[2281]: cannot get watchdog identity (errno = 25 = 'Inappropriate ioctl for device')
+
 </pre>
 FILE
 <pre>
