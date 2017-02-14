@@ -43,14 +43,33 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
 	    $_SESSION->error_text="Nezadán uživatel";
 	    redir();
 	}
-	$qe=$SQL->query("select * from user where 
-	    u_uname=\"".$SQL->escape($user)."\" &&
-	    u_pass=sha1(\"".$SQL->escape(get_ind($_POST,"000_pass"))."\") && u_state='Y'");
+
+	$qe=$SQL->query("select * from user where u_uname=\"".$SQL->escape($user)."\" && u_state='Y'");
 	$fe=$qe->obj();
+	
 	if(!$fe) {
-	    $_SESSION->error_text="Neplatné přihlášení";
-	    logsys("neplatné přihlášení: ".$user);
+	    $_SESSION->error_text="Neplatný uživatel";
 	    redir();
+	}
+
+	$ldaprdn  = '[removed]' . "\\" . $user;
+	$ldapconn = ldap_connect("ldap://[removed]");
+	$ldapconn2 = ldap_connect("ldap://[removed]");
+	$ldapbind = @ldap_bind($ldapconn, $ldaprdn,get_ind($_POST,"000_pass"));
+
+	if (!$ldapbind) { $ldapbind = @ldap_bind($ldapconn2, $ldaprdn, get_ind($_POST,"000_pass")); }// fallback
+
+	if(!$ldapbind) {
+	    $qe=$SQL->query("select * from user where 
+	        u_uname=\"".$SQL->escape($user)."\" &&
+	        u_pass=sha1(\"".$SQL->escape(get_ind($_POST,"000_pass"))."\") && u_state='Y'");
+	    $fe=$qe->obj();
+
+	    if(!$fe) {
+	        $_SESSION->error_text="Neplatné přihlášení";
+	        logsys("neplatné přihlášení: ".$user);
+	        redir();
+	    }
 	}
 	$_SESSION->user=$fe;
 	$_SESSION->userpref=unserialize($fe->u_pref);

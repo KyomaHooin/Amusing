@@ -52,11 +52,11 @@ grant all privileges on xxx.* to 'yyy'@'localhost';
 </pre>
 PHP
 <pre>
-php5 php5-gd php5-curl php5-imagic php5-recode php5-mysql php5-apcu php-apc
+php5 php5-gd php5-curl php5-imagic php5-recode php5-mysql php5-apcu php-apc php5-ldap
 </pre>
 EXTRA
 <pre>
-gnuplot gnuplot-nox imagemagick
+gnuplot gnuplot-nox imagemagick python
 </pre>
 FILE
 <pre>
