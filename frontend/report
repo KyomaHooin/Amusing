@@ -24,15 +24,15 @@ logfile = '/var/log/report.log'
 
 interval = {'1M':31,'2W':14,'7D':7,'1D':1}
 
-report = {# m_id list
-	'[removed]':('archa','1M',42,43,44,45)
-	}
+report = (# email list | locality | interval | M_ID list
+	[[removed],'archa'	,'1M'	,42,43,44,45],
+	)
 
 #------------
 
 def get_list(rep):
         lst = ''
-        for n in range(2,len(rep)):
+        for n in range(3,len(rep)):
                 lst += str(rep[n]) + '_1-' + str(rep[n]) + '_2'
                 if n != len(rep) - 1: lst += '-'
         return lst
@@ -49,22 +49,18 @@ if len(sys.argv) != 2:
 	log.write('Wrong number of arguments. ' + runtime + '\n')
 	sys.exit(2)
 
-for email in report.keys():
-	if sys.argv[1] == report[email][1]:
+for r in report:
+	if sys.argv[1] == r[2]:
 		try:# GRAPH
 			conn = httplib.HTTPSConnection('[removed]','443',timeout=15)
-			conn.request('GET','/muzeum/getplotref/' + \
-				get_list(report[email]) + \
-				'/' + \
-				report[email][1] + \
-				'/1/0/1/0/0')
-			r = conn.getresponse()
-			if r.status == 200:
-				ibuff.write(r.read())
+			conn.request('GET','/muzeum/getplotref/' + get_list(r) + '/' + r[2] + '/1/0/1/0/0')
+			ret = conn.getresponse()
+			if ret.status == 200:
+				ibuff.write(ret.read())
 				ibuff.seek(0)# return goddamnit..
 			conn.close()
 		except:
-			log.write('Failed to get graph: ' + email + ' ' + runtime + '\n')
+			log.write('Failed to get graph: ' + r[1] + ' ' + runtime + '\n')
 			continue
 		try:# PDF
 			pdf = Canvas(fbuff,pagesize=pagesizes.landscape(pagesizes.A4))
@@ -78,36 +74,35 @@ for email in report.keys():
 			pdf.showPage()
 			pdf.save()
 		except:
-			log.write('Failed to create PDF: ' + email + ' ' + runtime + '\n')
+			log.write('Failed to create PDF: ' + r[1] + ' ' + runtime + '\n')
 			continue
 		try:# MAIL
-			text = "\n\nDobrý den,\n\nAutomatický report pro lokalitu: " + \
-				report[email][0] + \
-				"\n\nAmusing NM\n\n------\n\n" + \
-				"Tato zpráva je generována bez možnosti příjmu Vaší odpovědi.\n"
+			for addr in r[0]:
+				text = "\n\nDobrý den,\n\nAutomatický report pro lokalitu: " + \
+					r[1] + \
+					"\n\nAmusing NM\n\n------\n\n" + \
+					"Tato zpráva je generována bez možnosti příjmu Vaší odpovědi.\n"
 
-			msg = MIMEMultipart()
-			msg['From'] = 'Amusing Report <[removed]>'
-			msg['To'] = email
-			msg['Subject'] = "Amusing Report - " + runtime
-			msg.attach(MIMEText(text,'plain','utf-8'))
+				msg = MIMEMultipart()
+				msg['From'] = 'Amusing Report <[removed]>'
+				msg['To'] = addr
+				msg['Subject'] = "Amusing Report - " + runtime
+				msg.attach(MIMEText(text,'plain','utf-8'))
 
-			att = MIMEApplication(fbuff.getvalue())
-			att['Content-Disposition'] = 'attachment; filename="' + \
-				'amusing-report-' + \
-				report[email][0] + \
-				'-' + \
-				time.strftime("%d_%m_%Y",time.gmtime(time.time() - 86400 * interval[report[email][1]])) + \
-				time.strftime("-%d_%m_%Y") + \
-				'.pdf"'
+				att = MIMEApplication(fbuff.getvalue())
+				att['Content-Disposition'] = 'attachment; filename="' + \
+					'amusing-report-' + r[1] + '-' + \
+					time.strftime("%d_%m_%Y",time.gmtime(time.time() - 86400 * interval[r[2]])) + \
+					time.strftime("-%d_%m_%Y") + \
+					'.pdf"'
 		
-			msg.attach(att)
+				msg.attach(att)
 
-			mail = smtplib.SMTP('[removed]')
-			mail.sendmail('[removed]', email, msg.as_string())
-			mail.quit()
+				mail = smtplib.SMTP('[removed]')
+				mail.sendmail('[removed]', addr, msg.as_string())
+				mail.quit()
 		except:
-			log.write('Failed to send email: ' + email + ' ' + runtime + '\n')
+			log.write('Failed to send email: ' + addr + ' ' + runtime + '\n')
 fbuff.close()
 ibuff.close()
 log.close()
