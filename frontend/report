@@ -60,7 +60,7 @@ for r in report:
 				ibuff.seek(0)# return goddamnit..
 			conn.close()
 		except:
-			log.write('Failed to get graph: ' + r[1] + ' ' + runtime + '\n')
+			log.write('Failed to get graph. ' + runtime + '\n')
 			continue
 		try:# PDF
 			pdf = Canvas(fbuff,pagesize=pagesizes.landscape(pagesizes.A4))
@@ -74,7 +74,7 @@ for r in report:
 			pdf.showPage()
 			pdf.save()
 		except:
-			log.write('Failed to create PDF: ' + r[1] + ' ' + runtime + '\n')
+			log.write('Failed to create PDF. ' + runtime + '\n')
 			continue
 		try:# MAIL
 			for addr in r[0]:
@@ -102,7 +102,7 @@ for r in report:
 				mail.sendmail('[removed]', addr, msg.as_string())
 				mail.quit()
 		except:
-			log.write('Failed to send email: ' + addr + ' ' + runtime + '\n')
+			log.write('Failed to send email. ' + runtime + '\n')
 fbuff.close()
 ibuff.close()
 log.close()
