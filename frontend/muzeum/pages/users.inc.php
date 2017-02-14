@@ -53,8 +53,8 @@ if($_SESSION->user_filterenable) {
 
 $ord=array();
 switch($_SESSION->user_sort) {
-case "sname":
-    $ord[]="u_fullname ".($_SESSION->user_sortmode?"desc":"asc");
+case "uname":
+    $ord[]="u_uname ".($_SESSION->user_sortmode?"desc":"asc");
     break;
 case "email":
     $ord[]="u_email ".($_SESSION->user_sortmode?"desc":"asc");
@@ -66,9 +66,9 @@ case "lock":
     $ord[]="u_state ".($_SESSION->user_sortmode?"desc":"asc");
     break;
 default:
-    $_SESSION->user_sort="uname";
+    $_SESSION->user_sort="sname";
 }
-$ord[]="u_uname ".($_SESSION->user_sortmode?"desc":"asc");
+$ord[]="u_fullname ".($_SESSION->user_sortmode?"desc":"asc");
 
 function role2string($r) {
     switch($r) {
