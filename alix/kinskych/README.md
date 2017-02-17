@@ -22,10 +22,12 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 
 */10 *	* * *	root	/usr/sbin/ntpdate -b -4 195.113.144.201 > /dev/null 2>&1
 
-/etc/watchdog.conf:
+/etc/default/watchdog:
 
-watchdog-device = /dev/watchdog
-interval = 15
+run_watchdog=0
+run_wd_keepalive=0
+
+update-rc.d watchdog disable
 
 /etc/network/interfaces.d/eth0.conf:
 
