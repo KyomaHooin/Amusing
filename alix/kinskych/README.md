@@ -20,7 +20,7 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 
 /etc/crontab:
 
-*/10 *	* * *	root	/usr/sbin/ntpdate -b -4 195.113.144.201 > /dev/null 2>&1
+*/5 *	* * *	root	/usr/sbin/ntpdate -b -4 195.113.144.201 > /dev/null 2>&1
 
 /etc/default/watchdog:
 
