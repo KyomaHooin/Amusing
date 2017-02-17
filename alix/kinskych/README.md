@@ -24,7 +24,6 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 
 /etc/watchdog.conf:
 
-watchdog-timeout = 15
 watchdog-device = /dev/watchdog
 interval = 15
 
