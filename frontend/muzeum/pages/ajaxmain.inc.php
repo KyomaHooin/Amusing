@@ -622,7 +622,7 @@ function plotgraph($togen,$from,$to) {
 	if($totcnt) {
 	    $_SESSION->plot_outputs[basename($fn)]=time();
 	    echo "\n<!-- noprint_} -->\n";
-	    echo "<a href=\"".root()."getplotpng/".basename($plotpng).".png\" target=\"_blank\"><img src=\"".root()."getplotpng/".basename($plotpng).".png\" width=\"1754\" /></a>";
+	    echo "<a href=\"".root()."getplotpng/".basename($plotpng).".png\" target=\"_blank\"><img src=\"".root()."getplotpng/".basename($plotpng).".png\" width=\"1366\" /></a>";
 	    echo "\n<!-- noprint_{ -->\n";
 	    echo "<br /><a target=\"_blank\" href=\"".$getref1d."\">graf 1D</a><br /><a target=\"_blank\" href=\"".$getref7d."\">graf 7D</a><br />";
 	    echo "<a href=\"".root()."getplotpng/".basename($plotpng).".png\" target=\"_blank\">Plná velikost</a><br />";
