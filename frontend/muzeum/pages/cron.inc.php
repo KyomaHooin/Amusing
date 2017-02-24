@@ -73,8 +73,8 @@ function sendwarning($fe) {
     \n
     parametry alarmu: ".$atext."\n
     \n
-    graf: http://".$_DOMAIN.$getref1d."\n
-    potvrzení: http://".$_DOMAIN.root()."alarmacktab/m/".$acid;
+    graf: https://".$_DOMAIN.$getref1d."\n
+    potvrzení: https://".$_DOMAIN.root()."alarmacktab/m/".$acid;
     $subject="=?utf-8?B?".base64_encode("Varování - Muzeum senzory")."?=";
     if($_SENDMAIL) {
 	logsys("warning alarm mail sent to ".$emails);
@@ -139,8 +139,8 @@ function sendcritical($fe) {
     \n
     parametry alarmu: ".$atext."\n
     \n
-    graf: http://".$_DOMAIN.$getref1d."\n
-    potvrzení: http://".$_DOMAIN.root()."alarmacktab/m/".$acid;
+    graf: https://".$_DOMAIN.$getref1d."\n
+    potvrzení: https://".$_DOMAIN.root()."alarmacktab/m/".$acid;
     $subject="=?utf-8?B?".base64_encode("Kritické - Muzeum senzory")."?=";
     if($_SENDMAIL) {
 	logsys("critical alarm mail sent to ".$emails);
