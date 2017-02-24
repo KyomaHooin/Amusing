@@ -28,6 +28,7 @@ do {
 	    $_SESSION->error_text="Neexistující potvrzení";
 	    redir(root()."alarmsack");
 	}
+	$_SESSION->error_text="Pro potvrzení je vyžadováno přihlášení.";
 	redir(root()."login");
 	//echo "Pro potvrzení je vyžadováno přihlásení.";
 	//break;
