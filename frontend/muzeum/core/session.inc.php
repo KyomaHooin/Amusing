@@ -1,7 +1,7 @@
 <?php
 
 function sess_token() {
-    $sesstoken="5N_sfm3k2;fh";
+    $sesstoken="[removed]";
     return sha1($sesstoken.__FILE__);
 }
 

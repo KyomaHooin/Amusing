@@ -80,7 +80,8 @@ class c_sess {
     var $alarmsack_filter;
     var $alarmsack_filterenable;
     var $alarmsack_currpage;
-    
+    var $alarmsack_origin;
+
     var $comments_sort;
     var $comments_sortmode;
     var $comments_filter;
