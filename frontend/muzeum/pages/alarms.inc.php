@@ -263,14 +263,15 @@ while($fe=$qe->obj()) {
 	    if(!$alrm) {
 		echo "<li>invalidni alarm: ".htmlspecialchars($fe2->a_class)."</li>";
 	    } else {
-		echo "<li>".$fe2->a_id."&nbsp;".input_check("000_alarm_id[".$fe2->a_id."]")." ";
+		echo "<li>".$fe2->a_id." ".input_check("000_alarm_id[".$fe2->a_id."]")." ";
 		if($fe2->a_crit=='Y') echo "<b>Kritický</b><br />";
 		else echo "Varování<br />";
 		if(strlen($fe2->apdesc)) echo "<b>".htmlspecialchars("definice: ".$fe2->apdesc)."</b> ";
 //		if(urole()=='A') echo htmlspecialchars($fe2->a_desc." ".$fe2->var_desc." ".$fe2->u_fullname);
 //		else echo htmlspecialchars($fe2->a_desc." ".$fe2->var_desc);
-//		echo "<br />".htmlspecialchars($fe2->a_email)."<br />".$alrm->desc($fe2->a_data)."</li>";
-		echo "<br />".htmlspecialchars($fe2->a_email)."<br /></li>";
+		echo htmlspecialchars($fe2->a_desc);
+		echo "<br />".htmlspecialchars($fe2->a_email)."<br />".$alrm->desc($fe2->a_data)."</li>";
+//		echo "<br />".htmlspecialchars($fe2->a_email)."<br /></li>";
 	    }
 	}
 	echo "</ul>";
