@@ -526,7 +526,7 @@ echo "<td style=\"vertical-align:top; padding-left:8px; padding-top:8px; width:4
     echo "<table class=\"nobr\">";
     echo "<tr><td>Od (SEČ):&nbsp;</td><td>".input_text_temp("001_main_from")."&nbsp;".input_select_temp("001_main_from_h",$hours).":".input_select_temp("001_main_from_m",$mins)."</td></tr>";
     echo "<tr><td>Do (SEČ):&nbsp;</td><td>".input_text_temp("001_main_to")."&nbsp;".input_select_temp("001_main_to_h",$hours).":".input_select_temp("001_main_to_m",$mins)."</td></tr>";
-    echo "<tr><td colspan=\"2\" style=\"text-align:center\"><div id=\"timeset\">";
+    echo "<tr><td colspan=\"2\" style=\"text-align:center\"><div id=\"timeset\"><br />";
     echo input_radio_temp("main_time","1").label("main_time_val1","Vše");
     echo input_radio_temp("main_time","2").label("main_time_val2","Rozsah");
     echo input_radio_temp("main_time","3").label("main_time_val3","3R");
