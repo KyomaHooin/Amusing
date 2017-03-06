@@ -29,7 +29,7 @@ do {
 	    redir(root()."alarmsack");
 	}
 	$_SESSION->error_text="Pro potvrzení je vyžadováno přihlášení";
-	$_SESSION->alarmack_origin=root().$PAGE."/".implode("/",$ARGV);
+	$_SESSION->alarmsack_origin=root().$PAGE."/".implode("/",$ARGV);
 	redir(root()."login");
 	//echo "Pro potvrzení je vyžadováno přihlásení.";
 	//break;

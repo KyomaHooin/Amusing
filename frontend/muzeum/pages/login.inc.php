@@ -76,7 +76,7 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
 	$_SESSION->user->u_pref=""; // memory
 //	logtext("přihlášen");
 	setuserdefaults();
-	if(strlen($_SESSION->alarmack_origin)) redir($_SESSION->alarmack_origin);
+	if(strlen($_SESSION->alarmsack_origin)) redir($_SESSION->alarmsack_origin);
 	redir(root()."main");
     }
     redir();
