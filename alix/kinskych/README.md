@@ -36,6 +36,7 @@ iface eth0 inet static
         address 10.0.40.197
         netmask 255.255.255.0
         gateway 10.0.40.200
+        dns-nameservers 10.0.1.187 10.0.1.197
 
 /etc/rc.local:
 
