@@ -176,6 +176,9 @@ function val_saverawvalues(&$vals,$vid,$mid,$sid,$send=false) {
     
     $miny=gmdate("Y",$mints);
     $maxy=gmdate("Y",$maxts);
+
+    if ($maxy > gmdate("Y") + 1) return array('r'=>0,'d'=>0,'w'=>0,'a'=>0);// no write to future
+
     val_checkdatatables($miny-1,$maxy+1); // overdrive
     
     val_lock($vid,$mid);
