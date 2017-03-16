@@ -1,5 +1,5 @@
 ;
-; Hanwell RadioLog RL8 -> CSV -> GZIP -> HTTP
+; Hanwell RadioLog XML -> CSV -> GZIP -> HTTP
 ;
 ; schtasks /create /tn "Hanwell Amusing" /tr "c:\hanwell-amusing\hanwell-amusing.exe" /sc MINUTE /mo 15
 ;
@@ -12,14 +12,14 @@
 #include<Date.au3>
 #include<File.au3>
 #include<ZLIB.au3>
-#include<RL8.au3>
+#include<_XMLDomWrapper.au3>
 
 ;VAR
 
 $location='hanwell'
+$hanwell = 'c:\Radiolog8ForMuseums\Local\XML\masterstatus.xml'
 
 $map = @ScriptDir & '\' & $location & '-sensor.txt'
-$rlpath= 'c:\Radiolog8ForMuseums\Local'
 
 $runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 
@@ -38,7 +38,7 @@ DirCreate(@scriptdir & '\http')
 $logfile = FileOpen(@scriptdir & '\' & $location & '-amusing.log', 1); 1 = append
 if @error then exit; silent exit..
 logger(@CRLF & "Program start: " & $runtime)
-rl8(); Parse data from binary
+xml(); Parse data from XML
 main(); Pack and transport data over HTTP
 archive(); Archive logrotate
 logger("Program end.")
@@ -87,73 +87,69 @@ func main()
 				continueloop; skip archiving..
 			endif
 			;ARCHIVE
-			FileMove(@scriptdir & '\http\' & $gzlist[$i], @scriptdir & '\archive')
+			FileMove(@scriptdir & '\http\' & $gzlist[$i], @scriptdir & '\archive', 1)
 		next
 	endif
 	$http_error_handler = ""; Unregister COM error handler
 endfunc
 
-func rl8()
-	local $mapping
+func xml()
+	local $mapping,$child[5] = ['ID','InService','Data0','Data1','LastSignalTime']
+	_XMLLoadXML(FileRead($hanwell))
+	if @error then
+		logger("Failed to create XML instance.")
+		return
+	endif
 	_FileReadToArray($map, $mapping, 0); 0 based..
 	if @error then
-		logger("Failed to open mapping file.")
+		logger("Failed to read mapping file.")
 		return
 	endif
-	$rlist = _FileListToArray($rlpath, "*.rl8")
-	if ubound($rlist) < 2 then
-		logger("No sensor files..")
+	$csv = FileOpen(@ScriptDir & '\' & $location & '-' & $runtime & '.csv', 1); append
+	if @error then
+		logger("Failed to create CSV file.")
 		return
-	else
-		$csv = FileOpen(@ScriptDir & '\' & $location & '-' & $runtime & '.csv', 1); append
-		if @error then
-			logger("Failed to create CSV file.")
-			return
-		endif
-		for $i=1 to UBound($rlist) - 1
-			$timestamp = get_timestamp($rlpath & '\' & $rlist[$i]); before loading into memory..
-			$rl = FileOpen($rlpath & '\' & $rlist[$i], 16); binary
+	endif
+	$cnt = _XMLGetNodeCount('/LiveSensorData/Sensor')
+	if @error then
+		logger("No XML data.")
+		return
+	endif
+	local $data[$cnt][5]
+	for $i = 1 to $cnt
+		for $j = 0 to ubound($child) - 1
+			$data[$i-1][$j] = _XMLGetValue('/LiveSensorData/Sensor[' & $i & ']/' & $child[$j])[1]
 			if @error then
-				logger("Failed to open sensor file " & $rlist[$i])
+				logger("Failed to get XML value.")
 				continueloop
-			else
-				$rl_bin = FileRead($rl); read file into memory..
-				if @error then
-					logger("Failed to read sensor file " & $rlist[$i])
-					FileClose($rl)
-					continueloop
-				else
-					FileClose($rl); close the file..
-					$sid = _GetRLSid($rl_bin)
-					if $sid = '' then
-						logger("Failed to read serial from memory. " & $rlist[$i])
-						continueloop
-					endif
-					$data = _GetRLData($rl_bin)
-					if $data = '' then
-						logger("Failed to read data from memory. " & $rlist[$i])
-						continueloop
-					endif
-					$type = get_sensor_type($sid,$mapping)
-					if $type = '' then
-						logger("No mapping for serial. " & $sid)
-						continueloop
-					endif
-					;write CSV..
-					FileWriteLine($csv, $sid & ';' & $type[0] & ';' & $data[0] & ';' & $timestamp); first slot..
-					if ubound($type) = 2 then FileWriteLine($csv, $sid & ';' & $type[1] & ';'& $data[1]  & ';' & $timestamp); second slot..
-				endif
-				$rl_bin = ''; free memory..
 			endif
 		next
-		FileClose($csv); close CSV..
-	endif
+	next
+	for $k = 0 to UBound($data) - 1
+		if $data[$k][1] == 'true' and $data[$k][4] then; active sensor and running
+			$type = get_sensor_type($data[$k][0],$mapping)
+			if $type = '' then
+				logger("No mapping for ID: " & $data[$k][0])
+				continueloop
+			endif
+			$timestamp = get_timestamp($data[$k][4]); RT to UTC
+			if $data[$k][2] then; check empty
+				FileWriteLine($csv, $type[0] & ';' & $type[1] & ';' & $data[$k][2] & ';' & $timestamp)
+			endif
+			if ubound($type) = 3 then
+				if $data[$k][3] then; check empty
+					FileWriteLine($csv, $type[0] & ';' & $type[2] & ';' & $data[$k][3] & ';' & $timestamp)
+				endif
+			endif
+		endif
+	next
+	FileClose($csv)
 EndFunc
 
 func archive()
 	$archlist = _FileListToArray(@scriptdir & '\archive', "*.gz")
 	if ubound($archlist) < 2 then
-		logger("No file to cleanup..")
+		logger("No file to cleanup.")
 	else
 		for $i=1 to UBound($archlist) - 1
 			$ctime = FileGetTime(@ScriptDir & '\archive\' & $archlist[$i], 1); FT_CREATED -> array
@@ -164,16 +160,18 @@ func archive()
 	EndIf
 endfunc
 
-func get_timestamp($file)
-	$mtime = FileGetTime($file); FT_MODIFIED
-	$utc_time = _DateAdd('h', -1 + _Date_Time_GetTimeZoneInformation()[1]/60, $mtime[0] & '/' & $mtime[1] & '/'& $mtime[2] & ' ' & $mtime[3] & ':' & $mtime[4] & ':' & $mtime[5])
-	return StringRegexpReplace($utc_time, "^(\d{4})/(\d{2})/(\d{2}) (\d{2}):(\d{2}):(\d{2})$", "$1$2$3T$4$5$6Z")
+func get_timestamp($time)
+	$rtime = StringRegExpReplace($time, "^(\d\d)(\d?\d)(\d{4}) (\d\d):(\d\d):(\d\d)$", "$3/$2/$1 $4:$5:$6")
+	$utc_time = _DateAdd('h', -1 + _Date_Time_GetTimeZoneInformation()[1]/60, $rtime)
+	return StringRegexpReplace($utc_time, "^(\d{4})/(\d\d)/(\d\d) (\d\d):(\d\d):(\d\d)$", "$1$2$3T$4$5$6Z")
 endFunc
 
-func get_sensor_type($sid,$map)
+func get_sensor_type($id,$map)
 	for $i=0 to Ubound($map) - 1
-		if  $sid == StringSplit($map[$i],";",2)[0] then
-			return StringSplit(StringTrimLeft($map[$i],11), ';', 2)
+		$line = StringSplit($map[$i], ';', 2)
+		if $id == $line[0] then
+			_ArrayDelete($line,0)
+			return $line
 		endif
 	next
 endFunc
@@ -185,4 +183,3 @@ EndFunc
 func logger($text)
 	FileWriteLine($logfile, $text)
 endfunc
-
