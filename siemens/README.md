@@ -6,14 +6,13 @@ Parse "Siemens Desigo Insight v5.1" temperature/humidity sensor data from TSQL d
 FILE
 
 <pre>
-terezin-amusing-http.au3 - Main program, HTTP transport.
-     terezin-amusing.au3 - Main program, FTP transport.
-     terezin-sensors.au3 - Get sensor list from DB.
-      terezin-sensor.txt - Sensor plain list.
-             terezin.ico - Program icon.
-                ZLIB.au3 - ZLIB de/compression library by "Ward".
-                 Zip.au3 - ZIP de/compression library by "torels_".
-                _SQL.au3 - ADODB library by Chris Lambert.
+terezin-amusing.au3 - Main program.
+terezin-sensors.au3 - Get sensor list from DB.
+ terezin-sensor.txt - Sensor plain list.
+        terezin.ico - Program icon.
+           ZLIB.au3 - ZLIB de/compression library by "Ward".
+            Zip.au3 - ZIP de/compression library by "torels_".
+           _SQL.au3 - ADODB library by Chris Lambert.
 </pre>
 
 CONTACT
