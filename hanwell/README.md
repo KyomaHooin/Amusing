@@ -39,14 +39,12 @@ S = Value sequence 4bit (0 - first 1 - second..)
 FILE
 
 <pre>
-hanwell-amusing-xml.au3 - Main program XML version.
-    hanwell-amusing.au3 - Main program RL8 version.
- hanwell-sensor-xml.txt - Sensor plain list XML version.
-     hanwell-sensor.txt - Sensor plain list RL8 version.
-            hanwell.ico - Program icon.
-     _XMLDomWrapper.au3 - XML library by Stephen Podhajecki.
-               ZLIB.au3 - Compression library by "Ward".
-                RL8.au3 - RadioLog 8 parser.
+hanwell-amusing.au3 - Main program.
+ hanwell-sensor.txt - Sensor plain list.
+        hanwell.ico - Program icon.
+ _XMLDomWrapper.au3 - XML library by Stephen Podhajecki.
+           ZLIB.au3 - Compression library by "Ward".
+            RL8.au3 - RadioLog 8 parser.
 </pre>
 
 CONTACT
