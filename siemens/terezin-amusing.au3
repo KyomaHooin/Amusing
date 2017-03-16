@@ -1,7 +1,7 @@
 ;
-; Terezin: InSigHT TeNDencies TSQL -> CSV -> ZIP -> FTP
+; Terezin: InSigHT TeNDencies TSQL -> CSV -> GZ -> HTTP
 ;
-; schtasks /create /tn "Terezin Amusing" /tr "c:\terezin-amusing\terezin-amusing.exe" /sc HOURLY
+; schtasks /create /tn "Terezin Amusing HTTP" /tr "c:\terezin-amusing-http\terezin-amusing-http.exe" /sc HOURLY
 ;
 
 #AutoIt3Wrapper_Icon=terezin.ico
@@ -11,24 +11,19 @@
 
 #include<Date.au3>
 #include<File.au3>
-#include<Zip.au3>
-#include<FTPEx.au3>
 #include<_SQL.au3>
+#include<ZLIB.au3>
 
 ;VAR
 
-$sensors = @scriptdir & '\sensor.txt'
-$runtime = @YEAR & @MON & @MDAY & @HOUR & @MIN
-$yesterday = StringRegExpReplace(_DateAdd('d', -1, _NowCalcDate()),'/','') & @HOUR & @MIN
+$location = 'terezin'
+$sensors = @scriptdir & '\' & $location & '-sensor.txt'
+$runtime = @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC
 
-$ftp_host = '[removed]'
-$ftp_user = '[removed]'
-$ftp_pass = '[removed]'
-
-$sql_host = '[removed]'
-$sql_user = '[removed]'
-$sql_pass = '[removed]'
-$sql_db = '[removed]'; InSigHT TeNDencies
+$sql_host = 'localhost\DESIGO'
+$sql_user = 'sa'
+$sql_pass = 'des1go$insight'
+$sql_db = 'DIV23!PRJ=Terezin!DB=ISHTTND'; InSigHT TeNDencies
 
 ;--------------------------------------------------
 
@@ -36,80 +31,77 @@ $sql_db = '[removed]'; InSigHT TeNDencies
 
 ;RUN
 if ubound(ProcessList(@ScriptName), $UBOUND_ROWS) > 2 then exit; check if running or silent exit..
-
 ;DIRS
 DirCreate(@scriptdir & '\archive')
-DirCreate(@scriptdir & '\ftp')
-
+DirCreate(@scriptdir & '\http')
 ;MAIN
-$logfile = FileOpen(@scriptdir & '\terezin-amusing.log', 1); 1 = append
+$logfile = FileOpen(@scriptdir & '\' & $location & '-amusing-http.log', 1); 1 = append
 if @error then exit; silent exit..
 logger(@CRLF & "Program start: " & $runtime)
 sql(); Parse data from TSQL
-main(); Pack and transport data over FTP
+main(); Pack and transport data over HTTP
 archive(); Archive logrotate
 logger("Program end.")
-
 FileClose($logfile)
 
 ;--------------------------------------------------
 
 ;FUNC
 func main()
-	;CSV + ZIP
+	;CSV + GZ
 	$csvlist = _FileListToArray(@ScriptDir, "*.csv")
 	if ubound($csvlist) < 2 then
-		logger("No new CSV files..")
+		logger("No CSV file.")
 	else
-		$zip = _Zip_create(@scriptdir & '\ftp\terezin-' & @YEAR & @MON & @MDAY & 'T' & @HOUR & @MIN & @SEC & '.zip')
-		if @error then
-			logger("Cannot create ZIP archive..")
-			return
-		endif
-		for $i=1 to UBound($csvlist) - 1
-			_Zip_AddFile($zip, @ScriptDir & '\' & $csvlist[$i], 0); 0 = no progress box
-			if not @error then FileDelete(@ScriptDir & '\' & $csvlist[$i]); clean the CSV
-		next
-		if ubound(_Zip_List($zip)) = 1 then FileDelete($zip); Remove empty ZIP archive
-	endif
-	;FTP + ARCHIVE
-	$ziplist = _FileListToArray(@scriptdir & '\ftp', "*.zip")
-	if ubound($ziplist) < 2 then
-		logger("Nothin' to transport..")
+		for $i=1 to ubound($csvlist) - 1
+			_ZLIB_GZFileCompress(@ScriptDir & '\' & $csvlist[$i], @ScriptDir & '\http\' & $csvlist[$i] & '.gz')
+			if not @error = 1 then
+				logger("Failed to GZIP file " & $csvlist[$i])
+				continueloop; skip the broken one..
+			else
+				FileDelete(@ScriptDir & '\' & $csvlist[$i]); CSV clenup
+			endIf
+		Next
+	endIf
+	;HTTP + ARCHIVE
+	$gzlist = _FileListToArray(@scriptdir & '\http', "*.gz")
+	if ubound($gzlist) < 2 then
+		logger("No GZIP to transport.")
 		return
 	endif
-	$socket = _FTP_Open('Desigo FTP')
-	$session = _FTP_Connect($socket, $ftp_host, $ftp_user, $ftp_pass, 1); 1 = passive FTP
+	$http_error_handler = ObjEvent("AutoIt.Error", "get_http_error"); register COM error handler
+	$http = ObjCreate("winhttp.winhttprequest.5.1"); HTTP object instance
 	if @error then
-		logger("Failed to create FTP session..")
+		logger("HTTP failed to create session.")
 		return
+	else
+		for $i=1 to ubound($gzlist) - 1
+			$gz_file = FileOpen(@ScriptDir & '\http\' & $gzlist[$i], 16)
+			$gz_data = FileRead($gz_file)
+			FileClose($gz_file)
+			$http.open("POST","[removed]", False); No async HTTP..
+			$http.SetRequestHeader("X-Location", StringRegExpReplace($gzlist[$i], "^(" & $location & "-\d+T\d+)(.*)","$1"))
+			$http.Send($gz_data)
+			if @error or $http.Status <> 200 then
+				logger("File " & $gzlist[$i] & " HTTP transfer failed.")
+				continueloop; skip archiving..
+			endif
+			;ARCHIVE
+			FileMove(@scriptdir & '\http\' & $gzlist[$i], @scriptdir & '\archive')
+		next
 	endif
-	for $i=1 to ubound($ziplist) - 1
-		_FTP_FilePut($session, @ScriptDir & '\ftp\' & $ziplist[$i], $ziplist[$i])
-		if @error then
-			logger("File " & $ziplist[$i] & " transfer failed." )
-			continueloop; skip archiving..
-		endif
-		;ARCHIVE
-		FileMove(@scriptdir & '\ftp\' & $ziplist[$i], @scriptdir & '\archive')
-	next
-	_FTP_Close($session)
-	_FTP_Close($socket)
-endfunc
-
-func logger($text)
-	FileWriteLine($logfile, $text)
+	$http_error_handler = ""; Unregister COM error handler
 endfunc
 
 func sql()
 	local $sensor
 	_FileReadToArray($sensors, $sensor, 0); zero based array
 	if @error Then
-		logger("Missing file sensor.txt.")
+		logger("Missing file: " & $sensors)
 		return
 	endif
-	_SQL_RegisterErrorHandler()
-	$adodb = _SQL_Startup()
+	_SQL_RegisterErrorHandler(); register ADODB COM handler
+	$adodb = _SQL_Startup(); ADODB object instance
 	if $adodb = $SQL_ERROR then
 		logger("SQL1: " & _SQL_GetErrMsg())
 		return
@@ -120,7 +112,7 @@ func sql()
 		return
 	endif
 	for $i=0 to ubound($sensor) - 1
-		local $id_query = "SELECT TrendLogId FROM Designation WHERE Path LIKE '" & $sensor[$i] & "'"; Find device ID by name (Terezin1_B_HGrp0007_TR_PrVal).
+		local $id_query = "SELECT TrendLogId FROM Designation WHERE Path LIKE '" & StringRegExpReplace($sensor[$i],"^(.*);(.*)$","$1") & "'"; Find device ID by name (Terezin1_B_HGrp0007_TR_PrVal).
 		$id  = _SQL_Execute($adodb, $id_query)
 		if $id = $SQL_ERROR then
 			logger("SQL3: " & _SQL_GetErrMsg())
@@ -134,7 +126,7 @@ func sql()
 				_SQL_Close()
 				return
 			else
-				$csv = FileOpen(@ScriptDir & '\' & $runtime & '_' & $yesterday & '.csv', 1);  1 - append
+				$csv = FileOpen(@ScriptDir & '\' & $location & '-' & $runtime & '.csv', 1);  1 - append
 				if @error Then
 					logger("Failed to create CSV file.")
 					_SQL_Close()
@@ -142,16 +134,13 @@ func sql()
 				endif
 				local $data_row
 				while _SQL_FetchData($data, $data_row) = $SQL_OK
-					if $data_row[2] = '192' Then
-						;split date by space
-						$timestamp = StringRegExpReplace($data_row[0],"^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$", "$3 $2 $1 $4 $5 $6")
-						;remove leading zero from day and month
-						$timestamp = StringRegExpReplace($timestamp, "^0([0-9])", "$1")
-						$timestamp = StringRegExpReplace($timestamp, "^(\d+) 0([0-9])", "$1 $2")
-						;YYYYmmddHHiiss -> 'jj.nn.YYYY HH:ii:ss'
-						$timestamp = StringRegExpReplace($timestamp,"^(\d+) (\d+) (\d+) (\d+) (\d+) (\d+)$", "$1\.$2\.$3 $4:$5:$6")
+					if $data_row[2] = '192' Then; 192 -> alive
+						;YYYYmmddHHiiss -> ISO: YYYYMMDDThhmmss
+						$timestamp = StringRegExpReplace($data_row[0],"^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$", "$1/$2/$3 $4:$5:$6")
+						$timestamp = _DateAdd('h', -1 + _Date_Time_GetTimeZoneInformation()[1]/60, $timestamp); Local time to UTC
+						$timestamp = StringRegExpReplace($timestamp,"^(\d{4})/(\d{2})/(\d{2}) (\d{2}):(\d{2}):(\d{2})$", "$1$2$3T$4$5$6Z"); Full ISO datetime
 						;write data
-						FileWriteLine($csv, $sensor[$i] & ';' & $timestamp & ';' & $data_row[1]); 192 -> Alive
+						FileWriteLine($csv, $sensor[$i] & ';' & $data_row[1] & ';' & $timestamp)
 					endif
 				wend
 				FileClose($csv)
@@ -159,10 +148,11 @@ func sql()
 		endif
 	next
 	_SQL_Close()
+	_SQL_UnRegisterErrorHandler(); unregister SQL COM handler
 EndFunc
 
 func archive()
-	$archlist = _FileListToArray(@scriptdir & '\archive', "*.zip")
+	$archlist = _FileListToArray(@scriptdir & '\archive', "*.gz")
 	if ubound($archlist) < 2 then
 		logger("Nothin' to cleanup..")
 	else
@@ -173,4 +163,12 @@ func archive()
 			endif
 		next
 	EndIf
+endfunc
+
+func get_http_error()
+	logger("HTTP request timeout.")
+EndFunc
+
+func logger($text)
+	FileWriteLine($logfile, $text)
 endfunc
