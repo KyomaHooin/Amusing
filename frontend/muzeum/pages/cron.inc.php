@@ -32,7 +32,7 @@ function sendwarning($fe) {
     $headers="MIME-Version: 1.0\r\n";
     $headers.="From: Amusing <".$from.">\r\n";
     $headers.="Reply-To: ".$from."\r\n";
-    $headers.="Content-type: text/plain; charset=utf-8\r\n";
+    $headers.="Content-type: text/html; charset=utf-8\r\n";
     
     $emails=makeemails($fe->a_email);
     if(!strlen($emails)) {
@@ -65,16 +65,12 @@ function sendwarning($fe) {
     $rad="/1/1/1/1/0";
     $getref1d=root()."getplotref/".implode("-",$rfm)."/1D".$rad;
 
-    $text="Varování\n\n
-    alarm: ".$fe->a_desc."\n
-    měřící bod: ".$fe->m_desc."\n
-    místnost: ".$fe->r_desc." ".$fe->r_floor."\n
-    budova: ".$fe->b_name." ".$fe->b_street." ".$fe->b_city."\n
-    \n
-    parametry alarmu: ".$atext."\n
-    \n
-    graf: https://".$_DOMAIN.$getref1d."\n
-    potvrzení: https://".$_DOMAIN.root()."alarmacktab/m/".$acid;
+    $text='<html><head><meta charset="utf-8"></head><body><br>
+    Alarm: '.$fe->a_desc.'<br><br>
+    Měřící bod: '.$fe->m_desc.'<br><br>
+    Místnost: '.$fe->r_desc.'<br><br>
+    Lokalita: '.$fe->b_name.' '.$fe->b_street.' '.$fe->b_city.'<br><br>
+    [ <a target="_blank" href="https://'.$_DOMAIN.$getref1d.'">GRAF</a> ] [ <a target="_blank" href="https://'.$_DOMAIN.root().'alarmacktab/m/'.$acid.'>POTVRZENÍ</a> ]<br></body></html>';
     $subject="=?utf-8?B?".base64_encode("Varování - Muzeum senzory")."?=";
     if($_SENDMAIL) {
 	logsys("warning alarm mail sent to ".$emails);
@@ -96,7 +92,7 @@ function sendcritical($fe) {
     $headers="MIME-Version: 1.0\r\n";
     $headers.="From: Amusing <".$from.">\r\n";
     $headers.="Reply-To: ".$from."\r\n";
-    $headers.="Content-type: text/plain; charset=utf-8\r\n";
+    $headers.="Content-type: text/html; charset=utf-8\r\n";
     
     $emails=makeemails($fe->a_email);
     if(!strlen($emails)) {
@@ -131,16 +127,12 @@ function sendcritical($fe) {
     $rad="/1/1/1/1/0";
     $getref1d=root()."getplotref/".implode("-",$rfm)."/1D".$rad;
 
-    $text="Kritické\n\n
-    alarm: ".$fe->a_desc."\n
-    měřící bod: ".$fe->m_desc."\n
-    místnost: ".$fe->r_desc." ".$fe->r_floor."\n
-    budova: ".$fe->b_name." ".$fe->b_street." ".$fe->b_city."\n
-    \n
-    parametry alarmu: ".$atext."\n
-    \n
-    graf: https://".$_DOMAIN.$getref1d."\n
-    potvrzení: https://".$_DOMAIN.root()."alarmacktab/m/".$acid;
+    $text='<html><head><meta charset="utf-8"></head><body><br>
+    Alarm: '.$fe->a_desc.'<br><br>
+    Měřící bod: '.$fe->m_desc.'<br><br>
+    Místnost: '.$fe->r_desc.'<br><br>
+    Lokalita: '.$fe->b_name.' '.$fe->b_street.' '.$fe->b_city.'<br><br>
+    [ <a target="_blank" href="https://'.$_DOMAIN.$getref1d.'">GRAF</a> ] [ <a target="_blank" href="https://'.$_DOMAIN.root().'alarmacktab/m/'.$acid.'>POTVRZENÍ</a> ]<br></body></html>';
     $subject="=?utf-8?B?".base64_encode("Kritické - Muzeum senzory")."?=";
     if($_SENDMAIL) {
 	logsys("critical alarm mail sent to ".$emails);
