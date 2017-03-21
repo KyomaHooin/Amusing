@@ -70,7 +70,7 @@ function sendwarning($fe) {
     Měřící bod: '.$fe->m_desc.'<br><br>
     Místnost: '.$fe->r_desc.'<br><br>
     Lokalita: '.$fe->b_name.' '.$fe->b_street.' '.$fe->b_city.'<br><br>
-    [ <a target="_blank" href="https://'.$_DOMAIN.$getref1d.'">GRAF</a> ] [ <a target="_blank" href="https://'.$_DOMAIN.root().'alarmacktab/m/'.$acid.'>POTVRZENÍ</a> ]<br></body></html>';
+    [ <a target="_blank" href="https://'.$_DOMAIN.$getref1d.'">GRAF</a> ] [ <a target="_blank" href="https://'.$_DOMAIN.root().'alarmacktab/m/'.$acid.'">POTVRZENÍ</a> ]<br></body></html>';
     $subject="=?utf-8?B?".base64_encode("Varování - Muzeum senzory")."?=";
     if($_SENDMAIL) {
 	logsys("warning alarm mail sent to ".$emails);
@@ -132,7 +132,7 @@ function sendcritical($fe) {
     Měřící bod: '.$fe->m_desc.'<br><br>
     Místnost: '.$fe->r_desc.'<br><br>
     Lokalita: '.$fe->b_name.' '.$fe->b_street.' '.$fe->b_city.'<br><br>
-    [ <a target="_blank" href="https://'.$_DOMAIN.$getref1d.'">GRAF</a> ] [ <a target="_blank" href="https://'.$_DOMAIN.root().'alarmacktab/m/'.$acid.'>POTVRZENÍ</a> ]<br></body></html>';
+    [ <a target="_blank" href="https://'.$_DOMAIN.$getref1d.'">GRAF</a> ] [ <a target="_blank" href="https://'.$_DOMAIN.root().'alarmacktab/m/'.$acid.'">POTVRZENÍ</a> ]<br></body></html>';
     $subject="=?utf-8?B?".base64_encode("Kritické - Muzeum senzory")."?=";
     if($_SENDMAIL) {
 	logsys("critical alarm mail sent to ".$emails);
