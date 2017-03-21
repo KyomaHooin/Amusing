@@ -1,3 +1,4 @@
+![RPi](https://github.com/KyomaHooin/Amusing/raw/master/raspberry/svycarna/svycarna_screen.png "screenshot")
 
 RPI
 
