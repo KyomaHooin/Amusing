@@ -45,7 +45,7 @@ mkdir $RAMDISK/img 2>/dev/null
 /usr/local/bin/gpio mode 1 pwm
 /usr/local/bin/gpio pwm 1 450
 
-sleep 5
+sleep 10
 
 /usr/bin/streamer -c /dev/video-cam0 -r 2 -s 800x600 -o $PREFIX1.jpeg 2>/dev/null
 
