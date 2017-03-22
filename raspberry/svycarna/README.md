@@ -26,7 +26,7 @@ tmpfs	/var/run	tmpfs	defaults,noatime,nosuid,mode=0755,size=2m	0	0
 
 /etc/udev/rules.d/42-usb-cam.rules:
 
-KERNEL=="video*", SUBSYSTEM=="video4linux", KERNELS=="1-1.2", SYMLINK+="video-cam0"
+KERNEL=="video*", SUBSYSTEM=="video4linux", SYMLINK+="video-cam0"
 
 /etc/network/interfaces:
 
