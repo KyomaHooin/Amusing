@@ -65,6 +65,7 @@ FILE
            getDHT.c - DHT22 source by Dom & Gert.
              getDHT - Precompiled ARM binary.
 bcm2835-1.36.tar.gz - BCM2835 library.
+svycarna_screen.png - HW screenshot.
 </pre>
 
 CONTACT
