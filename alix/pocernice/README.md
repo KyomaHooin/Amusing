@@ -38,8 +38,10 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 /etc/rc.local:
 
 /usr/sbin/ntpdate -b -4 tik.cesnet.cz > /dev/null 2>&1 &
+
+/root/amusing/alix-amusing.py &
+
 /root/firewall &
-/root/tunnel &
 
 /etc/watchdog:
 
@@ -49,7 +51,6 @@ interval = 15
 
 FILE
 <pre>
-                          tunnel - AutoSSH tunnel.
                         firewall - Simple firewall.
                  alix-amusing.py - Main data transport.
                LabJackPython.zip - LabJack Python library by LabJack (c) 2015

@@ -1,7 +1,0 @@
-#!/bin/sh
-
-autossh -M 0 -f -N -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" \
-	-o "StrictHostKeyChecking no" \
-	-i /root/.ssh/amusing-xfr.key \
-	-R 2005:localhost:22 xxx@xxx -p xxx
-
