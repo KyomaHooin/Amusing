@@ -35,6 +35,15 @@ tmpfs	/root/amusing/ramdisk	tmpfs	nodev,nosuid,size=32M	0	0
 
 */5 *	* * *	root	/usr/sbin/ntpdate -b -4 tik.cesnet.cz > /dev/null 2>&1
 
+/etc/network/interfaces:
+
+auto eth0
+iface eth0 inet static
+        address 10.11.6.80
+        netmask 255.255.0.0
+        gateway 10.11.0.1
+        dns-nameservers 10.11.0.26 10.128.0.27
+
 /etc/rc.local:
 
 /usr/sbin/ntpdate -b -4 tik.cesnet.cz > /dev/null 2>&1 &
