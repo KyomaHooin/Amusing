@@ -36,6 +36,8 @@ iface eth0 inet static
 	address 192.168.11.11(12)
 	netmask 255.255.255.0
 
+auto wlan0
+allow-hotplug wlan0
 iface wlan0 inet static
 	address 10.10.8.65(66)
 	netmask 255.255.0.0

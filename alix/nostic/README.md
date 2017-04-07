@@ -27,6 +27,11 @@ interval = 15
 
 */5 *	* * *	root	/usr/sbin/ntpdate -b -4 172.16.64.1 > /dev/null 2>&1
 
+/etc/network/interfaces.d/eth0.conf:
+
+auto eth0
+iface eth0 inet dhcp
+
 /etc/rc.local:
 
 /usr/sbin/ntpdate -b -4 172.16.64.1 > /dev/null 2>&1 &
