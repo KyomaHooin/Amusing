@@ -32,7 +32,7 @@ iptables -A INPUT -p icmp -j ACCEPT
 iptables -A INPUT -d $IP -p tcp -m state --state RELATED,ESTABLISHED -j ACCEPT
 iptables -A INPUT -d $IP -p tcp --destination-port 80 -j ACCEPT
 iptables -A INPUT -d $IP -p tcp --destination-port 443 -j ACCEPT
-iptables -A INPUT -d $IP -p tcp --destination-port 445 -j ACCEPT
+iptables -A INPUT -d $IP -s 10.10.0.0/16 -p tcp --destination-port 445 -j ACCEPT
 iptables -A INPUT -d $IP -p tcp --destination-port 1222 -j ACCEPT
 
 #UDP
