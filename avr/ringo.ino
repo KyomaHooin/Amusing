@@ -140,10 +140,10 @@ void loop() {
   digitalWrite(radioPowerPin,LOW);
   // Going to sleep..
   sleepCycles = EEPROM.read(11);
-  if (!(sleepCycles >= 5 && sleepCycles <= 255)) { sleepCycles = 37; }// default
+  if (!(sleepCycles >= 5 && sleepCycles <= 255)) { sleepCycles = 75; }// default
   sleep = sleepCycles + random(-2,3);// avoid collision
-  Serial.print("Sleeping for "); Serial.print(int(sleep)); Serial.println(" * 8s cycle!");
+  Serial.print("Sleeping for "); Serial.print(int(sleep)); Serial.println(" * 4s cycle!");
   Serial.flush();// flush serial
-  for (int i = 0; i < sleep; i++) { LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF); }
+  for (int i = 0; i < sleep; i++) { LowPower.powerDown(SLEEP_4S, ADC_OFF, BOD_OFF); }
 }
 
