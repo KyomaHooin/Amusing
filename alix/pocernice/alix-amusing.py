@@ -19,7 +19,7 @@ TOKEN=True
 CALL=True
 
 def voltage(v):# voltage divider 330k | 82k
-	return v * ( 82 + 330) / 82
+	return v * (82 + 330) / 82
 
 def temperature(v):# 0-10V = -30-80C [Comet T0120]
 	return v * 11 - 30 
