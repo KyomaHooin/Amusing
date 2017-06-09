@@ -42,7 +42,7 @@ try:
 					LOG.write('Failed to read DHT data file.' + '\n')
 			else:
 				LOG.write('Failed to call DHT binary.' + '\n')
-		if int(time.strftime("%M")) % 5 == 1: TOKEN=True # reset transport token..
+		if int(time.strftime("%M")) % 5 == 1: TOKEN=True # reset data token..
 		if int(time.strftime("%M")) % 15 == 0 and CALL: # 15 min http interval..
 			CALL=False
 			try:	# GZIP + PAYLOAD
