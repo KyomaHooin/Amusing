@@ -1,3 +1,4 @@
+![Alix](https://github.com/KyomaHooin/Amusing/raw/master/alix/pocernice/pocernice_screen.png "screenshot")
 
 DESCRIPTION
 
