@@ -2,8 +2,6 @@
 #
 # LabJack U3 USB ADC 8 channel
 #
-# DATA: 0.79364542
-#
 
 import httplib,socket,time,gzip,u3,sys,os,re
 
@@ -19,6 +17,17 @@ CHANNEL={8:'pocernice_07;humidity;',
 	15:'pocernice_09;temperature;'}
 TOKEN=True
 CALL=True
+
+def voltage(v):# voltage divider 330k | 82k
+	return v * ( 82 + 330) / 82
+
+def temperature(v):# 0-10V = -30-80C [Comet T0120]
+	return v * 11 - 30 
+
+def humidity(v):# 0-10V = 0-100%RH [Comet T0210]
+	return v * 10
+
+#------------------------------
 
 try:
 	try:	# DIR
@@ -37,10 +46,15 @@ try:
 			jack = u3.U3()# LABJACK
 			try:
 				for ch in CHANNEL.keys():
-					PAYLOAD+=(CHANNEL[ch] + str(jack.getAIN(ch)) + ';'
-						+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()) + '\n')
+					if ch in (10,11,15):
+						PAYLOAD+=(CHANNEL[ch] + str(temperature(voltage(jack.getAIN(ch)))) + ';'
+							+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()) + '\n')
+					else:
+						PAYLOAD+=(CHANNEL[ch] + str(humidity(voltage(jack.getAIN(ch)))) + ';'
+							+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()) + '\n')
 			except IOError:
 				LOG.write('Failed to read U3 data.\n')
+		if int(time.strftime("%M")) % 5 == 1: TOKEN = True # reset data token..
 		if int(time.strftime("%M")) % 15 == 0 and CALL: # 15 min interval..
 			CALL=False
 			try:	# GZIP + PAYLOAD
@@ -48,30 +62,30 @@ try:
 				gzip.open(GZIP_FILE, 'ab').write(PAYLOAD)
 			except IOError:
 				LOG.write('Failed to gzip payload.\n')
-	#		for PACK in os.listdir(RAMDISK + 'http'):
-	#			try:
-	#				GZIP=open(RAMDISK + 'http/' + PACK, 'rb')
-	#			except IOError:
-	#				LOG.write('Fail to read ' + PACK + '.\n')
-	#			try:	# HTTP
-	#				HEADER={'Content-type':'application/octet-stream',
-	#					'X-Location':re.sub('^(.*)\.csv\.gz$','\\1', PACK)}
-	#				c=httplib.HTTPConnection('amusing.nm.cz', '80', timeout=10)
-	#				c.request('POST', '[removed]', GZIP, HEADER)
-	#				r=c.getresponse()
-	#				if (r.status == 200):
-	#					try:	# ARCHIVE
-	#						os.rename(RAMDISK + 'http/' + PACK, RAMDISK + 'archive/' + PACK)
-	#					except OSError:
-	#						LOG.write('Nothing to archive.\n')
-	#				else:
-	#					LOG.write('Bad request. ' + PACK + '\n')
-	#				c.close()
-	#				GZIP.close()
-	#			except socket.error:
-	#				LOG.write('Connection error. ' + PACK + '\n')
-	#		# reset buffered payload string..
-	#		PAYLOAD=''
+			for PACK in os.listdir(RAMDISK + 'http'):
+				try:
+					GZIP=open(RAMDISK + 'http/' + PACK, 'rb')
+				except IOError:
+					LOG.write('Fail to read ' + PACK + '.\n')
+				try:	# HTTP
+					HEADER={'Content-type':'application/octet-stream',
+						'X-Location':re.sub('^(.*)\.csv\.gz$','\\1', PACK)}
+					c=httplib.HTTPConnection('amusing.nm.cz', '80', timeout=10)
+					c.request('POST', '[removed]', GZIP, HEADER)
+					r=c.getresponse()
+					if (r.status == 200):
+						try:	# ARCHIVE
+							os.rename(RAMDISK + 'http/' + PACK, RAMDISK + 'archive/' + PACK)
+						except OSError:
+							LOG.write('Nothing to archive.\n')
+					else:
+						LOG.write('Bad request. ' + PACK + '\n')
+					c.close()
+					GZIP.close()
+				except socket.error:
+					LOG.write('Connection error. ' + PACK + '\n')
+			# reset buffered payload string..
+			PAYLOAD=''
 		# reset transport token..
 		if int(time.strftime("%M")) % 15 == 1: CALL=True
 		# cleanup archive
