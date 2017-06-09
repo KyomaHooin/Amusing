@@ -54,7 +54,7 @@ try:
 							+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()) + '\n')
 			except IOError:
 				LOG.write('Failed to read U3 data.\n')
-		if int(time.strftime("%M")) % 5 == 1: TOKEN = True # reset data token..
+		if int(time.strftime("%M")) % 5 == 1: TOKEN=True # reset data token..
 		if int(time.strftime("%M")) % 15 == 0 and CALL: # 15 min interval..
 			CALL=False
 			try:	# GZIP + PAYLOAD
