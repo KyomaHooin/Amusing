@@ -29,7 +29,7 @@ pocernice_11 - H: CH06 T: CH04
 </pre>
 ALIX
 <pre>
-apt-get install watchdog autossh python
+apt-get install watchdog python ntpdate
 
 mkdir -p /root/amusing/ramdisk
 
