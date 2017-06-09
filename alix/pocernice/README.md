@@ -11,10 +11,15 @@ LABJACK
 - HardwareVersion: 1.30
 - BootloaderVersion: 0.27
 - EIO0-EIO7 = AIN8-AIN15
+
+- 330k | 82k Voltage Divider
 </pre>
 SENSOR
 <pre>
 - 5 x Comet T0210
+
+- 0-10V = 0-100%RH
+- 0-10V = -30-80C
 
 pocernice_07 - H: CH01 T: CH03
 pocernice_08 - H: CH07
