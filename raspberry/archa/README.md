@@ -1,9 +1,9 @@
 ![RPi](https://github.com/KyomaHooin/Amusing/raw/master/raspberry/archa/archa_screen.png "screenshot")
 
 DESCRIPTION
-<pre>
+
 Read AVR 868Mhz receiver data with PL2303 and trasport GZIP data over HTTP.
-</pre>
+
 RPI
 <pre>
 apt-get install imagemagick bc streamer watchdog

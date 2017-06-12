@@ -1,7 +1,10 @@
 ![RPi](https://github.com/KyomaHooin/Amusing/raw/master/raspberry/svycarna/svycarna_screen.png "screenshot")
 
-RPI
+DESCRIPTION
 
+Read DHT22 GPIO and transport GZIP data over HTTP.
+
+RPI
 <pre>
 apt-get install imagemagick bc streamer watchdog
 
