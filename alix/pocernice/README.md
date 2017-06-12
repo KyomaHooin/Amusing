@@ -2,7 +2,7 @@
 
 DESCRIPTION
 
-Data transport GZIP compressed CSV over HTTP.
+Read regulated Comet T0210 Vref with LabJack ADC and trasport calculated GZIP data over HTTP.
 
 LABJACK
 <pre>
@@ -53,9 +53,7 @@ iface eth0 inet static
 /etc/rc.local:
 
 /usr/sbin/ntpdate -b -4 tik.cesnet.cz > /dev/null 2>&1 &
-
 /root/amusing/alix-amusing.py &
-
 /root/firewall &
 
 /etc/watchdog:
