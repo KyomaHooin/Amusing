@@ -62,6 +62,7 @@ FILE
 <pre>
      rpi-amusing.py - DHT program.
      cam-amusing.sh - USB camera program.
+           firewall - Simple firewall.
            getDHT.c - DHT22 source by Dom & Gert.
              getDHT - Precompiled ARM binary.
 bcm2835-1.36.tar.gz - BCM2835 library.
