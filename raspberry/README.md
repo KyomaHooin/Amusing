@@ -13,8 +13,6 @@ FILE
 <pre>
      svycarna/ - Local mod.
         archa/ - Local mod.
-
-      firewall - Simple restrictive firewall(performance issues).
 </pre>
 
 CONTACT
