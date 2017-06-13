@@ -43,8 +43,8 @@ try:
 	while 1:
 		if int(time.strftime("%M")) % 5 == 0 and TOKEN:# 5 min data interval..
 			TOKEN=False
-			jack = u3.U3()# LABJACK
 			try:
+				jack = u3.U3()# LABJACK
 				for ch in CHANNEL.keys():
 					if ch in (10,11,15):
 						PAYLOAD+=(CHANNEL[ch] + str(temperature(voltage(jack.getAIN(ch)))) + ';'
@@ -52,7 +52,7 @@ try:
 					else:
 						PAYLOAD+=(CHANNEL[ch] + str(humidity(voltage(jack.getAIN(ch)))) + ';'
 							+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()) + '\n')
-			except IOError:
+			except:
 				LOG.write('Failed to read U3 data.\n')
 		if int(time.strftime("%M")) % 5 == 1: TOKEN=True # reset data token..
 		if int(time.strftime("%M")) % 15 == 0 and CALL: # 15 min interval..
