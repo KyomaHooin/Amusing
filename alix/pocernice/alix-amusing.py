@@ -52,6 +52,7 @@ try:
 					else:
 						PAYLOAD+=(CHANNEL[ch] + str(humidity(voltage(jack.getAIN(ch)))) + ';'
 							+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()) + '\n')
+				jack.close()
 			except:
 				LOG.write('Failed to read U3 data.\n')
 		if int(time.strftime("%M")) % 5 == 1: TOKEN=True # reset data token..
