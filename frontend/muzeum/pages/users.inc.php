@@ -35,8 +35,8 @@ if($_SESSION->user_filterenable) {
     echo "<table class=\"nobr\">";
     echo "<tr><td>Jméno:&nbsp;</td><td>".input_text("000_user_filter_name",get_ind($_SESSION->user_filter,"000_user_filter_name"),"finput")."</td></tr>";
     echo "<tr><td>Role:&nbsp;</td><td>admin ".input_check("000_user_filter_role[0]",'A',get_ind(get_ind($_SESSION->user_filter,"000_user_filter_role"),0)=='A');
-    echo ", poweruser ".input_check("000_user_filter_role[1]",'D',get_ind(get_ind($_SESSION->user_filter,"000_user_filter_role"),1)=='D');
-    echo ", user ".input_check("000_user_filter_role[2]",'U',get_ind(get_ind($_SESSION->user_filter,"000_user_filter_role"),2)=='U')."</td></tr>";
+    echo " poweruser ".input_check("000_user_filter_role[1]",'D',get_ind(get_ind($_SESSION->user_filter,"000_user_filter_role"),1)=='D');
+    echo " user ".input_check("000_user_filter_role[2]",'U',get_ind(get_ind($_SESSION->user_filter,"000_user_filter_role"),2)=='U')."</td></tr>";
     echo "</table>";
     echo input_button("user_fapply","Použít")." ".input_button("user_fall","Zobrazit vše");
     echo "</fieldset>";

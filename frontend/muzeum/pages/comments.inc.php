@@ -120,7 +120,7 @@ if($_SESSION->comments_filterenable) { // using same filter variables
 	$opts=array(0=>"Všichni uživatelé");
 	$qe=$SQL->query("select * from user order by u_fullname");
 	while($fe=$qe->obj()) $opts[$fe->u_id]=$fe->u_fullname;
-	echo "<tr><td>Uřivatel:&nbsp;</td><td>".input_select("001_comm_user",$opts,get_ind($_SESSION->comments_filter,"001_comm_user"))."</td></tr>";
+	echo "<tr><td>Uživatel:&nbsp;</td><td>".input_select("001_comm_user",$opts,get_ind($_SESSION->comments_filter,"001_comm_user"))."</td></tr>";
     }
     
     echo "</table>";

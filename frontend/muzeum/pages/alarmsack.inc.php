@@ -118,7 +118,7 @@ if($_SESSION->alarmsack_filterenable) { // using same filter variables
     }
     echo "<tr><td>Měřící bod:&nbsp;</td><td><span id=\"aackmeasc\">".input_select("001_ajax_meas",$opts,get_ind($_SESSION->alarmsack_filter,"001_ajax_meas"))."</span></td></tr>";
     
-    $opts=array(0=>"Všechny velličiny");
+    $opts=array(0=>"Všechny veličiny");
     $qe=$SQL->query("select * from variable order by var_desc");
     while($fe=$qe->obj()) $opts[$fe->var_id]=$fe->var_desc." ".$fe->var_unit;
     echo "<tr><td>Veličina:&nbsp;</td><td>".input_select("001_aack_var",$opts,get_ind($_SESSION->alarmsack_filter,"001_aack_var"))."</td></tr>";
@@ -126,7 +126,7 @@ if($_SESSION->alarmsack_filterenable) { // using same filter variables
     $opts=array(0=>"Všichni uživatelé");
     $qe=$SQL->query("select * from user order by u_fullname");
     while($fe=$qe->obj()) $opts[$fe->u_id]=$fe->u_fullname;
-    echo "<tr><td>Uřivatel:&nbsp;</td><td>".input_select("001_aack_user",$opts,get_ind($_SESSION->alarmsack_filter,"001_aack_user"))."</td></tr>";
+    echo "<tr><td>Uživatel:&nbsp;</td><td>".input_select("001_aack_user",$opts,get_ind($_SESSION->alarmsack_filter,"001_aack_user"))."</td></tr>";
     
     echo "</table>";
 
