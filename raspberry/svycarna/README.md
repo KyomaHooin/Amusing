@@ -41,7 +41,7 @@ iface eth0 inet static
     gateway 10.14.0.1
     network 10.14.0.0
     broadcast 10.14.255.255
-    dns-nameservers 10.14.9.26
+    dns-nameservers 10.14.0.1 10.128.0.27
 
 /etc/rc.local:
 
