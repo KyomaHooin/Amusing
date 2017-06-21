@@ -45,6 +45,7 @@ try:
 			TOKEN=False
 			try:
 				jack = u3.U3()# LABJACK
+				jack.getCalibrationData()
 				for ch in CHANNEL.keys():
 					if ch in (10,11,15):
 						PAYLOAD+=(CHANNEL[ch] + str(temperature(voltage(jack.getAIN(ch)))) + ';'
