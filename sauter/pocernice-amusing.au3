@@ -27,8 +27,6 @@ $dstime =  @YEAR & '/' & @MON & '/' & @MDAY & ' ' & @HOUR & ':' & '15' & ':' & '
 
 ;--------------------------------------------------
 
-;CONTROL
-
 ;RUN
 if ubound(ProcessList(@ScriptName), $UBOUND_ROWS) > 2 then exit; check if running or silent exit..
 
@@ -81,7 +79,7 @@ func main()
 			$gz_file = FileOpen(@ScriptDir & '\http\' & $gzlist[$i], 16)
 			$gz_data = FileRead($gz_file)
 			FileClose($gz_file)
-			$http.open("POST","[removed]", False); No async HTTP..
+			$http.open("POST", "[removed]", False); No async HTTP..
 			$http.SetRequestHeader("X-Location", StringRegExpReplace($gzlist[$i], "^(" & $location & "-\d+T\d+)(.*)","$1"))
 			$http.Send($gz_data)
 			if @error or $http.Status <> 200 then
@@ -89,7 +87,7 @@ func main()
 				continueloop; skip archiving..
 			endif
 			;ARCHIVE
-			FileMove(@scriptdir & '\http\' & $gzlist[$i], @scriptdir & '\archive')
+			FileMove(@scriptdir & '\http\' & $gzlist[$i], @scriptdir & '\archive', 1); overwrite
 		next
 	endif
 	$http_error_handler = ""; Unregister COM error handler
@@ -143,7 +141,7 @@ func ds()
 			if $ds[$i] = 'BVZT04'  and $sid[$j] = 'N040M005' then $sid[$j] = 'B240M005'
 			for $k=0 to UBound($data) - 1
 				$type = GetSensorType($sid[$j],$mapping)
-				if $type == '' Then
+				if not $type Then
 					logger('Failed to find SID type mapping.')
 					ContinueLoop
 				endif
@@ -182,5 +180,4 @@ func GetSensorType($sid,$map)
 	for $i=0 to UBound($map) - 1
 		if $sid = StringRegExpReplace($map[$i],"^(.*);.*$","$1") then Return StringRegExpReplace($map[$i],"^.*;(.*)$","$1")
 	Next
-	return
 EndFunc
