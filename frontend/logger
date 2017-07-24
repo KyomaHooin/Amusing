@@ -112,7 +112,7 @@ try:# POP3
 				elif re.match('^Data_?\d.*xls$',fn):
 					sid = pracom[re.sub('^Data_?(\d).*$','Data\\1',fn)]
 					if not xls_parse(part.get_payload(decode=True),sid): remove = False
-				elif re.match('^.*_chabry_.*xlsx$',fn):
+				elif re.match('^.*_(chabry|cimice)_.*xlsx$',fn):
 					sid = merlin['chabry']
 					if not xlsx_parse(part.get_payload(decode=True),sid): remove = False
 				elif re.match('^.*(csv|xls|xlsx)$',fn):# Fallback!
