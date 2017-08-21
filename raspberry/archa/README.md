@@ -6,7 +6,7 @@ Read AVR 868Mhz receiver data with PL2303 and trasport GZIP data over HTTP.
 
 SENSOR
 <pre>
-E,F,G,H - 3 x AAA battery
+E,F,G,H - 3 x AAA 1.5V battery
 </pre>
 RPI
 <pre>

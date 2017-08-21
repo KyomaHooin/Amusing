@@ -6,7 +6,7 @@ Alix RS232 connected AVR 868MHz DH22 sensor data transport GZIP compressed CSV o
 
 SENSOR
 <pre>
-D - 3 x ? battery
+D - 3 x N/LR1 1.5V battery
 </pre>
 WRAP
 <pre>
