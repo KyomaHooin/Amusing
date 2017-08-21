@@ -4,6 +4,10 @@ DESCRIPTION
 
 Alix RS232 connected AVR 868MHz DH22 sensor data transport GZIP compressed CSV over HTTP.
 
+SENSOR
+<pre>
+D - 3 x ? battery
+</pre>
 WRAP
 <pre>
 apt-get install wget vim locales autossh ntpdate python python-serial
