@@ -102,7 +102,7 @@ for r in report:
 				mail.sendmail('[removed]', addr, msg.as_string())
 				mail.quit()
 		except:
-			log.write('Failed to send email. ' + runtime + '\n')
+			log.write('Failed to send email. ' + addr + ' ' + runtime + '\n')
 fbuff.close()
 ibuff.close()
 log.close()
