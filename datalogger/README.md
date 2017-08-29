@@ -4,10 +4,15 @@ DESCRIPTION
 
 Parse data from DS100, S3120, D3120, ZTH, DL-121DH, HM8 datalogger to CSV and transport GZIP payload over HTTP.
 
-DATA STRUCTURE
-
+EXPORT EXTENSION
 <pre>
-
+ CSV - prumstav, datalogger
+ DBF - s3120, d3120, zth
+ XLS - pracom
+XLSX - merlin
+</pre>
+DATA STRUCTURE
+<pre>
 (parsed import)
 
 /../serial/filename.*
