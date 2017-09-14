@@ -253,7 +253,7 @@ while($fe=$qe->obj()) {
     echo "</td></tr>";
 // next line about alarms
     echo "<tr><td colspan=\"8\">";
-    if(urole()=='A') $qe2=$SQL->query("select *,if(isnull(ap_desc),\"\",ap_desc) as apdesc from alarm left join alarm_preset on a_preset=ap_id left join variable on a_vid=var_id left join user on u_id=a_uid where a_mid=".$fe->m_id." order by a_desc");
+    if(urole()=='A' or urole()=='D') $qe2=$SQL->query("select *,if(isnull(ap_desc),\"\",ap_desc) as apdesc from alarm left join alarm_preset on a_preset=ap_id left join variable on a_vid=var_id left join user on u_id=a_uid where a_mid=".$fe->m_id." order by a_desc");
     else $qe2=$SQL->query("select *,if(isnull(ap_desc),\"\",ap_desc) as apdesc from alarm left join alarm_preset on a_preset=ap_id left join variable on a_vid=var_id left join user on u_id=a_uid where a_mid=".$fe->m_id." && a_uid=".uid()." order by a_desc");
     if(!$qe2->rowcount()) echo "žádné alarmy";
     else {
