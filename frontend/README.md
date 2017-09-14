@@ -56,7 +56,7 @@ php5 php5-gd php5-curl php5-imagic php5-recode php5-mysql php5-apcu php-apc php5
 </pre>
 EXTRA
 <pre>
-gnuplot gnuplot-nox imagemagick python
+gnuplot gnuplot-nox imagemagick python python-reportlab
 </pre>
 FILE
 <pre>
