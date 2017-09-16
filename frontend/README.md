@@ -56,7 +56,7 @@ php5-recode php5-mysql php5-ldap
 </pre>
 EXTRA
 <pre>
-gnuplot-nox python-reportlab
+gnuplot-nox python-reportlab python-xlrd
 </pre>
 FILE
 <pre>
