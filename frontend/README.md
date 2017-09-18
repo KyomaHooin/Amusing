@@ -47,12 +47,12 @@ MYSQL
 mysql-server
 
 create database xxx charset utf8;
-create user 'yyy' identified by 'zzz';
+create user 'yyy'@'localhost' identified by 'zzz';
 grant all privileges on xxx.* to 'yyy'@'localhost';
 </pre>
 PHP
 <pre>
-php5-recode php5-mysql php5-ldap
+php5-recode php5-mysql php5-ldap php5-gd
 </pre>
 EXTRA
 <pre>
