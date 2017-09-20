@@ -57,6 +57,9 @@ php5-recode php5-mysql php5-ldap php5-gd
 EXTRA
 <pre>
 gnuplot-nox python-reportlab python-xlrd
+
+useradd svn
+ssh-kegen -y amusing-xfr.key >> /home/svn/.ssh/authorized_keys
 </pre>
 FILE
 <pre>
