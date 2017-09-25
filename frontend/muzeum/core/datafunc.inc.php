@@ -8,6 +8,9 @@ function val_checkdatatables($f,$t) {
     while($fe=$qe->row()) {
 	$tabs[]=$fe[0];
     }
+    if(in_array("rawvalues_".($f - 2),$tabs)) $SQL->query("drop table rawvalues_".($f - 2));
+    if(in_array("values_".($f - 2),$tabs)) $SQL->query("drop table values_".($f - 2));
+    if(in_array("valuesblob_".($f - 2),$tabs)) $SQL->query("drop table valuesblob_".($f - 2));
     for(;$f<=$t;$f++) {
 	if(!in_array("rawvalues_".$f,$tabs)) {
 	    $SQL->query("create table rawvalues_".$f."
