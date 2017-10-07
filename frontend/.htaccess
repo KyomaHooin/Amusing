@@ -1,5 +1,7 @@
 RewriteEngine On
 
+RewriteCond %{REQUEST_URI} !^/151020 [NC]
 RewriteCond %{REQUEST_URI} !^/sensors [NC]
+RewriteCond %{REQUEST_URI} !^/robots.txt [NC]
 RewriteCond %{REQUEST_URI} !^/.well-known [NC]
-RewriteRule ^(.*)$ https://yourwebsite.com/muzeum/$1 [L]
+RewriteRule ^(.*)$ https://amusing.nm.cz/muzeum/$1 [L]
