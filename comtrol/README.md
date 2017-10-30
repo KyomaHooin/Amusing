@@ -26,7 +26,7 @@ Data Bit                   8
 Stop Bit                   1
 Flow Control               RTS/CTS 
 
-10.13.30.3 - COM4
+10.13.20.3 - COM4
 
 Comtrol DeviceMaster V2.4
 
