@@ -1,7 +1,7 @@
 
 DESCRIPTION
 
-Naprstkovo Muzeum - ComTrol Master Primo configuration.
+Naprstkovo Muzeum - Comtrol Master Primo configuration.
 
 CONFIGURATION
 <pre>
