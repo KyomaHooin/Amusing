@@ -4,9 +4,9 @@ DESCRIPTION
 Naprstkovo Muzeum - ComTrol Master Primo configuration.
 
 CONFIGURATION
-
-10.13.20.2 - COM6
 <pre>
+10.13.20.2 - COM6
+
 Comtrol DeviceMaster V2.3
 
 Server Model               DeviceMaster
@@ -25,9 +25,9 @@ Parity                     None
 Data Bit                   8
 Stop Bit                   1
 Flow Control               RTS/CTS 
-</pre>
+
 10.13.30.3 - COM4
-<pre>
+
 Comtrol DeviceMaster V2.4
 
 Server Model               DeviceMaster
