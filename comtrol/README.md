@@ -5,7 +5,7 @@ Naprstkovo Muzeum - Comtrol Master Primo configuration.
 
 CONFIGURATION
 <pre>
-TCP 23,966
+TCP 23,950-965,966
 
 10.13.20.2 - COM6
 
