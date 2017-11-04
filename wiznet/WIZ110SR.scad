@@ -92,7 +92,7 @@ module bottom() {
     difference(){
             union() {
             rounded_rect(wizWidth,wizLength,boxHeight,2);
-            translate([1,1,boxHeight])
+            translate([1,1,boxHeight-0.01])
             difference(){
                 rounded_rect(wizWidth-2,wizLength-2,1,2);
                 translate([1,1,-1])rounded_rect(wizWidth-4,wizLength-4,3,2);
