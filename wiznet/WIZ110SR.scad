@@ -73,7 +73,7 @@ module vent(){
 
 module top() {
     difference(){
-        translate([0,0,boxHeight]) rounded_rect(wizWidth,wizLength,boxHeight,2);
+        translate([0,0,boxHeight]) rounded_rect(wizWidth,wizLength,boxHeight,2);// BASE
         translate([0,0,boxHeight-boxThick]) cube([wizWidth,wizLength,boxHeight]);// FILLER
         translate([1,1,boxHeight-1]) rounded_rect(wizWidth-boxThick,wizLength-boxThick,2,2);// LIP-LOCK
         translate([0,0,boxThick+bottomMountHeight]) wiz();// WIZZ
@@ -91,8 +91,8 @@ module top() {
 module bottom() {
     difference(){
             union() {
-            rounded_rect(wizWidth,wizLength,boxHeight,2);
-            translate([1,1,boxHeight-0.01])
+            rounded_rect(wizWidth,wizLength,boxHeight,2);// BASE
+            translate([1,1,boxHeight-0.01])// LIP-LOCK
             difference(){
                 rounded_rect(wizWidth-2,wizLength-2,1,2);
                 translate([1,1,-1])rounded_rect(wizWidth-4,wizLength-4,3,2);
@@ -111,7 +111,7 @@ module bottom() {
     }
     translate([-10-boxThick,wizLength/2-8,1]) wall();// WALL MOUNT
     translate([wizWidth+boxThick,wizLength/2-8,1]) wall();
-    translate([3.5,3.5,boxThick]) bottom_mount();// BOTTOM SINK
+    translate([3.5,3.5,boxThick]) bottom_mount();// BOTTOM MOUNT
     translate([wizWidth-3.5,3.5,boxThick]) bottom_mount();
     translate([3.5,wizLength-3.5,boxThick]) bottom_mount();
     translate([wizWidth-3.5,wizLength-3.5,boxThick]) bottom_mount();
@@ -122,8 +122,8 @@ module bottom() {
 module wiz() {
     color("darkgreen")
     difference(){
-        cube([wizWidth,wizLength,wizThick]);
-        translate([3.5,3.5,-1]) wiz_hole();
+        cube([wizWidth,wizLength,wizThick]);// PCB
+        translate([3.5,3.5,-1]) wiz_hole();// MOUNT HOLE
         translate([wizWidth-3.5,3.5,-1]) wiz_hole();
         translate([3.5,wizLength-3.5,-1]) wiz_hole();
         translate([wizWidth-3.5,wizLength-3.5,-1]) wiz_hole();
@@ -141,3 +141,4 @@ module wiz() {
 bottom();
 translate([0,0,boxThick+bottomMountHeight]) wiz();
 top();
+
