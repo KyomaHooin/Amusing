@@ -65,7 +65,9 @@ function sendwarning($fe) {
     $rad="/1/1/1/1/0";
     $getref1d=root()."getplotref/".implode("-",$rfm)."/1D".$rad;
 
-    $text='<html><head><meta charset="utf-8"></head><body><br>
+    $helpdesk = $emails == 'xx@xx.xx' ? '"group":"PROVOZ"': '';
+
+    $text='<html><head><meta charset="utf-8"></head><body>'.$helpdesk.'<br>
     Alarm: '.$fe->a_desc.'<br><br>
     Měřící bod: '.$fe->m_desc.'<br><br>
     Místnost: '.$fe->r_desc.'<br><br>
