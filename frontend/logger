@@ -58,7 +58,7 @@ def xls_parse(buff,sid):
 		csv = open('/tmp/pracom-' + runtime + '.csv','a')
 		book = xlrd.open_workbook(file_contents=buff)
 		sheet = book.sheet_by_index(0)
-		for i in range(4,sheet.nrows):
+		for i in range(5,sheet.nrows):
 			stamp = time.strftime("%Y%m%dT%H%M%SZ",time.strptime(sheet.row_values(i)[0],"%d-%m-%Y %H:%M:%S"))
 			csv.write(sid + ';temperature;' + str(sheet.row_values(i)[1]) + ';' + stamp + '\n')
 			csv.write(sid + ';humidity;' + str(sheet.row_values(i)[2]) + ';' + stamp + '\n')
