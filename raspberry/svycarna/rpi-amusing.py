@@ -2,14 +2,13 @@
 #
 # DHT22 GPIO
 #
-# DATA[5min]: 'T = 16.9 *C, H = 69.9 %'
+# DATA[5min]: 'T = 23.5 *C, H = 54.5 %'
 #
 
-import httplib,socket,time,gzip,sys,os,re
+import subprocess,httplib,socket,time,gzip,sys,os,re
 
 PAYLOAD=''
 RAMDISK='/root/amusing/ramdisk/'
-DHT='/usr/local/bin/getDHT 22 4 > /tmp/dht 2>/dev/null'
 TOKEN=True
 CALL=True
 
@@ -27,21 +26,16 @@ try:
 	while 1:
 		if int(time.strftime("%M")) % 5 == 0 and TOKEN:# 5 min data interval..
 			TOKEN=False
-			cmd = os.system(DHT)# DHT
-			if cmd == 0: # shell return value
-				try:
-					data = open('/tmp/dht','r').read()
-					if data != '':# empty..
-						pattern = re.compile('^.*(\d\d).(\d).*(\d\d).(\d).*$')
-						if re.match(pattern, data):# rubbish..
-							PAYLOAD+=(re.sub(pattern,'box3;temperature;\\1.\\2;'
-							+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data)
-							+ re.sub(pattern,'box3;humidity;\\3.\\4;'
-							+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data))
-				except IOError:
-					LOG.write('Failed to read DHT data file.' + '\n')
-			else:
-				LOG.write('Failed to call DHT binary.' + '\n')
+			try:
+				data = subprocess.check_output(['/usr/local/bin/getDHT','22','4'])
+				pattern = re.compile('^.*(\d\d).(\d).*(\d\d).(\d).*$')
+				if re.match(pattern, data):# rubbish..
+					PAYLOAD+=(re.sub(pattern,'box3;temperature;\\1.\\2;'
+						+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data)
+						+ re.sub(pattern,'box3;humidity;\\3.\\4;'
+						+ time.strftime("%Y%m%dT%H%M%SZ",time.gmtime()), data))
+			except:
+				LOG.write('Failed to read DHT data.\n')
 		if int(time.strftime("%M")) % 5 == 1: TOKEN=True # reset data token..
 		if int(time.strftime("%M")) % 15 == 0 and CALL: # 15 min http interval..
 			CALL=False
