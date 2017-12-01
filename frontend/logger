@@ -10,6 +10,10 @@
 
 import poplib,PyPDF2,email,time,xlrd,sys,os,io,re
 
+RELAY = '[removed]'
+USER = '[removed]'
+PASS = '[removed]'
+
 runtime = time.strftime("%Y%m%dT%H%M%S")
 
 logfile = '/var/log/logger.log'
@@ -110,9 +114,9 @@ except:
         print('Failed to open log file.')
         sys.exit(1)
 try:# POP3
-	sess = poplib.POP3('[removed]',timeout=10)
-	sess.user('[removed]')
-	sess.pass_('[removed]')
+	sess = poplib.POP3(RELAY,timeout=10)
+	sess.user(USER)
+	sess.pass_(PASS)
 	msgs = sess.stat()[0]# get last message
 	for m in range(1,msgs + 1):
 		remove = True

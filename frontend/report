@@ -24,9 +24,16 @@ logfile = '/var/log/report.log'
 
 interval = {'1M':31,'2W':14,'7D':7,'1D':1}
 
+CMH = ['eva_paulova@nm.cz','adam_bitljan@nm.cz','jan_krizenecky@nm.cz']
+
 report = (# email list | locality | interval | M_ID list
-	[[removed],'archa'	,'1M'	,42,43,44,45],
+	[CMH,'Karmelitska'	,'1D'	,719],
+	[CMH,'UDTI'		,'1M'	,100,101],
+	[CMH,'UDTII'		,'2W'	,442,443,444,445],
 	)
+
+ADMIN = '[removed]'
+RELAY = '[removed]'
 
 #------------
 
@@ -52,7 +59,7 @@ if len(sys.argv) != 2:
 for r in report:
 	if sys.argv[1] == r[2]:
 		try:# GRAPH
-			conn = httplib.HTTPSConnection('[removed]','443',timeout=15)
+			conn = httplib.HTTPSConnection('amusing.nm.cz','443',timeout=15)
 			conn.request('GET','/muzeum/getplotref/' + get_list(r) + '/' + r[2] + '/1/0/1/0/0')
 			ret = conn.getresponse()
 			if ret.status == 200:
@@ -84,7 +91,7 @@ for r in report:
 					"Tato zpráva je generována bez možnosti příjmu Vaší odpovědi.\n"
 
 				msg = MIMEMultipart()
-				msg['From'] = 'Amusing Report <[removed]>'
+				msg['From'] = 'Amusing Report <' + ADMIN + '>'
 				msg['To'] = addr
 				msg['Subject'] = "Amusing Report - " + runtime
 				msg.attach(MIMEText(text,'plain','utf-8'))
@@ -98,8 +105,8 @@ for r in report:
 		
 				msg.attach(att)
 
-				mail = smtplib.SMTP('[removed]')
-				mail.sendmail('[removed]', addr, msg.as_string())
+				mail = smtplib.SMTP(RELAY)
+				mail.sendmail(ADMIN, addr, msg.as_string())
 				mail.quit()
 		except:
 			log.write('Failed to send email. ' + addr + ' ' + runtime + '\n')
