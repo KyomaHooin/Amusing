@@ -2,6 +2,7 @@
 #
 # Datalogger fetchmail and attachment processing.
 #
+#  PDF: Version 1.5 - Pracom
 #  CSV: UTF-16-LE Unicode - Prumstav DS100
 #  XLS: Composite Document File V2 LE - Volcraft DL121-TH
 # XLSX: Microsoft Excel 2007+ - Merlin HM8
