@@ -18,6 +18,7 @@ datalogger/ - Fine Offset Electronic, Comet, Volcraft, Merlin.
  raspberry/ - Raspberry Pi.
     sauter/ - SAUTER Automation NovaPro.
    siemens/ - Siemens Desigo Insight.
+    wiznet/ - WIZnet WIZ110SR printable 3D case.
 </pre>
 CONTACT
 
