@@ -8,7 +8,14 @@ EXPORT FORMAT
 <pre>
 rpi-[UTC ISO][BOX SUFFIX].csv.gz
 </pre>
+BUG
+<pre>
+1] uvcvideo: Failed to resubmit video URB (-1)
 
+rmmod uvcvideo
+modrpobe uvcideo
+dmesg
+</pre>
 FILE
 <pre>
      svycarna/ - Local mod.
