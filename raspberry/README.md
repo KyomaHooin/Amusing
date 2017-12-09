@@ -11,6 +11,8 @@ rpi-[UTC ISO][BOX SUFFIX].csv.gz
 BUG
 <pre>
 1] uvcvideo: Failed to resubmit video URB (-1)
+rmmod uvcvideo
+modprobe uvcvideo
 </pre>
 FILE
 <pre>
