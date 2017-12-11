@@ -91,6 +91,7 @@ FILE
 <pre>
 rpi-amusing.py - AVR program.
 cam-amusing.sh - USB camera program.
+ raspberry.png - HW internals.
       firewall - Simple firewall.
 </pre>
 
