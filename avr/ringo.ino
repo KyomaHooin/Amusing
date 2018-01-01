@@ -5,7 +5,7 @@
 #include <DHT.h>
 
 #define ledPin         13      // Status LED 
-//#define radioDataPin   12      // Radio data
+#define radioDataPin   12      // Radio data
 #define DHTPIN         11      // DHT pin
 #define DHTPowerPin    10      // DHT power pin
 #define radioPowerPin  9       // Radio power
