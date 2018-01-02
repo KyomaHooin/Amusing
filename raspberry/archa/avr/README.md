@@ -2,7 +2,7 @@
 
 DESCRIPTION
 
-Write receaved AVR 868Mhz data to UART and listen for LED PWM setup.
+Write received AVR 868Mhz data to UART and listen for LED PWM setup.
 
 FILE
 
