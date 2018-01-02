@@ -89,6 +89,8 @@ ioctl[SIOCSIWENCODEEXT]: Invalid argument
 FILE
 
 <pre>
+          avr/ - AVR 868 RF & PWM code.
+
 rpi-amusing.py - AVR program.
 cam-amusing.sh - USB camera program.
  raspberry.png - HW internals.
