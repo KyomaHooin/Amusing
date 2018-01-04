@@ -42,16 +42,16 @@ void loop() {
     Serial.println("");
     digitalWrite(ledPin,LOW);
   }
-  while(Serial.available() > 0) {// we have cmd in buffer
+  if (Serial.available()) {// we have cmd in buffer
     if (Serial.read() == 'g') {// check first byte
       intensity = Serial.parseInt();// get value
     }
-  }
-  if (intensity >= 0 && intensity <= 255) {
-    analogWrite(pwmPin,intensity);
-    Serial.print("Intensity ");
-    Serial.print(intensity);
-    Serial.println(" set.");
+    if (intensity >= 0 && intensity <= 255) {
+      analogWrite(pwmPin,intensity);
+      Serial.print("Intensity ");
+      Serial.print(intensity);
+      Serial.println(" set.");
+    }
   }
 }
 
