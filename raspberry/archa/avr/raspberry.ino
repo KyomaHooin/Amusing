@@ -9,7 +9,7 @@
 #define ledPin	13
 
 int n = 0;         // msg index
-long intensity = -1;// fade PWM 0-255
+int intensity = -1;// fade PWM 0-255
 
 // ----------------------------------------------------------------
 
