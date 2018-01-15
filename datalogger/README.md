@@ -23,9 +23,12 @@ DATA STRUCTURE
 
 /../vendor-filename.csv
 </pre>
-
+COMET/HANWELL BATTERY
+<pre>
+Saft LS14500 STD
+Tadiran SL-760/S
+</pre>
 FILE
-
 <pre>
 datalogger-amusing.au3 - Main program.
         datalogger.au3 - Logger parser.
