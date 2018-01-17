@@ -2,10 +2,10 @@
 
 #include<_SQL.au3>
 
-$sql_host = '[removed]'
-$sql_user = '[removed]'
-$sql_pass = '[removed]'
-$sql_db = '[removed]'
+$sql_host = 'localhost\DESIGO'
+$sql_user = 'sa'
+$sql_pass = 'des1go$insight'
+$sql_db = 'DIV23!PRJ=Terezin!DB=ISHTTND'; InSigHT TeNDencies
 
 ;-----
 
