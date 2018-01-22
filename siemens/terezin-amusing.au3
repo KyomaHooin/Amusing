@@ -1,7 +1,7 @@
 ;
 ; Terezin: InSigHT TeNDencies TSQL -> CSV -> GZ -> HTTP
 ;
-; schtasks /create /tn "Terezin Amusing HTTP" /tr "c:\terezin-amusing-http\terezin-amusing-http.exe" /sc HOURLY
+; schtasks /create /tn "Terezin Amusing" /tr "c:\terezin-amusing\terezin-amusing.exe" /sc HOURLY
 ;
 
 #AutoIt3Wrapper_Icon=terezin.ico
@@ -35,7 +35,7 @@ if ubound(ProcessList(@ScriptName), $UBOUND_ROWS) > 2 then exit; check if runnin
 DirCreate(@scriptdir & '\archive')
 DirCreate(@scriptdir & '\http')
 ;MAIN
-$logfile = FileOpen(@scriptdir & '\' & $location & '-amusing-http.log', 1); 1 = append
+$logfile = FileOpen(@scriptdir & '\' & $location & '-amusing.log', 1); 1 = append
 if @error then exit; silent exit..
 logger(@CRLF & "Program start: " & $runtime)
 sql(); Parse data from TSQL
