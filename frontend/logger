@@ -94,13 +94,13 @@ def xlsx_parse(buff,sid):
 		csv = open('/tmp/merlin-' + runtime + '.csv','a')
 		book = xlrd.open_workbook(file_contents=buff)
 		sheet = book.sheet_by_index(0)
-		for i in range(5,sheet.nrows):
+		for i in range(2,sheet.nrows):
 			date = xlrd.xldate.xldate_as_tuple(sheet.row_values(i)[0],book.datemode)
 			stamp = time.strftime("%Y%m%dT120000Z",time.strptime(str(date[0])
 				+ ' ' + str(date[1])
 				+ ' ' + str(date[2]),"%Y %m %d"))
-			csv.write(sid + ';temperature;' + str(sheet.row_values(i)[2]) + ';' + stamp + '\n')
-			csv.write(sid + ';humidity;' + str(sheet.row_values(i)[1]) + ';' + stamp + '\n')
+			csv.write(sid + ';temperature;' + str(sheet.row_values(i)[1]) + ';' + stamp + '\n')
+			csv.write(sid + ';humidity;' + str(sheet.row_values(i)[2]) + ';' + stamp + '\n')
 		csv.close()
 		return 1
 	except:
@@ -131,6 +131,9 @@ try:# POP3
 				elif re.match('^.*-?[\.| ]\d+ -.*csv$',fn):
 					sid = prumstav[re.sub('^.*-?[\.| ](\d+) -.*$','\\1',fn)]
 					if not csv_parse(part.get_payload(decode=True),sid): remove = False
+				elif re.match('^.*_([Cc]habry|cimice)_.*xlsx$',fn):
+					sid = merlin['chabry']
+					if not xlsx_parse(part.get_payload(decode=True),sid): remove = False
 				elif re.match('^Data_?\d.*xlsx$',fn):
 					sid = pracom[re.sub('^Data_?(\d).*$','Data\\1',fn)]
 					if not pracom_xlsx_parse(part.get_payload(decode=True),sid): remove = False
@@ -140,9 +143,6 @@ try:# POP3
 					stream.write(part.get_payload(decode=True))
 					stream.seek(0)
 					if not pdf_parse(stream,sid): remove = False
-				elif re.match('^.*_(chabry|cimice)_.*xlsx$',fn):
-					sid = merlin['chabry']
-					if not xlsx_parse(part.get_payload(decode=True),sid): remove = False
 				elif re.match('^.*(csv|xls|xlsx|pdf)$',fn):# Fallback!
 					remove = False
 					log.write('Failed to parse attachment! ' + runtime + ' ' + fn + '\n')
