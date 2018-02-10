@@ -21,7 +21,7 @@ CALL=True
 def voltage(v):# voltage divider 330k | 82k
 	return v * (82 + 330) / 82
 
-def temperature(v):# 0-10V = -30-80C [Comet T0120]
+def temperature(v):# 0-10V = -30-80C [Comet T0210]
 	return v * 11 - 30 
 
 def humidity(v):# 0-10V = 0-100%RH [Comet T0210]
