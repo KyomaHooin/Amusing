@@ -19,5 +19,5 @@ wiz_screen.png - Box screenshot.
 </pre>
 CONTACT
 
-Author: richard_bruna@nm.cz<br>
+Author: richard.bruna@protonmail.com<br>
 Source: https://github.com/KyomaHooin/Amusing
