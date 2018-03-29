@@ -17,6 +17,5 @@ VirtualWire.zip - Virtual Wire library by Mike McCauley (c) 2008.
 
 CONTACT
 
-Author: richard.bruna@protonmail.com<br>
 Source: https://github.com/KyomaHooin/Amusing
 

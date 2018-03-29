@@ -16,6 +16,5 @@ Adafruit_Sensor.zip - Sensor driver by Adafruit.
 </pre>
 CONTACT
 
-Author: richard.bruna@protonmail.com<br>
 Source: https://github.com/KyomaHooin/Amusing
 

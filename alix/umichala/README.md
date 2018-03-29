@@ -48,5 +48,4 @@ umichala_screen.png - HW screenshot.
 
 CONTACT
 
-Author: richard.bruna@protonmail.com<br>
 Source: https://github.com/KyomaHooin/Amusing
