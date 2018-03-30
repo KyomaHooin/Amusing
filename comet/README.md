@@ -8,6 +8,7 @@ FILE
 
 <pre>
 prachatice-amusing.au3 - Main program.
+     comet-amusing.au3 - Multi-site version.
    06030003-sensor.txt - Controller sensor list.
    06040008-sensor.txt - Controller sensor list.
         prachatice.ico - Program icon.
