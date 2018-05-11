@@ -17,6 +17,6 @@ wiz_bottom.stl - Bottom part STL export.
 wiz_screen.png - Box screenshot.
    wiz_dim.png - Dimension diagram.
 </pre>
-CONTACT
+SOURCE
 
-Source: https://github.com/KyomaHooin/Amusing
+https://github.com/KyomaHooin/Amusing

@@ -14,7 +14,7 @@ terezin-sensors.au3 - Get sensor list from DB.
            _SQL.au3 - ADODB library by Chris Lambert.
 </pre>
 
-CONTACT
+SOURCE
 
-Source: https://github.com/KyomaHooin/Amusing
+https://github.com/KyomaHooin/Amusing
 

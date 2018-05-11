@@ -14,7 +14,7 @@ Adafruit_Sensor.zip - Sensor driver by Adafruit.
          george.ino - Receiver source code.
           ringo.ino - Transmitter source code.
 </pre>
-CONTACT
+SOURCE
 
-Source: https://github.com/KyomaHooin/Amusing
+https://github.com/KyomaHooin/Amusing
 

@@ -20,7 +20,7 @@ datalogger/ - Fine Offset Electronic, Comet, Volcraft, Merlin.
    siemens/ - Siemens Desigo Insight.
     wiznet/ - WIZnet WIZ110SR printable 3D case.
 </pre>
-CONTACT
+SOURCE
 
-Source: https://github.com/KyomaHooin/Amusing
+https://github.com/KyomaHooin/Amusing
 

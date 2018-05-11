@@ -70,7 +70,7 @@ FILE
 labjack-exodriver-4a45f5f.tar.gz - LabJack U3 driver v2.5.1-0-g by LabJack (c) 2009.
 </pre>
 
-CONTACT
+SOURCE
 
-Source: https://github.com/KyomaHooin/Amusing
+https://github.com/KyomaHooin/Amusing
 

@@ -47,7 +47,7 @@ hanwell-amusing.au3 - Main program.
             RL8.au3 - RadioLog 8 parser.
 </pre>
 
-CONTACT
+SOURCE
 
-Source: https://github.com/KyomaHooin/Amusing
+https://github.com/KyomaHooin/Amusing
 

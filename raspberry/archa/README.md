@@ -97,7 +97,7 @@ cam-amusing.sh - USB camera program.
       firewall - Simple firewall.
 </pre>
 
-CONTACT
+SOURCE
 
-Source: https://github.com/KyomaHooin/Amusing
+https://github.com/KyomaHooin/Amusing
 

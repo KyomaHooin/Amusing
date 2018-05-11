@@ -46,7 +46,7 @@ FILE
 umichala_screen.png - HW screenshot.
 </pre>
 
-CONTACT
+SOURCE
 
-Source: https://github.com/KyomaHooin/Amusing
+https://github.com/KyomaHooin/Amusing
 

@@ -39,7 +39,7 @@ datalogger-amusing.au3 - Main program.
  datalogger_screen.png - Screenshot.
 </pre>
 
-CONTACT
+SOURCE
 
-Source: https://github.com/KyomaHooin/Amusing
+https://github.com/KyomaHooin/Amusing
 

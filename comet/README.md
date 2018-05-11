@@ -17,7 +17,7 @@ prachatice-amusing.au3 - Main program.
       comet_screen.png - MS3+/2+ controller HW screenshot..
 </pre>
 
-CONTACT
+SOURCE
 
-Source: https://github.com/KyomaHooin/Amusing
+https://github.com/KyomaHooin/Amusing
 

@@ -15,7 +15,7 @@ VirtualWire.zip - Virtual Wire library by Mike McCauley (c) 2008.
   raspberry.png - Internal screen.
 </pre>
 
-CONTACT
+SOURCE
 
-Source: https://github.com/KyomaHooin/Amusing
+https://github.com/KyomaHooin/Amusing
 

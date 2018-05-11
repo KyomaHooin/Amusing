@@ -76,7 +76,7 @@ FILE
 amusing_screen.png - UI screenshot. 
 </pre>
 
-CONTACT
+SOURCE
 
-Source: https://github.com/KyomaHooin/Amusing
+https://github.com/KyomaHooin/Amusing
 

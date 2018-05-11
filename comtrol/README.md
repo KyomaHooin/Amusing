@@ -49,7 +49,7 @@ Data Bit                   8
 Stop Bit                   1
 Flow Control               RTS/CTS
 </pre>
-CONTACT
+SOURCE
 
-Source: https://github.com/KyomaHooin/Amusing
+https://github.com/KyomaHooin/Amusing
 

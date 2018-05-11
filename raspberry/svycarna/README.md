@@ -72,7 +72,7 @@ bcm2835-1.36.tar.gz - BCM2835 library.
 svycarna_screen.png - HW screenshot.
 </pre>
 
-CONTACT
+SOURCE
 
-Source: https://github.com/KyomaHooin/Amusing
+https://github.com/KyomaHooin/Amusing
 

@@ -16,7 +16,7 @@ pocernice/ - Local mod.
  kinskych/ - Local mod.
    nostic/ - Local mod.
 </pre>
-CONTACT
+SOURCE
 
-Source: https://github.com/KyomaHooin/Amusing
+https://github.com/KyomaHooin/Amusing
 
