@@ -52,3 +52,4 @@ pocernice-amusing.au3 - Main program.
 CONTACT
 
 Source: https://github.com/KyomaHooin/Amusing
+
