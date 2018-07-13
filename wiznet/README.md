@@ -2,13 +2,8 @@
 
 DESCRIPTION
 
-Wiznet WIZ110SR 3D printable box.
+Wiznet <a href="https://www.tme.eu/cz/details/wiz110sr/moduly-wiznet/wiznet/">WIZ110SR</a> 3D printable box.
 
-PRODUCT
-<pre>
-https://www.tme.eu/cz/details/wiz110sr/moduly-wiznet/wiznet/
-https://www.ges.cz/cz/napajeci-adapter-ac-dc-sitovy-napajec-stabilizovany-zdroj-napeti-mw-5v-1-2a-GES07507613.html
-</pre>
 FILE
 <pre>
  WIZ110SR.scad - OpenSCAD model.
