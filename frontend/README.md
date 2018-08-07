@@ -17,10 +17,10 @@ CRON
 20 * * * * root	/usr/bin/find /var/www/muzeum/csv -type f -mtime +2 ! -name .htaccess -print0 | /usr/bin/xargs -0 /bin/rm -f
 
 #Amusing - alarm scheduler [20min]
-*/20 * * * *	root	/usr/bin/wget -t 1 -O /dev/null https://amusing.nm.cz/muzeum/cron > /dev/null 2>&1
+*/20 * * * *	root	/usr/bin/wget -t 1 -O /dev/null https://yourwebsite.com/muzeum/cron > /dev/null 2>&1
 
 #Amusing - RAW data processing [5min]
-*/5 * * * *	root	/usr/bin/wget -t 1 -O /dev/null https://amusing.nm.cz/muzeum/cronraw > /dev/null 2>&1
+*/5 * * * *	root	/usr/bin/wget -t 1 -O /dev/null https://yourwebsite.com/muzeum/cronraw > /dev/null 2>&1
 
 #Amusing - RAW data archiving [3:00 AM] *.{done,err} no work..
 0 3	* * *	root	/bin/gzip -f /var/www/sensors/data/*.done > /dev/null 2>&1
@@ -79,4 +79,3 @@ amusing_screen.png - UI screenshot.
 SOURCE
 
 https://github.com/KyomaHooin/Amusing
-
