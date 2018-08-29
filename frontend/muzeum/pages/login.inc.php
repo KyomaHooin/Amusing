@@ -44,6 +44,11 @@ if($_SERVER['REQUEST_METHOD']=="POST") {
 	    redir();
 	}
 
+	if(empty(get_ind($_POST,"000_pass"))) {
+	    $_SESSION->error_text="Prázdné heslo";
+	    redir();
+	}
+
 	$qe=$SQL->query("select * from user where u_uname=\"".$SQL->escape($user)."\" && u_state='Y'");
 	$fe=$qe->obj();
 	
