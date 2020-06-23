@@ -65,6 +65,7 @@ interval = 15
 FILE
 <pre>
                         firewall - Simple firewall.
+                   restore-u3.py - Restore U3 configuration.
                  alix-amusing.py - Main data transport.
                LabJackPython.zip - LabJack Python library by LabJack (c) 2015
 labjack-exodriver-4a45f5f.tar.gz - LabJack U3 driver v2.5.1-0-g by LabJack (c) 2009.
