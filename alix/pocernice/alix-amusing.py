@@ -3,7 +3,7 @@
 # LabJack U3 USB ADC 8 channel
 #
 
-import httplib,socket,time,gzip,u3,sys,os,re
+import traceback,httplib,socket,time,gzip,u3,sys,os,re
 
 PAYLOAD=''
 RAMDISK='/root/amusing/ramdisk/'
@@ -56,6 +56,7 @@ try:
 				jack.close()
 			except:
 				LOG.write('Failed to read U3 data.\n')
+				LOG.write(traceback.format_exc())
 		if int(time.strftime("%M")) % 5 == 1: TOKEN=True # reset data token..
 		if int(time.strftime("%M")) % 15 == 0 and CALL: # 15 min interval..
 			CALL=False
