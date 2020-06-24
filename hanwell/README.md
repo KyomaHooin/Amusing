@@ -45,6 +45,8 @@ hanwell-amusing.au3 - Main program.
  _XMLDomWrapper.au3 - XML library by Stephen Podhajecki.
            ZLIB.au3 - Compression library by "Ward".
             RL8.au3 - RadioLog 8 parser.
+
+   masterstatus.xml - Debug XML file.
 </pre>
 
 SOURCE
