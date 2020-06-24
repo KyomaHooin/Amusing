@@ -161,6 +161,12 @@ func archive()
 endfunc
 
 func get_timestamp($time)
+	local $month[12][2]=[ _
+		['led','01'], ['úno','02'], ['bře','03'], ['dub','04'], ['kvě','05'], ['čvn','06'], _
+		['čvc','07'], ['srp','08'], ['zář','09'], ['říj','10'], ['lis','11'], ['pro','12']]
+	for $i = 0 to UBound($month) - 1
+		$time = StringReplace($time, $month[$i][0], $month[$i][1])
+	next
 	$rtime = StringRegExpReplace($time, "^(\d\d)(\d?\d)(\d{4}) (\d\d):(\d\d):(\d\d)$", "$3/$2/$1 $4:$5:$6")
 	$utc_time = _DateAdd('h', -1 + _Date_Time_GetTimeZoneInformation()[1]/60, $rtime)
 	return StringRegexpReplace($utc_time, "^(\d{4})/(\d\d)/(\d\d) (\d\d):(\d\d):(\d\d)$", "$1$2$3T$4$5$6Z")
