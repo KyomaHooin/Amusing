@@ -3,11 +3,6 @@ DESCRIPTION
 
 Automatic MUSeum enviroment monitorING system.
 
-TODO
-
-pocernice - Skip broken exp value.
-hanwell - Fix led, uno, bre, dub, kve, cvn, cvc, srp, zar, zij , Lis ,pro
-
 SERVER
 <pre>
 frontend/ - PHP5 frontend.
