@@ -10,6 +10,8 @@
 $amusing = @ScriptDir & '\pocernice-amusing.exe'
 $token=True
 
+if UBound(ProcessList(@ScriptName)) > 2 then exit
+
 while 1
 	if @MIN=25 and $token then
 		$token=False
