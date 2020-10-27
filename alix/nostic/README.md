@@ -42,6 +42,8 @@ iface eth0 inet dhcp
 /root/amusing/alix-amusing.py &
 /root/firewall &
 /root/tunnel &
+
+remountro
 </pre>
 
 FILE

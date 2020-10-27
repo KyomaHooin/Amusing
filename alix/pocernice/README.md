@@ -60,6 +60,8 @@ iface eth0 inet static
 
 watchdog-device = /dev/watchdog
 interval = 15
+
+remountro
 </pre>
 
 FILE

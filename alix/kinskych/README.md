@@ -48,6 +48,8 @@ iface eth0 inet static
 /root/amusing/alix-amusing.py &
 /root/firewall &
 /root/tunnel &
+
+remountro
 </pre>
 BUG
 <pre>

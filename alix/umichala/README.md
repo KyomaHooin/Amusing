@@ -36,6 +36,8 @@ cs5535-gpio
 
 watchdog-device = /dev/watchdog
 interval = 15
+
+remountro
 </pre>
 
 FILE
