@@ -79,7 +79,7 @@ func main()
 			$gz_file = FileOpen(@ScriptDir & '\http\' & $gzlist[$i], 16)
 			$gz_data = FileRead($gz_file)
 			FileClose($gz_file)
-			$http.open("POST", "[removed]", False); No async HTTP..
+			$http.open("POST", "http://10.10.19.57/sensors/rawpost.php", False); No async HTTP..
 			$http.SetRequestHeader("X-Location", StringRegExpReplace($gzlist[$i], "^(" & $location & "-\d+T\d+)(.*)","$1"))
 			$http.Send($gz_data)
 			if @error or $http.Status <> 200 then
